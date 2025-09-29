@@ -1,0 +1,168 @@
+﻿@model ResumeApp.Models.ClientRequirement
+
+@{
+    ViewData["Title"] = "Requirement Details";
+}
+
+<div class="container py-4">
+    <h2 class="mb-4">Requirement Details</h2>
+
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            Client Information
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Company</dt>
+                <dd class="col-sm-9">@Model.Client?.CompanyName</dd>
+
+                <dt class="col-sm-3">Primary Contact</dt>
+                <dd class="col-sm-9">@Model.Client?.ContactName</dd>
+
+                <dt class="col-sm-3">Email</dt>
+                <dd class="col-sm-9">@Model.Client?.Email</dd>
+
+                <dt class="col-sm-3">Phone</dt>
+                <dd class="col-sm-9">@Model.Client?.Phone</dd>
+            </dl>
+
+            @if (Model.Client?.Spokespersons != null && Model.Client.Spokespersons.Any())
+            {
+                <h5 class="mt-3">Spokespersons</h5>
+                <table class="table table-sm table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Designation</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Preferred Communication</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var sp in Model.Client.Spokespersons)
+                        {
+                            <tr>
+                                <td>@sp.Name</td>
+                                <td>@sp.Designation</td>
+                                <td>@sp.Email</td>
+                                <td>@sp.Phone</td>
+                                <td>@sp.PreferredCommunication</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="text-muted">No spokespersons available.</p>
+            }
+        </div>
+    </div>
+
+
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">
+            Requirement Information
+        </div>
+        <div class="card-body text-center">
+            <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#requirementModal">
+                📄 View Job Description
+            </button>
+        </div>
+    </div>
+    <!-- Requirement Info Modal -->
+    <div class="modal fade" id="requirementModal" tabindex="-1" aria-labelledby="requirementModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="requirementModalLabel">Requirement Details</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Job Title</dt>
+                        <dd class="col-sm-8">@Model.JobTitle</dd>
+
+                        <dt class="col-sm-4">Positions</dt>
+                        <dd class="col-sm-8">@Model.Positions</dd>
+
+                        <dt class="col-sm-4">Job Location</dt>
+                        <dd class="col-sm-8">@Model.JobLocation</dd>
+
+                        <dt class="col-sm-4">Employment Type</dt>
+                        <dd class="col-sm-8">@Model.EmploymentType</dd>
+
+                        <dt class="col-sm-4">Work Shift</dt>
+                        <dd class="col-sm-8">@Model.WorkShift</dd>
+
+                        <dt class="col-sm-4">Primary Skills</dt>
+                        <dd class="col-sm-8"><span class="badge bg-primary">@Model.SkillsPrimary</span></dd>
+
+                        <dt class="col-sm-4">Secondary Skills</dt>
+                        <dd class="col-sm-8"><span class="badge bg-secondary">@Model.SkillsSecondary</span></dd>
+
+                        <dt class="col-sm-4">Required Skills</dt>
+                        <dd class="col-sm-8"><span class="badge bg-info">@Model.SkillsRequired</span></dd>
+
+                        <dt class="col-sm-4">Responsibilities</dt>
+                        <dd class="col-sm-8">@Model.Responsibilities</dd>
+
+                        <dt class="col-sm-4">Experience</dt>
+                        <dd class="col-sm-8">@Model.ExperienceMin – @Model.ExperienceMax years</dd>
+
+                        <dt class="col-sm-4">Education</dt>
+                        <dd class="col-sm-8">@Model.Education</dd>
+
+                        <dt class="col-sm-4">Certifications</dt>
+                        <dd class="col-sm-8">@Model.Certifications</dd>
+
+                        <dt class="col-sm-4">Salary Range</dt>
+                        <dd class="col-sm-8">@Model.SalaryRange</dd>
+
+                        <dt class="col-sm-4">Billing Type</dt>
+                        <dd class="col-sm-8">@Model.BillingType</dd>
+
+                        <dt class="col-sm-4">Notice Period</dt>
+                        <dd class="col-sm-8">@Model.NoticePeriod</dd>
+
+                        <dt class="col-sm-4">Priority</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge @(Model.RequirementPriority == "High" ? "bg-danger" : Model.RequirementPriority == "Medium" ? "bg-warning text-dark" : "bg-success")">
+                                @Model.RequirementPriority
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-4">Deadline</dt>
+                        <dd class="col-sm-8">@Model.Deadline?.ToString("yyyy-MM-dd")</dd>
+
+                        <dt class="col-sm-4">Expected Joining</dt>
+                        <dd class="col-sm-8">@Model.ExpectedJoiningDate?.ToString("yyyy-MM-dd")</dd>
+
+                        <dt class="col-sm-4">Screening Questions</dt>
+                        <dd class="col-sm-8">@Model.ScreeningQuestions</dd>
+
+                        <dt class="col-sm-4">Special Instructions</dt>
+                        <dd class="col-sm-8">@Model.SpecialInstructions</dd>
+                    </dl>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="text-center mt-3">
+        <a asp-action="MatchProfiles" asp-route-id="@Model.Id" class="btn btn-success">
+            🔍 Match Profiles
+        </a>
+    </div>
+
+    <hr />
+    <div class="text-center">
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+    </div>
+</div>

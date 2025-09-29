@@ -1,0 +1,71 @@
+﻿@{
+    ViewData["Title"] = "Reviewer Terms of Use";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-primary">Reviewer Terms of Use Agreement</h2>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <p>
+                Welcome to <strong>Xeedo ATS</strong>. As a designated Reviewer, you are entrusted with access to sensitive and personal data. This agreement outlines your responsibilities, legal obligations, and permitted use of the platform.
+            </p>
+
+            <h5 class="mt-4 text-dark">1. Purpose of Use</h5>
+            <ul>
+                <li>You are authorized to access resumes solely for the purpose of screening, evaluating, and managing applicant data.</li>
+                <li>Use of this platform must strictly align with your responsibilities as a recruiter or reviewer.</li>
+            </ul>
+
+            <h5 class="mt-4 text-dark">2. Confidentiality & Data Privacy</h5>
+            <ul>
+                <li>You must keep all applicant information confidential.</li>
+                <li>You agree not to share, download, print, or redistribute resumes or personal details unless required and authorized.</li>
+                <li>All data access and usage must comply with data protection laws such as GDPR or applicable local regulations.</li>
+            </ul>
+
+            <h5 class="mt-4 text-dark">3. Uploading & Reviewing Resumes</h5>
+            <ul>
+                <li>You may upload resumes only if you have obtained explicit consent from the applicant.</li>
+                <li>Do not upload duplicate or unrelated documents.</li>
+                <li>Always review extracted resume data before submitting final reviews.</li>
+            </ul>
+
+            <h5 class="mt-4 text-dark">4. Ethical Use</h5>
+            <ul>
+                <li>You will treat all candidates fairly, without discrimination or bias.</li>
+                <li>Use of automation, AI, or third-party tools must be approved and logged accordingly.</li>
+            </ul>
+
+            <h5 class="mt-4 text-dark">5. Security Obligations</h5>
+            <ul>
+                <li>You must not share your login credentials or allow others to access the system on your behalf.</li>
+                <li>In case of any unauthorized access or breach, you are required to notify the Admin immediately.</li>
+            </ul>
+
+            <h5 class="mt-4 text-dark">6. Activity Logging</h5>
+            <ul>
+                <li>All your actions including login, upload, downloads, edits, and review activities are logged and monitored by the Admin for auditing purposes.</li>
+            </ul>
+
+            <h5 class="mt-4 text-dark">7. Violation of Terms</h5>
+            <ul>
+                <li>Any misuse or breach of the above conditions may result in access revocation, legal action, or administrative review.</li>
+            </ul>
+
+            <hr />
+            <form asp-action="AcceptTermsConfirmed" method="post">
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="acceptTerms" required />
+                    <label class="form-check-label" for="acceptTerms">
+                        I have read and understood the above terms. I agree to comply with the Reviewer Terms of Use.
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    I Accept and Continue
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,92 @@
+﻿/* Custom styles for a professional SaaS table */
+
+.saas-table .table {
+    border-collapse: separate; /* Allows border-radius on cells */
+    border-spacing: 0; /* Remove default spacing */
+}
+
+    .saas-table .table thead th {
+        font-weight: 600; /* Slightly bolder for headers */
+        color: #6c757d; /* Muted text for headers */
+        padding: 0.75rem 1.25rem; /* More generous padding */
+        border-bottom: 2px solid #e9ecef; /* Subtle bottom border */
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.05em;
+    }
+
+    .saas-table .table tbody tr {
+        transition: background-color 0.2s ease;
+    }
+
+        .saas-table .table tbody tr:hover {
+            background-color: #f8f9fa; /* Light hover effect */
+        }
+
+    .saas-table .table tbody td {
+        padding: 1rem 1.25rem; /* Generous padding for content */
+        border-top: 1px solid #e9ecef; /* Subtle top border for rows */
+        vertical-align: middle; /* Align content vertically */
+    }
+
+/* No direct borders on the table itself, borders are on cells */
+.saas-table .table {
+    border: none !important;
+}
+
+/* Custom badge styles for actions */
+.badge-action-type {
+    font-size: 0.75rem;
+    padding: 0.4em 0.7em;
+    border-radius: 0.25rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+    /* Example specific colors - customize as needed */
+    .badge-action-type.bg-success-light {
+        background-color: #d4edda !important;
+        color: #155724 !important;
+    }
+
+    .badge-action-type.bg-info-light {
+        background-color: #d1ecf1 !important;
+        color: #0c5460 !important;
+    }
+
+    .badge-action-type.bg-warning-light {
+        background-color: #fff3cd !important;
+        color: #856404 !important;
+    }
+
+    .badge-action-type.bg-danger-light {
+        background-color: #f8d7da !important;
+        color: #721c24 !important;
+    }
+
+    .badge-action-type.bg-secondary-light {
+        background-color: #e2e3e5 !important;
+        color: #383d41 !important;
+    }
+
+/* Adjust card for cleaner look */
+.saas-card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); /* Softer shadow */
+    border-radius: 0.5rem; /* Slightly more rounded corners */
+}
+
+.saas-card-header {
+    background-color: #ffffff; /* White background for header */
+    border-bottom: 1px solid #e9ecef;
+    padding: 1.25rem 1.5rem;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #343a40;
+}
+
+/* Remove default table borders */
+.table.no-borders th,
+.table.no-borders td {
+    border: none !important;
+}

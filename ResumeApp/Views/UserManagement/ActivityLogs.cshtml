@@ -1,0 +1,126 @@
+﻿@model List<ResumeApp.Models.ActivityLog>
+
+@{
+    ViewData["Title"] = "Activity Logs";
+}
+
+<div class="container-fluid py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h3 mb-0 text-dark d-flex align-items-center">
+            <i class="bi bi-activity me-3 fs-4 text-primary"></i>
+            Activity Logs
+        </h2>
+        <div>
+            
+            <a asp-action="ExportActivityLogsPdf" class="btn btn-outline-primary btn-sm" title="Download Activity Logs PDF">
+                <i class="bi bi-download me-1"></i> Export
+            </a>
+
+        </div>
+    </div>
+
+    <div class="card saas-card">
+        <div class="card-header saas-card-header d-flex justify-content-between align-items-center">
+            Recent Activities
+            <small class="text-muted">Last 30 days</small>
+        </div>
+        <div class="card-body p-0 saas-table">
+            @if (Model != null && Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">Date & Time</th>
+                                <th scope="col">User</th>
+                                <th scope="col">Action Type</th>
+                                <th scope="col">Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var log in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="text-muted small">@log.Timestamp.ToString("MMM dd, yyyy")</div>
+                                        <div class="fw-medium">@log.Timestamp.ToString("hh:mm:ss tt")</div>
+                                    </td>
+                                    <td>
+                                        <div class="text-dark fw-semibold">@(log.User?.FullName ?? "System")</div>
+                                        <div class="text-muted small text-truncate" style="max-width: 150px;">@(log.User?.Email ?? "N/A")</div>
+                                    </td>
+                                    <td>
+                                        @{
+                                            string badgeClass = "bg-secondary-light"; // Default
+                                            switch (log.ActionType.ToLower())
+                                            {
+                                                case "login":
+                                                case "created":
+                                                    badgeClass = "bg-success-light";
+                                                    break;
+                                                case "updated":
+                                                case "modified":
+                                                    badgeClass = "bg-info-light";
+                                                    break;
+                                                case "deleted":
+                                                    badgeClass = "bg-danger-light";
+                                                    break;
+                                                case "failed attempt":
+                                                case "error":
+                                                    badgeClass = "bg-warning-light";
+                                                    break;
+                                                default:
+                                                    badgeClass = "bg-secondary-light";
+                                                    break;
+                                            }
+                                        }
+                                        <span class="badge badge-action-type @badgeClass">@log.ActionType</span>
+                                    </td>
+                                    <td>
+                                        <p class="mb-0 text-dark">@log.Message</p>
+                                        @* <a href="#" class="text-primary small text-decoration-none">View Details</a> *@
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-light text-center py-5 mb-0 rounded-0" role="alert">
+                    <i class="bi bi-info-circle fs-3 text-muted mb-3 d-block"></i>
+                    <h5 class="alert-heading text-secondary">No Activity Logs Yet!</h5>
+                    <p class="text-muted mb-0">It looks like there's no recent activity to display.</p>
+                </div>
+            }
+        </div>
+        <div class="card-footer bg-white border-top text-end">
+            @if (ViewBag.TotalPages > 1)
+            {
+                <nav aria-label="Activity Log Pagination">
+                    <ul class="pagination pagination-sm mb-0 justify-content-end">
+                        <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+                            <a class="page-link" href="@Url.Action("ActivityLogs", new { page = ViewBag.CurrentPage - 1 })">Previous</a>
+                        </li>
+
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                <a class="page-link" href="@Url.Action("ActivityLogs", new { page = i })">@i</a>
+                            </li>
+                        }
+
+                        <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
+                            <a class="page-link" href="@Url.Action("ActivityLogs", new { page = ViewBag.CurrentPage + 1 })">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            }
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+}

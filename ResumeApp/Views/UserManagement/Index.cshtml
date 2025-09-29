@@ -1,0 +1,43 @@
+﻿@using ResumeApp.ViewModels;
+
+@model IEnumerable<UserWithRolesViewModel>
+@{
+    ViewData["Title"] = "Manage Users";
+}
+<h2>Manage Users</h2>
+
+<table class="table table-bordered table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>Email</th>
+            <th>Full Name</th>
+            <th>Roles</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>@user.FullName</td>
+                <td>@user.Roles</td>
+                <td>
+                    <a class="btn btn-sm btn-primary me-2" asp-action="Edit" asp-route-id="@user.Id">Manage Roles</a>
+                    @if (user.IsLocked)
+                    {
+                        <form asp-action="Unlock" asp-route-id="@user.Id" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-success">Unlock</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-action="Lock" asp-route-id="@user.Id" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to lock this user?');">
+                            <button type="submit" class="btn btn-sm btn-warning">Lock</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

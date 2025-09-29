@@ -1,0 +1,461 @@
+wwwroot\css\account.css
+wwwroot\css\custom.css
+wwwroot\css\site.css
+wwwroot\favicon.ico
+wwwroot\images\account-bg.jpg
+wwwroot\images\baground.jpg
+wwwroot\js\site.js
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.min.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map
+wwwroot\lib\bootstrap\LICENSE
+wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.js
+wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.min.js
+wwwroot\lib\jquery-validation-unobtrusive\LICENSE.txt
+wwwroot\lib\jquery-validation\dist\additional-methods.js
+wwwroot\lib\jquery-validation\dist\additional-methods.min.js
+wwwroot\lib\jquery-validation\dist\jquery.validate.js
+wwwroot\lib\jquery-validation\dist\jquery.validate.min.js
+wwwroot\lib\jquery-validation\LICENSE.md
+wwwroot\lib\jquery\dist\jquery.js
+wwwroot\lib\jquery\dist\jquery.min.js
+wwwroot\lib\jquery\dist\jquery.min.map
+wwwroot\lib\jquery\LICENSE.txt
+wwwroot\uploads\_Resume_.pdf
+wwwroot\uploads\A_Snehith_3.2 years_Dot Net  Angular Developer_ACL Digital - Mindsprint.docx
+wwwroot\uploads\Aditya_Resume_.docx
+wwwroot\uploads\Aditya_Bishwa_Bismaya_Sharma_5.6 years_Backend Developer_ACL - eBay.pdf
+wwwroot\uploads\AdityaNath[4y_3m].pdf
+wwwroot\uploads\Aditya Srivastava_8.2 Years_JR-12786 Test Automation Sr Lead_Sony.pdf
+wwwroot\uploads\Aditya Sharma_2.6 Years_Testing & Hardware Engineer _Exide Energy.pdf
+wwwroot\uploads\Aditya P Thogit-QA Automation.pdf
+wwwroot\uploads\Aditya Nath_4.5 Years_JR- 11849 SAP Fiori Consultant_Sony.pdf
+wwwroot\uploads\Aditya J_6.2 Years_JR-12889 DevOps Technical Specialist - Red Hat Ansible and GitLab_Sony.pdf
+wwwroot\uploads\Aditya Chavan.pdf
+wwwroot\uploads\Aditya Bhardwaj_4.9 Years_Post Silocon Validation_Alphawave.pdf
+wwwroot\uploads\Adinarayana Thota_9.6 Years_JR-13193 FICO Functional Consultant_Sony.pdf
+wwwroot\uploads\Adesh_Rathod_4.11 yearss_Test Automation_ACL Digital -Siemens.pdf
+wwwroot\uploads\Adeep Kumar.P_5.4 Years_JR-12517 MuleSoft Engineer_Sony.pdf
+wwwroot\uploads\Addepalli Venkata Sai Kaushik.docx
+wwwroot\uploads\Adarsh P_5.1 Years_JR-12715 Java Full Stack Engineer_Sony.pdf
+wwwroot\uploads\Adarsh N_1.10 Years_JR-12791-RPA Developer - SIGMA_Sony.pdf
+wwwroot\uploads\Adarsh Kumar_3.10 Years_JR-12133 UI Developer_Sony.pdf
+wwwroot\uploads\Abubakkar Sait_8.5 Years_JR-12810 Senior Cloud Engineer_Sony.pdf
+wwwroot\uploads\Abishek Siddi_4 Years_JR-13077-Full Stack – Senior developer – Java Angular AWS_Sony.pdf
+wwwroot\uploads\Abinaya_6.7 years_PLSQL Developer_ACL Digital_Oracle.pdf
+wwwroot\uploads\Abinaya_6.7 years_PLSQL Developer_ACL Digital_Oracle.docx
+wwwroot\uploads\Abinash Bastia_3.10 Years_JR-13418 Python Automation Engineer_Sony.pdf
+wwwroot\uploads\Abhishek_Yadav_8.9 years_Product Owner_ACL - Adobe.docx
+wwwroot\uploads\Abhishek_Santosh_Pawar_4.1 years_C# full-stack software developer_ACL Digital -Siemens.pdf
+wwwroot\uploads\Abhishek_Santosh_Pawar_4# full-stack software developer_ACL Digital -Siemens.pdf.docx
+wwwroot\uploads\Abhishek_R_4.5 years_Technical Writer.pdf
+wwwroot\uploads\Abhishek_Pradhan_3.0 years_MO31JP00001714 - Business Intelligence Analyst 1_INR_Xeedo - Micron.docx
+wwwroot\uploads\Abhishek_JR_4.8 years_React JS Developer_Xeedo - Videonetics.pdf
+wwwroot\uploads\Abhishek_Bhatt_4.8 years_MO31JP00001487 - Hardware Engineer 2_Xeedo - Micron.pdf
+wwwroot\uploads\Abhishek_Bhatt_4.8 years_MO31JP00001487 - Hardware Engineer 2_Xeedo - Micron.docx
+wwwroot\uploads\Abhishek_5.0 years_AUTOSAR Developer_Actevia Technology.pdf
+wwwroot\uploads\Abhishek_4.2 years_Python Developer_ACL Digital - Amadeus.docx
+wwwroot\uploads\Abhishek Srivastava_2.4 Years_JR-12572 ML Support Engineer_Sony.pdf
+wwwroot\uploads\Abhishek Sanjay Somwanshi_5.4 Years_JR- 13025 Python Automation Lead_Sony.pdf
+wwwroot\uploads\Abhishek Ranwa_4.7 Years_JR- 11989 GP00076395 SNAD2C_Commerce_contract_Sony.pdf
+wwwroot\uploads\Abhishek Pradhan_JR- 4.1 Years_JR- 12927 Azure Infra & DevOps_Sony.pdf
+wwwroot\uploads\Abhishek Patra_5.0 Years_Software Testing for Cluster_Visteon.pdf
+wwwroot\uploads\Abhishek Mitra_10.6 Years_JR-12786 Test Automation Sr Lead_Sony.pdf
+wwwroot\uploads\Abhishek M Havanur_2.6 Years_JR-12442 Proofpoint Email Security Specialist_Sony.pdf
+wwwroot\uploads\Abhishek Darapu.pdf
+wwwroot\uploads\Abhishek Chandra.pdf
+wwwroot\uploads\Abhishek Bajpai_5.3 Years_JR-11626-Windows 365_Sony.pdf
+wwwroot\uploads\Abhishek B V_8.10 Years_JR- 13082 SAP BASIS Expert with knowledge in OS, Oracle,HANA and CLOUD [A2]_Sony.pdf
+wwwroot\uploads\Abhishek Awasthi_4.7 Years_Java Developer_Reliance Jio.pdf
+wwwroot\uploads\Abhinay.pdf
+wwwroot\uploads\Abhinav_Bharti_3.2 years_Data Science_LG.pdf
+wwwroot\uploads\Abhilash Sahoo_4.1 Years_JR-13418 Python Automation Engineer_Sony.pdf
+wwwroot\uploads\Abhijit Mishra_6.9 Years_ JR-12539 Lead Full Stack Developer_Sony.pdf
+wwwroot\uploads\Abhijit Balasaheb Sakhare.docx
+wwwroot\uploads\Abhijeet Tiwari.docx
+wwwroot\uploads\Abhaya Kumar Paikaraya_3.9 Years_JR-13418 Python Automation Engineer_Sony.pdf
+wwwroot\uploads\Abdul_Rahiman_Mulla_4.0 years_Full Stack Developer_AFour Technologies.pdf
+wwwroot\uploads\Abdul_Kareem_6.0 years_MO31JP00001433 - Business Intelligence Analyst 2_Xeedo - Micron.pdf
+wwwroot\uploads\Abdul_Kareem_6.0 years_MO31JP00001433 - Business Intelligence Analyst 2_Xeedo - Micron.docx
+wwwroot\uploads\Abdulla T_12.5 Years_JR- 13558 Database Specialist_Sony.pdf
+wwwroot\uploads\Abdulkaleem_Resume.pdf
+wwwroot\uploads\AbdulAzeezVP_7.5 Years_Thermal Analysis Engineer_Aeva.docx
+wwwroot\uploads\Abdul Hannan.pdf
+wwwroot\uploads\Abdul Adeem Ansari.pdf
+wwwroot\uploads\Aathisurya_S_ACL Digital.pdf
+wwwroot\uploads\Aastik_7.0 years_Ruby on Rails_ACL Digital - NXP.pdf
+wwwroot\uploads\Aashish Malakar_2.3 Years_Testing Engineer_ExideEnergy.pdf
+wwwroot\uploads\Aashank Kr Sinha.pdf
+wwwroot\uploads\Aarti_Pawar_5.0 years_MO31JP00003559 - Python Developer (Storage Domain)_Xeedo - Micron.docx
+wwwroot\uploads\Aarthi KrishnaMoorthy_3.7 Years_JR-11471 Service Delivery_Sony.pdf
+wwwroot\uploads\Aarsh Sidana_3.1 Years_JR-13352 Python Framework Developer Sr. Engineer_Sony.pdf
+wwwroot\uploads\Aapa.Sravanthi_Resume-2-1-1-1-1 (1)-4-1.pdf
+wwwroot\uploads\Aakash.pdf
+wwwroot\uploads\Aakash Yadav_5.4 Years_JR-11774 SNAD2C - SAP Hybris_Sony.pdf
+wwwroot\uploads\Aakash Gupta.pdf
+wwwroot\uploads\A Vignesh_5.4 Years_JR-12354 AWS Consultant_Sony.pdf
+wwwroot\uploads\A Srinivasa Varma Kucherlapati.pdf
+wwwroot\uploads\A Srinivasa Varma Kucherlapati.docx
+wwwroot\uploads\A Sivaiah_5.5 Years_JR-12808 Build and Release Engineer_Sony.pdf
+wwwroot\uploads\Afghani Rafi Khan_4.2 Years_JR- 11803 Senior MSSQL DBA_Sony.pdf
+wwwroot\uploads\Afreed_Shaik.pdf
+wwwroot\uploads\Agraharam Venkata Teja_4 Years_Test Automation Engineer_Toshiba.pdf
+wwwroot\uploads\Ahmar G _6.2 Years_JR-12436 Site Reliability Engineer_Sony.pdf
+wwwroot\uploads\Ajay Durgam_2.8 Years_ JR-13145 Cloud Consultant_Sony.pdf
+wwwroot\uploads\Ajay Kumar Tiwari.pdf
+wwwroot\uploads\Ajay Kumar_5.4 Years_JR-12513 Sr IAM Engineer_Sony.pdf
+wwwroot\uploads\Ajay Kumar_6.5 Years_JR-13352 Python & Groovy Lead Engineer_Sony.pdf
+wwwroot\uploads\Ajay kumar_7.0 Years_JR-11601 Java Developer with JLP2- N2 or N3 Certified consultant_Sony.pdf
+wwwroot\uploads\Ajay S_5.4 Years_JR-13431 JS Automation Lead_Sony.pdf
+wwwroot\uploads\Ajay Yadav.pdf
+wwwroot\uploads\Ajay_Chopra_9.6 years_Physical Design_Ignitarium Technology Solutions.pdf
+wwwroot\uploads\Ajay_Kumar.docx
+wwwroot\uploads\Aluru Veera prasad_6.4 Years_JR-12517 MuleSoft Engineer_Sony.pdf
+wwwroot\uploads\Amala_Lal_3.4 years_Technical Writer.docx
+wwwroot\uploads\Aman Mohammed_7.4 Years_JR 11721-HANA ABAP & HANA Modeling Senior Consultant_sony.pdf
+wwwroot\uploads\Amar Agrahari_6.9 Years_Embedded Developer_LG.pdf
+wwwroot\uploads\Amar Kumar.pdf
+wwwroot\uploads\Amar Sunadholi_3.5 Years_JR-13131 Python Engineer_Sony (2).pdf
+wwwroot\uploads\Amar.docx
+wwwroot\uploads\Amarabhilash Samanta_2.6 Years_JR-13145 Cloud Consultant_Sony.pdf
+wwwroot\uploads\Amareshwara Mukrambe_9.5 Years_JR- 13074 TOSCA Lead_Sony.pdf
+wwwroot\uploads\Amarnath Badugu_5.10_JR-13352 Python & Groovy Lead Engineer_Sony.pdf
+wwwroot\uploads\Amarnath_S_ACL Digital.pdf
+wwwroot\uploads\Amar_Dutta_Pattanaik_4.2 years_React JS Developer_Xeedo - Videonetics.pdf
+wwwroot\uploads\Ambika_Updated_Resume (1).pdf
+wwwroot\uploads\Amir Ahamed Khan_8.9 Years_JR-13108 Technical Writer_Sony.pdf
+wwwroot\uploads\Amit Kumar_4.2 Years_JR-115464 SFDC Consultant_Sony.pdf
+wwwroot\uploads\Amit Yadav_7.7 Years_JR- 12822 Python Automation lead_Sony.pdf
+wwwroot\uploads\Amita Saha_4.7 Years_JR- 11803 Senior MSSQL DBA_Sony.pdf
+wwwroot\uploads\Amit_Bhadange_5.0 years_SDET-Python and C#_AFour Technologies.pdf
+wwwroot\uploads\Amit_Kumar_9.3 years_Embedded Software_LG.docx
+wwwroot\uploads\Amit_Kumar_Kesarwani.docx
+wwwroot\uploads\Amit_Lawate_9.7 years_Lead UI React_ACL Digital - Adobe.docx
+wwwroot\uploads\Ammar Sheikh_10.2 Years_JR-12256 Intune L3 Specialist_Sony.pdf
+wwwroot\uploads\Amol Sahare_5.7 Years_JR-13300 Risk Management Analyst_Sony.pdf
+wwwroot\uploads\Amritanshu Ranjan_4.2 Years_JR-12715 Java Full Stack Engineer_Sony.pdf
+wwwroot\uploads\Amrut Suresh Mirji_3.11 Years_JR-12808 Build and Release Engineer_Sony.pdf
+wwwroot\uploads\Anand Mishra_3.3 Years_Test Automation Engineer_Toshiba.pdf
+wwwroot\uploads\Anand S M_3.1 Years_JR-13426 System application engineer_Sony.pdf
+wwwroot\uploads\AnandhuRAjith_6.0 Years_JR-12715 Java Full Stack Engineer_Sony.pdf
+wwwroot\uploads\Anand_Kumar_Yadav_7.4 years_UI React_ACL - Adobe.pdf
+wwwroot\uploads\Anand_Sharma_Flutter_Developer-2.pdf
+wwwroot\uploads\Anant Harshit Deora.pdf
+wwwroot\uploads\Ashish_Ranjan.pdf
+wwwroot\uploads\Avatar.pdf
+wwwroot\uploads\A Nagaraju_5.0 years_Data Engineer (Python, SQL & Pyspark)_Xeedo - L&T.pdf
+wwwroot\uploads\Balaji_Arjun_3.6 years_AUTOSAR Developer_Actevia Technology.pdf
+wwwroot\uploads\Bharathi_Basi Reddy_5.3 years_Embedded Software_LG.pdf
+wwwroot\uploads\Bharath_HV_2.3 years_LFC_JD Sr Engineer (Frontend)_Xeedo - Deloitte - Copy.docx
+wwwroot\uploads\Bharath_HV_2.3 years_LFC_JD Sr Engineer (Frontend)_Xeedo - Deloitte.docx
+wwwroot\uploads\BindushreeS[5y_3m].docx
+wwwroot\uploads\Bindushree_R_4.0 years_Java Developer_ACL - Amadeus.pdf
+wwwroot\uploads\Brijesh_Kumar_Maurya_2.3 years_Embedded Firmware Engineer_CraftLogic Labs.pdf
+wwwroot\uploads\BSKUMARREDDY4y_3m.docx
+wwwroot\uploads\BSKUMARREDDY[4y_3m].docx
+wwwroot\uploads\BSNageswaraRao[7y_0m].docx
+wwwroot\uploads\BST to AYC.pdf
+wwwroot\uploads\ChandrakantShinde_iOSDeveloper.pdf
+wwwroot\uploads\Chandrashekhar Maggidi.pdf
+wwwroot\uploads\Chaturvedi_6.0 years_Oracle DBA_ACL Digital.pdf
+wwwroot\uploads\CV -Deepak S.pdf
+wwwroot\uploads\DARSHAND_3.0 years_System reliablity engineer_ACL digital.pdf
+wwwroot\uploads\Dasari_Rana_Prathap_5.4 years_MO31JP00001577 - Quality Engineer 3_INR_Xeedo - Micron.docx
+wwwroot\uploads\DEBASIS_BAG.pdf
+wwwroot\uploads\Dinesh_Chigurupalli_4.6 years_Systems Groups_Sr SDET Python with Robot_AFour Technologies.pdf
+wwwroot\uploads\Dinesh_Resume.pdf
+wwwroot\uploads\Divakara_GR_7.0 years_Embedded Software_LG.pdf
+wwwroot\uploads\Divya Shinde.pdf
+wwwroot\uploads\GaneshShelke[9y_10m]_L4 Support Engineer.pdf
+wwwroot\uploads\Gaurav_A_Muley_3.2 years_Full Stack Developer_AFour Technologies.pdf
+wwwroot\uploads\Grishma.docx
+wwwroot\uploads\GulshanMd_5.0 years_Python Developer With Fast API.docx
+wwwroot\uploads\GunaVenkataGanesh[3y_7m].docx
+wwwroot\uploads\Gundeboina_Naresh_kumar_7.0 years_MO31JP00001569  - Product Development Engineer_Xeedo-Micron.docx
+wwwroot\uploads\Gurram_Shiva_Krishna_4.1 years_Design Verification Engineer_Ignitarium Technology Solutions.docx
+wwwroot\uploads\Hari_Kumar_Reddy_4.4 years_Embedded Software_LG.pdf
+wwwroot\uploads\Himaniarya_9.7 years_Angular Lead.pdf
+wwwroot\uploads\Juned_Bagwan_4.10 years_SDET C#_ACL Digital.pdf
+wwwroot\uploads\Kaif_Wagle.pdf
+wwwroot\uploads\Kakalra_Pavan_Reddy_6.7 years_MO31JP00001765 - Quality Engineer 4_Xeedo - Micron.docx
+wwwroot\uploads\Kalyan.docx
+wwwroot\uploads\Karthik R - TA.pdf
+wwwroot\uploads\Kavya Anupa.pdf
+wwwroot\uploads\Keerthana_5.1 years_Jira Administrator_ACL Digital.pdf
+wwwroot\uploads\kHanumanthu[3y_2m].docx
+wwwroot\uploads\KiranReddyNakka_8.0 years_IN 139 Sr. Mobile Developer Lead  iOS.docx
+wwwroot\uploads\KiranVentrapragada_18.0 years_Data Architect - AWS Data Platform.docx
+wwwroot\uploads\Mohan_Garlapati_7.9 years_Front End Developer_ACL - Lowe's.pdf
+wwwroot\uploads\Naresh_Banavath_4.1 years_Cobol Developer_AFour Technologies.pdf
+wwwroot\uploads\Naukri_MooleVenkateswaraReddy[1y_5m].pdf
+wwwroot\uploads\Naukri_NareshEnugala[3y_4m].pdf
+wwwroot\uploads\Naukri_PRAVEENKUMAR[6y_6m].pdf
+wwwroot\uploads\Naukri_PraveenKumar[4y_5m].pdf
+wwwroot\uploads\Naukri_PravalMohanShetty[2y_5m].pdf
+wwwroot\uploads\Naukri_PrateekDhannajayaMagdum[2y_6m].pdf
+wwwroot\uploads\Naukri_sachithvempati[6y_0m].docx
+wwwroot\uploads\Naukri_prashanthG[7y_8m].pdf
+wwwroot\uploads\Naukri_PrasannaReddy[5y_1m].docx
+wwwroot\uploads\Naukri_PrasannaMaidargi[3y_2m].pdf
+wwwroot\uploads\Naukri_SabarinathanS[11y_0m].pdf
+wwwroot\uploads\Naukri_RyavappaWarti[8y_0m].pdf
+wwwroot\uploads\Naukri_RutujaNandi[5y_0m].pdf
+wwwroot\uploads\Naukri_RushabhY[2y_2m].pdf
+wwwroot\uploads\Naukri_RupeshKumar[6y_0m].docx
+wwwroot\uploads\Naukri_RSudhakran[2y_6m].pdf
+wwwroot\uploads\Naukri_RPavanKumar[3y_0m].docx
+wwwroot\uploads\Naukri_ROHITRAVULA[2y_2m].pdf
+wwwroot\uploads\Naukri_ROHITRAVULA[2y_2m] (1).docx
+wwwroot\uploads\Naukri_rohitgej[1y_6m].pdf
+wwwroot\uploads\Naukri_RohitBhojwani[4y_2m].pdf
+wwwroot\uploads\Naukri_RohitANaik[3y_5m].pdf
+wwwroot\uploads\Naukri_RohitANaik[3y_5m].docx
+wwwroot\uploads\Naukri_RitikNaryal[2y_0m].docx
+wwwroot\uploads\Naukri_RiteshJain[14y_0m].pdf
+wwwroot\uploads\Naukri_RishabKumar[3y_6m].pdf
+wwwroot\uploads\Naukri_ReshmaJerom[5y_4m].pdf
+wwwroot\uploads\Naukri_ReshmaJerom[5y_4m].docx
+wwwroot\uploads\Naukri_RepatiDiwakarReddy[3y_10m].pdf
+wwwroot\uploads\Naukri_REDDIPRASADREDDY[6y_8m].pdf
+wwwroot\uploads\Naukri_RavulaRakeshReddy[3y_0m].pdf
+wwwroot\uploads\Naukri_RAVINDRALAHIRE[3y_0m].pdf
+wwwroot\uploads\Naukri_RaviKumarUpadhyay[2y_7m] (1).docx
+wwwroot\uploads\Naukri_RaviBhaskarPhulara[9y_0m].pdf
+wwwroot\uploads\Naukri_RAUSHANKUMAR[3y_6m].pdf
+wwwroot\uploads\Naukri_RathnarajK[8y_2m].pdf
+wwwroot\uploads\Naukri_RathnarajK[8y_2m].docx
+wwwroot\uploads\Naukri_RathnaAbhilash[4y_6m].pdf
+wwwroot\uploads\Naukri_RashmiBopche[3y_0m].pdf
+wwwroot\uploads\Naukri_Ranjith[4y_1m].docx
+wwwroot\uploads\Naukri_Ramya[2y_0m].pdf
+wwwroot\uploads\Naukri_RameshVawadra[4y_3m].pdf
+wwwroot\uploads\Naukri_RamBalajiS[3y_0m].pdf
+wwwroot\uploads\Naukri_RamavathMahesh[3y_5m].pdf
+wwwroot\uploads\Naukri_RAMASAISRIJANIMMAKAYALA[3y_3m].docx
+wwwroot\uploads\Naukri_RamanKishoreAK[3y_6m].pdf
+wwwroot\uploads\Naukri_RamanKishoreAK[3y_6m].docx
+wwwroot\uploads\Naukri_RamanandSagar[5y_5m].pdf
+wwwroot\uploads\Naukri_Ramakrishnavella[4y_6m].pdf
+wwwroot\uploads\Naukri_RamakrishnaAmara[3y_0m].docx
+wwwroot\uploads\Naukri_Ramachandran[3y_2m].docx
+wwwroot\uploads\Naukri_RakshithBH[2y_0m].pdf
+wwwroot\uploads\Naukri_RakeshRosanPradhan[5y_10m].pdf
+wwwroot\uploads\Naukri_RakeshBattini[3y_0m].docx
+wwwroot\uploads\Naukri_RAJUPOLLAKATTU[6y_0m].docx
+wwwroot\uploads\Naukri_RajuH[1y_9m].pdf
+wwwroot\uploads\Naukri_RajPrakashKondru[3y_0m].pdf
+wwwroot\uploads\Naukri_RAJIVREDDYDAPPILI[8y_0m] (1).docx
+wwwroot\uploads\Naukri_RajeshR[4y_0m].pdf
+wwwroot\uploads\Naukri_RajeshGupta[6y_0m].pdf
+wwwroot\uploads\Naukri_RajasekharReddyBadam[5y_6m].docx
+wwwroot\uploads\Naukri_RajasekharP[4y_2m].docx
+wwwroot\uploads\Naukri_RajasekarA[7y_5m].pdf
+wwwroot\uploads\Naukri_RajasekarA[7y_5m].docx
+wwwroot\uploads\Naukri_RajaramannaTrivedi[6y_0m].docx
+wwwroot\uploads\Naukri_RainakDutta[4y_0m].pdf
+wwwroot\uploads\Naukri_RahulShakya[2y_6m] (1).pdf
+wwwroot\uploads\Naukri_RahulKumar[5y_0m].pdf
+wwwroot\uploads\Naukri_RAHULKUMAR[3y_0m].pdf
+wwwroot\uploads\Naukri_RAHULKUMAR[3y_0m] (1).docx
+wwwroot\uploads\Naukri_RAHULCKHOT[2y_2m].pdf
+wwwroot\uploads\Naukri_RAHULCKHOT[2y_2m].docx
+wwwroot\uploads\Naukri_RahulB_Sony.docx
+wwwroot\uploads\Naukri_RahulBhardwaj[5y_5m].docx
+wwwroot\uploads\Naukri_RaghavendraG[12y_0m].pdf
+wwwroot\uploads\Naukri_RagaviMurali[9y_0m].pdf
+wwwroot\uploads\Naukri_RagaviMurali[9y_0m].docx
+wwwroot\uploads\Naukri_PuttaPavanKumarReddy[7y_0m].pdf
+wwwroot\uploads\Naukri_PurnimaGajananKadate[4y_6m].pdf
+wwwroot\uploads\Naukri_PSudharshanReddy[3y_1m].pdf
+wwwroot\uploads\Naukri_PSreekanth[4y_1m].docx
+wwwroot\uploads\Naukri_PSivaKumar[5y_0m].docx
+wwwroot\uploads\Naukri_PSamaraSimhaReddy[3y_0m].pdf
+wwwroot\uploads\Naukri_PriyankaPatil[4y_6m].pdf
+wwwroot\uploads\Naukri_PriyankaBehera[3y_5m].pdf
+wwwroot\uploads\Naukri_PreamKumar[4y_4m].pdf
+wwwroot\uploads\Naukri_PRAVEENMARUTHUR[12y_0m].docx
+wwwroot\uploads\Naukri_PRAVEENKUMARBADAM[21y_0m].pdf
+wwwroot\uploads\Nishat_Resume_.pdf
+wwwroot\uploads\Pandeti_Bhupathi_Rao_3.8 years_Circuit Design Engineer_Defel.pdf
+wwwroot\uploads\Pankaj_Prakash_Gangurde_3.0 years_Data Science_LG.pdf
+wwwroot\uploads\Paramesh_4.0 years_Cobol Developer_AFour Technologies.pdf
+wwwroot\uploads\Pradip_Kumar_Mandal_5.0 years_MO31JP00001487 - Hardware Engineer 2_Xeedo - Micron.pdf
+wwwroot\uploads\Raam Babu D_5.11 Years_JR-12828 SAP BW BI and ABAP Consultant_Sony.pdf
+wwwroot\uploads\Rabal Setia_6.5 years_Backend Developer_ACL - eBay.docx
+wwwroot\uploads\Rabal Setia_6.5 years_Backend Developer_ACL - eBay.pdf
+wwwroot\uploads\Rachana Vanga.docx
+wwwroot\uploads\Radhika R Shinde_2.11 Years_JR- 13104 CTS execution Engineer_Sony.pdf
+wwwroot\uploads\Radhika_Ramakant_Ugale_6.0 years_UI Reacty_ACL Digital - Adobe.pdf
+wwwroot\uploads\Rafeeq Ahammadsab_6.3 Years_JR 11471 Service Delivery_Sony.pdf
+wwwroot\uploads\Raghavendra H M_8.5 Years_ JR-12786 Test Automation Sr Lead_Sony.pdf
+wwwroot\uploads\Raghavendra Raju R_6.2 Years_JR- 11967 Functional Data Migration Consultant_Sonuy.pdf
+wwwroot\uploads\Raghavendra_BN_6.8 years_008TWU_Android Developer_ACL Digital - Schneider Electric.docx
+wwwroot\uploads\Raghavendra_BN_6.8 years_008TWU_Android Developer_ACL Digital - Schneider Electric.pdf
+wwwroot\uploads\Raghu B B_7.10 Years_JR-12808 Build and Release Engineer_Sony.pdf
+wwwroot\uploads\Raghu S_8.1 Years_JR-13260 Qa Test Engineer_Sony.pdf
+wwwroot\uploads\Raghu Vardhan_5.0 Years_JR-11914 Technical writer_Sony.pdf
+wwwroot\uploads\Raghul Yogeshwar_4.2 Years_Devops Engineer_Reliance-Jio.pdf
+wwwroot\uploads\Raghunandan D R_9.10 Years_JR-12300 Test Consultant - Functional _Sony.pdf
+wwwroot\uploads\Raghuram M_3.6 Years_ JR- 12761 Python Automation Engineer_ Sony.pdf
+wwwroot\uploads\Raghuvendra Anshu.docx
+wwwroot\uploads\Raghuvendra Anshu.pdf
+wwwroot\uploads\Raghu_4.5 Years_JR – 115191 SAP BTP CPI_Sony.docx
+wwwroot\uploads\Raghvendra Kulkarni_2.8 Years_JR-13470 Sr.JavaScript Developer_Sony.pdf
+wwwroot\uploads\Raghvendra Pratap_6.3 Years_JR-11626-Windows 365_Sony.pdf
+wwwroot\uploads\Ragi Vengam Naidu.docx
+wwwroot\uploads\Rahil_Ahmed_9.0 years_Lead Full-stack developer_ACL Digital.pdf
+wwwroot\uploads\Rahul A N_7.9 Years_JR-11628- Java Full Stack Developer_Reliance Jio.pdf
+wwwroot\uploads\Rahul Ajeet Asthana.pdf
+wwwroot\uploads\Rahul Asireddy_4.9 Years_JR-12508 AIML Senior Engineer_Sony.pdf
+wwwroot\uploads\Rahul Kakkanavar_3.6 Years_JR-13352 DevOps Engineer with Python Scripting_Sony.pdf
+wwwroot\uploads\Rahul Koli.pdf
+wwwroot\uploads\Rahul Kumar_8.3 Years_JR 12027-SAP Senior IBP consultant_Sony.pdf
+wwwroot\uploads\Rahul Maske_3 Years_JR- 12692 DevSecOps Engineer_Sony.pdf
+wwwroot\uploads\Rahul Pinjarkar_3.5 Years_JR-12791-RPA Developer - SIGMA_Sony.pdf
+wwwroot\uploads\Rahul Sakhare_4.9 Years_JR-12539 Lead Full Stack Developer_Sony.pdf
+wwwroot\uploads\Rahul Sood_15+ Years_JR- 13558 Database Specialist_Sony.pdf
+wwwroot\uploads\Rahul Upase_9.5 Years_JR-12300 Test Consultant - Functional-QA- Manual, Automation_Sony.pdf
+wwwroot\uploads\Rahul.docx
+wwwroot\uploads\Rahul.pdf
+wwwroot\uploads\Rahul_2.10 years_C# Test Automation_ACL Digital -Siemens.pdf.pdf
+wwwroot\uploads\Rahul_3.4 Years_JR- 13437 Python & Groovy Framework Developer_Sony.pdf
+wwwroot\uploads\Rahul_Bhardwaj_12.0 years_Salesforce Technical Architect_Tavant Technologies.docx
+wwwroot\uploads\Rahul_Kumar_Mehta_4.10 years_Cobol Developer_AFour Technologies.pdf
+wwwroot\uploads\Rahul_New_ Resume1.docx
+wwwroot\uploads\Rahul_New_ Resume1.pdf
+wwwroot\uploads\Rahul_Prasad_3.2 years_IT Platform Engineer- Afour Technologies.docx
+wwwroot\uploads\Rahul_Raj_2.2 years_Java Micro Services_Xeedo - Deloitte.pdf
+wwwroot\uploads\Raj Gautam_6.8 Years_JR-12499 Sr UI (ReactJS, NodeJS) Developer_Sony.pdf
+wwwroot\uploads\Raj Kamal.docx
+wwwroot\uploads\Raj Kamal.pdf
+wwwroot\uploads\Raj Pradeep Kalapala_5.6 Years_JR-12803 Lead Mobile Web Application Developer_Sony.pdf
+wwwroot\uploads\Raja Gopal ReddyG.docx
+wwwroot\uploads\Raja Kumar (CV).pdf
+wwwroot\uploads\Raja Shekhar_4.6 years_Reat Developer_Xeedo - Videonetics Technology.docx
+wwwroot\uploads\Rajakumaran.K_5.6 Years_JR-12688 Senior Engineer with AIML & Audio knowledge_Sony.pdf
+wwwroot\uploads\Rajarajeswari Golla.pdf
+wwwroot\uploads\Rajasekar Alagarsamy_5.5 Years_JR-12354 AWS Consultant_Sony.pdf
+wwwroot\uploads\Rajasekhar Kanamaluri_9.6 Years_JR-13322 Full Stack Web Engineer_Sony.pdf
+wwwroot\uploads\Rajasekhar Reddy_7.7 Years_JR 11716 BTP-CPI Consultant_Sony.pdf
+wwwroot\uploads\Rajasekhar Yerradla_7.4 Years_JR-11967 Functional Data Migration Consultant_Sony.pdf
+wwwroot\uploads\Rajasekhara Reddy_5.3 Years_JR- 12796 Azure Logic Apps Developer_Sony.pdf
+wwwroot\uploads\Rajasekhar_5.3 years_Quality Engineer 3 - MO31JP00001249_Xeedo - Micron.pdf
+wwwroot\uploads\Rajasheker Reddy Katkoori_8.7 Years_JR-12810 Senior Cloud Engineer_Sony.pdf
+wwwroot\uploads\Rajashekhar D Bandenawar_7.4 Years_JR-12822 Python Automation Lead_Sony.pdf
+wwwroot\uploads\Rajat Kumar Sahu_4.2 Years_JR-12927-Azure Infra & DevOps_Sony.pdf
+wwwroot\uploads\Rajat Ranjan Panda_8.2 Years_JR-12223-Java Automation lead_Sony.pdf
+wwwroot\uploads\Rajath M_4.2 years_Python Developer_ACL Digital - Amadeus.pdf
+wwwroot\uploads\Rajat_Kumar_Bisi_4.3 years_AUTOSAR Developer_Actevia Technology.docx
+wwwroot\uploads\Raja_Chandra_Deep_6.0 years_PPALJP00010606 - Sr. Salesforce Developer _ACL Digital - PayPal.docx
+wwwroot\uploads\Raja_Reddy_5.3 years_008Z73_Oracle Finance - R12 -AR, AP, GL, FA_ACL Digital - Schneider Electric.docx
+wwwroot\uploads\Ramyashree_1.4 Years_JR-114340-Junior Analyst_Sony.pdf
+wwwroot\uploads\Ramya_R_7.0 years_Python QA Automation_ACL Digital - Amadeus.docx
+wwwroot\uploads\Rangasamy Murugan_13.5 Years_JR-13168 Senior UI Tech Lead_Sony.pdf
+wwwroot\uploads\Rangu_Nikhleshwarudu_6.4 years_Backend Developer_ACL - eBay.docx
+wwwroot\uploads\Rani_6.0 years_008COR - ABAP ON HANA_ACL - Schneider.pdf
+wwwroot\uploads\Ranjana_Resume.pdf
+wwwroot\uploads\Ranjeeth KumarNelaturi_4.3 Years_JR – 115191 SAP BTP CPI_Sony.docx
+wwwroot\uploads\Ranjith K M _7.1 Years_Python Automation Engineer_Toshibha.pdf
+wwwroot\uploads\Ranjith Korem_9.4 Years_JR-12436 Site Reliability Engineer_Sony.pdf
+wwwroot\uploads\Ranjith Kumar_5.2 Years_JR-13077-Full Stack – Senior developer – Java Angular AWS_Sony.pdf
+wwwroot\uploads\Ranjith Kumar_6 Years_JR-12844 SAP ABAP Technical Consultant_Sony.pdf
+wwwroot\uploads\REST API - Interview Preparation.pdf
+wwwroot\uploads\resume-sample.pdf
+wwwroot\uploads\Ritik_Singh.pdf
+wwwroot\uploads\R_Bharat__4.6 years_C++ Developer_ACL Digital - Motorola.pdf
+wwwroot\uploads\R_Dhanush_Resume.docx
+wwwroot\uploads\Samanth_MMM_2.10 years_LFC_JD_Sr_Engineer(Node-JS developer)_Xeedo - Deloitte.pdf
+wwwroot\uploads\Shaik_Jabivulla_NOC Engineer_Nqvation.pdf
+wwwroot\uploads\Soumya_5.9 years_Project Management Office (PMO) Controller_ACL - Eaton.pdf
+wwwroot\uploads\Sourabh Basarikatti_5.2 Years_JR_13494 Full Stack Developer_Sony.pdf
+wwwroot\uploads\Sourabh_Hajare_Data Scientist_ACL Digital - Epiroc Mining.docx
+wwwroot\uploads\Sourabh_Roy_5.6 years_Business Analyst_ACL Digital - Adobe.pdf
+wwwroot\uploads\Sourav Bhattacharjee .docx
+wwwroot\uploads\Sourav Chakraborty_8.9 Years_JR 11577- SAP ABAP Consultant_Sony.pdf
+wwwroot\uploads\Sourav Paul_6.0 Years_JR-13300 Risk Management Analyst_Sony.pdf
+wwwroot\uploads\Sovan_AWS_Data_CV_17.5 Years.docx
+wwwroot\uploads\Sowbagya Siddu_5.9 Years_JR-11533 SAP BW-BPC Embedded_Sony.pdf
+wwwroot\uploads\Sravan Duggi_2.9 Years_JR-12572 ML Support Engineer_Sony.pdf
+wwwroot\uploads\Sravan Kumar.docx
+wwwroot\uploads\Sravani_2.8 years_Oracle Integration Cloud Specialist (OIC-DLTJP00039749).docx
+wwwroot\uploads\Suprayas Resume New.pdf
+wwwroot\uploads\Suprayas Resume@2 (1).pdf
+wwwroot\uploads\Sweety_Bharati_7.5 years_19091-1 Senior Software Engineer - L5_ACL - Lowe’s.pdf
+wwwroot\uploads\Tanuja K R.docx
+wwwroot\uploads\Yashwanth_Godari_5.0 years_MO31JP00001765 - Quality Engineer 4_Xeedo - Micron.pdf
+wwwroot\uploads\Yaswanth_3.0 years_C or C++ Linux VxWorks_Atindriya Systems.pdf
+wwwroot\uploads\Yathish Krishnamoorthy - Chandrakala Chintha.pdf
+wwwroot\uploads\Yedukondalu Reddy M[9y_7m]-IAAS Suport - Tesco - Sampriti Das.docx
+wwwroot\uploads\Yeshwanth_Pulluri_2.0 years_MO31JP00003520 - Test Engineer_Xeedo - Micron - Mahmood Ahmad.docx
+wwwroot\uploads\Yogananda Reddy M - Chandu ch.pdf
+wwwroot\uploads\Yoga_Narasimha_BK_3.0 years_Embedded Firmware Engineer_CraftLogic Labs.pdf
+wwwroot\uploads\Yogendra M - Chandrakala Chintha.pdf
+wwwroot\uploads\Yogesh - Subhashri Padmalaya.pdf
+wwwroot\uploads\YOGESH AHER - 6.8 yr - Raythink - Tech Lead for Embedded - Sampriti Das.pdf
+wwwroot\uploads\Yogesh Gawai.pdf
+wwwroot\uploads\Yogesh Kumar Gupta-14yrs-ETL Architect-ACL Digital - Amrita Sinha.docx
+wwwroot\uploads\Yogesh Mahadev Giri - Chandu ch.pdf
+wwwroot\uploads\Yogesh-devops-new - Nasreen BS.pdf
+wwwroot\uploads\YOGESHJAIN[6.3y_0m]Multimedia Framework Developer (Gstreamer)_LG - Syeda Kaneez.pdf
+wwwroot\uploads\YogeshKothari[2y_3m] - Nasreen BS.docx
+wwwroot\uploads\Yogesh_6.0 years_MO31JP00001268 - Data Operations Mgmt 3_Xeedo(Micron) - Shwetha M.docx
+wwwroot\uploads\Yogitha_5.0 years_MO31JP00001899-AI-ML Application Engineer_Xeedo(micron) - Shwetha M.docx
+wwwroot\uploads\Yograj arun Rane-4.8yrs-Senior Software Developer-Oracle-Pune - Amrita Sinha.docx
+wwwroot\uploads\Yugandhar_5.0 years_MO31JP00001293 – Data Engineer_Xeedo(Micron) - Shwetha M.docx
+wwwroot\uploads\Yugesh D _3.5 Years_IP verification Engineer_WDC - Swathi P.pdf
+wwwroot\uploads\Yunush_Ansari_7.0 years_Fullstack Engineer - Lead_ACL Digital - Volansys - Mahmood Ahmad.pdf
+wwwroot\uploads\Yuvarani N-5yrs-Data Science Backend Developer-NEC - Amrita Sinha.pdf
+wwwroot\uploads\yuvraj.s_Mechanical Design Engineer_Craftlogic - Syeda Kaneez.pdf
+wwwroot\uploads\Zaheer Ahmed - Subhashri Padmalaya.pdf
+wwwroot\uploads\Zaranappa_14.0 Years_Lab technician_Micron - Swathi P.pdf
+wwwroot\uploads\ZiauddinIhteshamuddin_11.0 years_Azure Cloud Engineer_ACL Digital - Shwetha M.pdf
+wwwroot\uploads\ZohebShaikh - Neelam Ramya.pdf
+wwwroot\uploads\Zufishan_Mirza_6.3 years_SAP ABAP with ECC_ACL - Schneider - Mahmood Ahmad.pdf
+wwwroot\uploads\A M Munikumar_10.0 years_Java Spring boot AWS Lead_Xeedo - Impetus.docx
+wwwroot\uploads\requirements\1\y45zxgltxvi.jpeg
+wwwroot\uploads\requirements\2\bljgh5yebyr.jpeg
+wwwroot\uploads\Naukri_PraveenK[3y_0m].pdf
+wwwroot\uploads\requirements\3\cuzad234klt.xlsx
+wwwroot\uploads\requirements\4\dxrikx20t1o.png
+wwwroot\uploads\requirements\5\pda3e2dhya1.docx

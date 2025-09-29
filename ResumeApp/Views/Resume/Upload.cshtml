@@ -1,0 +1,169 @@
+﻿@{
+    ViewData["Title"] = "Upload Resume";
+}
+
+<div class="container py-5">
+
+    <!-- Header -->
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-primary">
+            <i class="bi bi-cloud-upload-fill me-2"></i> Upload Resumes
+        </h2>
+        <p class="text-muted">Upload single or multiple resumes in supported formats.</p>
+    </div>
+
+    <!-- Alerts -->
+    @if (TempData["UploadSuccess"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            @TempData["UploadSuccess"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["UploadError"] != null)
+    {
+        <div class="alert alert-warning alert-dismissible fade show shadow-sm" role="alert">
+            @TempData["UploadError"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Upload Card -->
+    <div class="card shadow-lg border-0 mb-5">
+        <div class="card-body text-center p-5">
+
+            <form id="multiUploadForm" asp-action="UploadMultiple" method="post" enctype="multipart/form-data">
+                <label for="multiUploadInput" class="w-100" style="cursor:pointer;">
+                    <div class="border border-2 border-dashed rounded-3 p-5 bg-light">
+                        <i class="bi bi-cloud-arrow-up fs-1 text-primary"></i>
+                        <h5 class="mt-3">Click to browse or drag & drop files here</h5>
+                        <p class="text-muted small mb-0">Supported formats: PDF, DOCX, TXT</p>
+                    </div>
+                </label>
+                <input id="multiUploadInput" type="file" name="files" multiple accept=".pdf,.docx,.txt" style="display:none;" />
+                <button type="submit" class="btn btn-primary mt-4 px-5">
+                    <i class="bi bi-upload me-2"></i> Upload Selected Files
+                </button>
+            </form>
+
+            <!-- Progress bar -->
+            <div id="multiProgressWrapper" class="progress mt-4" style="height: 25px; display: none;">
+                <div id="multiProgressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="width: 0%">0%</div>
+            </div>
+
+            <!-- Result -->
+            <div id="multiUploadResult" class="mt-3"></div>
+        </div>
+    </div>
+
+    <!-- Options Row -->
+    <div class="row text-center g-4 mb-5">
+
+        <!-- Parse Single Resume -->
+        <div class="col-md-6">
+            <form asp-controller="Resume" asp-action="Upload" method="post" enctype="multipart/form-data">
+                <div class="card h-100 shadow-sm border-0 hover-card">
+                    <div class="card-body d-flex flex-column justify-content-center p-5">
+                        <i class="bi bi-file-earmark-arrow-up fs-1 text-primary"></i>
+                        <h5 class="mt-3">Parse Single Resume</h5>
+                        <p class="text-muted small">Upload one resume and extract details instantly.</p>
+
+                        <!-- Hidden File Input -->
+                        <input id="singleResumeInput" type="file" name="file" accept=".pdf,.docx,.txt" style="display:none" onchange="this.form.submit()" />
+
+                        <!-- Trigger Button -->
+                        <button type="button" class="btn btn-outline-primary mt-3 px-4" onclick="document.getElementById('singleResumeInput').click()">
+                            Select File
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Create Resume Manually -->
+        <div class="col-md-6">
+            <form asp-action="Create" method="post">
+                <div class="card h-100 shadow-sm border-0 hover-card">
+                    <div class="card-body d-flex flex-column justify-content-center p-5">
+                        <i class="bi bi-person-plus fs-1 text-success"></i>
+                        <h5 class="mt-3">Create Manually</h5>
+                        <p class="text-muted small">Enter resume details manually instead of uploading a file.</p>
+                        <button type="submit" class="btn btn-outline-success mt-3 px-4">Start</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- Footer Note -->
+    <div class="text-center text-muted small">
+        <i class="bi bi-info-circle me-2"></i>
+        Supported formats: <strong>PDF, DOCX, TXT</strong>
+    </div>
+
+</div>
+
+<!-- Script -->
+<script>
+    document.getElementById('multiUploadForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        var form = e.target;
+        var formData = new FormData();
+        var files = document.getElementById('multiUploadInput').files;
+
+        for (var i = 0; i < files.length; i++) {
+            formData.append("files", files[i]);
+        }
+
+        var progressWrapper = document.getElementById('multiProgressWrapper');
+        var progressBar = document.getElementById('multiProgressBar');
+
+        progressWrapper.style.display = 'block';
+        progressBar.style.width = '0%';
+        progressBar.innerText = '0%';
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/Resume/UploadMultiple', true);
+
+        xhr.upload.onprogress = function (e) {
+            if (e.lengthComputable) {
+                var percent = Math.round((e.loaded / e.total) * 100);
+                progressBar.style.width = percent + '%';
+                progressBar.innerText = percent + '%';
+            }
+        };
+
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                document.getElementById('multiUploadResult').innerHTML =
+                    `<div class="alert alert-success shadow-sm"> Upload complete!</div>`;
+            } else {
+                document.getElementById('multiUploadResult').innerHTML =
+                    `<div class="alert alert-danger shadow-sm"> Upload failed.</div>`;
+            }
+            form.reset();
+            progressWrapper.style.display = 'none';
+            progressBar.style.width = '0%';
+            progressBar.innerText = '0%';
+        };
+
+        xhr.send(formData);
+    });
+</script>
+
+<style>
+    .hover-card {
+        transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+        .hover-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+    .border-dashed {
+        border-style: dashed !important;
+    }
+</style>

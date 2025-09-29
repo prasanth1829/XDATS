@@ -1,0 +1,42 @@
+﻿@model ResumeApp.Models.Resume
+@{
+    ViewData["Title"] = "Create Resume Manually";
+}
+
+<h2>Create Resume Manually</h2>
+
+<form asp-action="Create" asp-controller="Resume" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Phone"></label>
+        <input asp-for="Phone" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Skills"></label>
+        <textarea asp-for="Skills" class="form-control"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Experience"></label>
+        <textarea asp-for="Experience" class="form-control"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="UploadFile">Optional: Upload Resume (PDF)</label>
+        <input asp-for="UploadFile" type="file" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Resume</button>
+</form>

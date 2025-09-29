@@ -1,0 +1,134 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<style>
+    body {
+        background-color: #f0f2f5;
+        font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    .container.py-4 {
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+    }
+
+    .card {
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .card-title {
+        color: #1a1a1a;
+        font-weight: 600;
+    }
+
+    .card-text {
+        color: #6c757d;
+        font-size: 0.95rem;
+    }
+
+    .btn-custom {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: white;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 600;
+        transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+    }
+
+    .btn-custom:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+        transform: scale(1.02);
+    }
+
+    .dashboard-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .dashboard-header .text-primary {
+        font-size: 2.5rem;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+        color: #007bff !important;
+    }
+
+</style>
+
+<div class="container py-4">
+    <div class="dashboard-header">
+        <h2 class="text-primary">Admin Dashboard</h2>
+        <p class="lead text-muted">A centralized hub for managing your application.</p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Manage Users</h5>
+                    <p class="card-text">View and assign roles to users to control access and permissions.</p>
+                    <a asp-controller="UserManagement" asp-action="Index" class="btn btn-custom mt-auto">Manage Users</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Resumes Overview</h5>
+                    <p class="card-text">Access a comprehensive view of all uploaded resumes and their statistics.</p>
+                    <a asp-controller="Resume" asp-action="List" class="btn btn-custom mt-auto">View Resumes</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Upload Stats</h5>
+                    <p class="card-text">Analyze daily and monthly resume upload metrics for each user.</p>
+                    <a asp-controller="UserManagement" asp-action="UploadStats" class="btn btn-custom mt-auto">View Stats</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Client Onboarding</h5>
+                    <p class="card-text">Streamline the process of adding new clients and their job details.</p>
+                    <a asp-controller="UserManagement" asp-action="ClientOnboarding" class="btn btn-custom mt-auto">Client Onboarding</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Client List</h5>
+                    <p class="card-text">Streamline the process of adding new clients and their job details.</p>
+                    <a asp-controller="UserManagement" asp-action="ClientList" class="btn btn-custom mt-auto">Client List</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Requirement</h5>
+                    <p class="card-text">Streamline the process of adding new clients and their job details.</p>
+                    <a asp-controller="ClientRequirements" asp-action="Index" class="btn btn-custom mt-auto">Requirement</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

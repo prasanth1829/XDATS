@@ -1,0 +1,47 @@
+﻿@model ResumeApp.Models.Resume
+
+<h2>Edit Resume</h2>
+
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label>Name</label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Email</label>
+        <input asp-for="Email" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Phone</label>
+        <input asp-for="Phone" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Skills</label>
+        <textarea asp-for="Skills" class="form-control"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label>Experience</label>
+        <textarea asp-for="Experience" class="form-control"></textarea>
+    </div>
+    <div class="mb-3">
+        <label>Years of Experience</label>
+        <input asp-for="YearsOfExperience" class="form-control" type="number" min="0" />
+    </div>
+
+
+    <button type="submit" class="btn btn-success">Save</button>
+    <a asp-action="List" class="btn btn-secondary">Cancel</a>
+</form>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

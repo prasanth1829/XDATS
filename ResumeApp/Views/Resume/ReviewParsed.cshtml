@@ -1,0 +1,69 @@
+﻿@model ResumeApp.Models.ResumeFormViewModel
+
+<h2 class="mb-4">Review and Edit Parsed Resume</h2>
+
+<form asp-action="SubmitFinal" method="post" class="p-4 border rounded shadow-sm bg-light">
+    <input type="hidden" name="ResumeId" value="@Model.ResumeId" />
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label class="form-label">First Name</label>
+            <input type="text" name="FirstName" value="@Model.FirstName" class="form-control" />
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Last Name</label>
+            <input type="text" name="LastName" value="@Model.LastName" class="form-control" />
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label class="form-label">Email</label>
+            <input type="email" name="Email" value="@Model.Email" class="form-control" />
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Phone</label>
+            <input type="text" name="Phone" value="@Model.Phone" class="form-control" />
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label class="form-label">Job Title</label>
+            <input type="text" name="JobTitle" class="form-control" placeholder="e.g., Software Engineer" />
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Preferred Job Type</label>
+            <input type="text" name="PreferredJobType" class="form-control" placeholder="e.g., Full-time, Contract" />
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <label class="form-label">Experience (Years)</label>
+            <input type="number" name="YearsOfExperience" value="@Model.YearsOfExperience" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Months</label>
+            <input type="number" name="MonthsOfExperience" value="@Model.MonthsOfExperience" class="form-control" />
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Resume File</label>
+            <input type="text" value="@Model.ResumeFileName" class="form-control" readonly />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Skills</label>
+        <textarea name="Skills" rows="3" class="form-control">@Model.Skills</textarea>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Experience Summary</label>
+        <textarea name="Experience" rows="4" class="form-control">@Model.Experience</textarea>
+    </div>
+
+    <div class="text-end">
+        <button type="submit" class="btn btn-success">Submit Final</button>
+    </div>
+</form>

@@ -1,0 +1,99 @@
+wwwroot\css\site.css
+wwwroot\favicon.ico
+wwwroot\images\baground.jpg
+wwwroot\js\site.js
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.min.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map
+wwwroot\lib\bootstrap\LICENSE
+wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.js
+wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.min.js
+wwwroot\lib\jquery-validation-unobtrusive\LICENSE.txt
+wwwroot\lib\jquery-validation\dist\additional-methods.js
+wwwroot\lib\jquery-validation\dist\additional-methods.min.js
+wwwroot\lib\jquery-validation\dist\jquery.validate.js
+wwwroot\lib\jquery-validation\dist\jquery.validate.min.js
+wwwroot\lib\jquery-validation\LICENSE.md
+wwwroot\lib\jquery\dist\jquery.js
+wwwroot\lib\jquery\dist\jquery.min.js
+wwwroot\lib\jquery\dist\jquery.min.map
+wwwroot\lib\jquery\LICENSE.txt
+wwwroot\uploads\Aakash.pdf
+wwwroot\uploads\Abdul_Kareem_6.0 years_MO31JP00001433 - Business Intelligence Analyst 2_Xeedo - Micron.pdf
+wwwroot\uploads\Abdul_Rahiman_Mulla_4.0 years_Full Stack Developer_AFour Technologies.pdf
+wwwroot\uploads\Abhinav_Bharti_3.2 years_Data Science_LG.pdf
+wwwroot\uploads\Anand_Sharma_Flutter_Developer-2.pdf
+wwwroot\uploads\BindushreeS[5y_3m].docx
+wwwroot\uploads\BSKUMARREDDY4y_3m.docx
+wwwroot\uploads\BSKUMARREDDY[4y_3m].docx
+wwwroot\uploads\BSNageswaraRao[7y_0m].docx
+wwwroot\uploads\ChandrakantShinde_iOSDeveloper.pdf
+wwwroot\uploads\Chandrashekhar Maggidi.pdf
+wwwroot\uploads\Chaturvedi_6.0 years_Oracle DBA_ACL Digital.pdf
+wwwroot\uploads\DARSHAND_3.0 years_System reliablity engineer_ACL digital.pdf
+wwwroot\uploads\DEBASIS_BAG.pdf
+wwwroot\uploads\Dinesh_Chigurupalli_4.6 years_Systems Groups_Sr SDET Python with Robot_AFour Technologies.pdf
+wwwroot\uploads\Dinesh_Resume.pdf
+wwwroot\uploads\Divakara_GR_7.0 years_Embedded Software_LG.pdf
+wwwroot\uploads\Divya Shinde.pdf
+wwwroot\uploads\GaneshShelke[9y_10m]_L4 Support Engineer.pdf
+wwwroot\uploads\Grishma.docx
+wwwroot\uploads\GulshanMd_5.0 years_Python Developer With Fast API.docx
+wwwroot\uploads\GunaVenkataGanesh[3y_7m].docx
+wwwroot\uploads\Gundeboina_Naresh_kumar_7.0 years_MO31JP00001569  - Product Development Engineer_Xeedo-Micron.docx
+wwwroot\uploads\Gurram_Shiva_Krishna_4.1 years_Design Verification Engineer_Ignitarium Technology Solutions.docx
+wwwroot\uploads\Himaniarya_9.7 years_Angular Lead.pdf
+wwwroot\uploads\Juned_Bagwan_4.10 years_SDET C#_ACL Digital.pdf
+wwwroot\uploads\Kaif_Wagle.pdf
+wwwroot\uploads\Kakalra_Pavan_Reddy_6.7 years_MO31JP00001765 - Quality Engineer 4_Xeedo - Micron.docx
+wwwroot\uploads\Karthik R - TA.pdf
+wwwroot\uploads\Kavya Anupa.pdf
+wwwroot\uploads\Keerthana_5.1 years_Jira Administrator_ACL Digital.pdf
+wwwroot\uploads\kHanumanthu[3y_2m].docx
+wwwroot\uploads\KiranReddyNakka_8.0 years_IN 139 Sr. Mobile Developer Lead  iOS.docx
+wwwroot\uploads\KiranVentrapragada_18.0 years_Data Architect - AWS Data Platform.docx
+wwwroot\uploads\REST API - Interview Preparation.pdf
+wwwroot\uploads\resume-sample.pdf
+wwwroot\uploads\Suprayas Resume New.pdf
+wwwroot\uploads\Suprayas Resume@2 (1).pdf

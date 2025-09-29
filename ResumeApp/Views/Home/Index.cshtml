@@ -1,0 +1,124 @@
+﻿@model ResumeApp.Models.HomeDashboardViewModel
+@using System.Text.Json
+
+<div class="text-center my-4">
+    <h1 class="fw-bold display-5 text-primary">Welcome to Xeedo ATS</h1>
+    <p class="lead text-muted">Your smart resume tracking dashboard</p>
+</div>
+
+<div class="row g-4 my-4">
+    <div class="col-md-3">
+        <div class="card stat-card text-center">
+            <div class="card-body">
+                <div class="stat-icon text-primary mb-2"><i class="bi bi-folder2-open"></i></div>
+                <h6 class="text-muted">Total Resumes</h6>
+                <p class="display-6 fw-bold" id="totalResumes">@Model.TotalResumes</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card text-center">
+            <div class="card-body">
+                <div class="stat-icon text-success mb-2"><i class="bi bi-calendar-day"></i></div>
+                <h6 class="text-muted">Uploaded Today</h6>
+                <p class="display-6 fw-bold text-success" id="todayResumes">@Model.ResumesToday</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card stat-card text-center">
+            <div class="card-body">
+                <div class="stat-icon text-warning mb-2"><i class="bi bi-calendar3"></i></div>
+                <h6 class="text-muted">Uploaded This Month</h6>
+                <p class="display-6 fw-bold text-warning" id="monthResumes">@Model.ResumesThisMonth</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card stat-card text-center">
+            <div class="card-body">
+                <div class="stat-icon text-danger mb-2"><i class="bi bi-person-circle"></i></div>
+                <h6 class="text-muted">Last Uploaded By</h6>
+                <p class="fw-bold" id="lastUploadedBy">@Model.LastUploadedBy</p>
+                <small class="text-muted" id="latestUpload">@((Model.LatestUpload.HasValue) ? Model.LatestUpload.Value.ToString("dd MMM yyyy, hh:mm tt") : "N/A")</small>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Chart -->
+<div class="card mt-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Uploads in the Last 7 Days</h5>
+        <button id="refreshStats" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-arrow-clockwise"></i> Refresh
+        </button>
+    </div>
+    <div class="card-body">
+        <canvas id="uploadsChart" height="90"></canvas>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Chart initialization
+    const ctx = document.getElementById('uploadsChart').getContext('2d');
+    let uploadsChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [], // will be replaced
+            datasets: [{
+                label: 'Resumes Uploaded',
+                data: [],
+                borderColor: '#0d6efd',
+                backgroundColor: 'rgba(13,110,253,0.2)',
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    // Refresh stats on button click
+    document.getElementById('refreshStats').addEventListener('click', () => {
+        fetch('@Url.Action("GetUploadStats", "Home")')
+            .then(r => r.json())
+            .then(d => {
+                // Update numbers
+                document.getElementById('totalResumes').textContent = d.totalResumes;
+                document.getElementById('todayResumes').textContent = d.resumesToday;
+                document.getElementById('monthResumes').textContent = d.resumesThisMonth;
+                document.getElementById('lastUploadedBy').textContent = d.lastUploadedBy;
+                document.getElementById('latestUpload').textContent = d.latestUpload || 'N/A';
+
+                // Update chart
+                uploadsChart.data.labels = d.labels;
+                uploadsChart.data.datasets[0].data = d.counts;
+                uploadsChart.update();
+            })
+            .catch(err => console.error("Error fetching stats:", err));
+    });
+</script>
+
+
+<style>
+    .stat-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.04);
+        padding: 1rem;
+        transition: .22s;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 40px rgba(0,0,0,0.06);
+        }
+
+    .stat-icon {
+        font-size: 2.2rem;
+    }
+</style>

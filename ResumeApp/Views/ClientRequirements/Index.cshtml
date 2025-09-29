@@ -1,0 +1,38 @@
+﻿@model IEnumerable<ResumeApp.Models.ClientRequirement>
+
+<h2>Client Requirements</h2>
+<table class="table table-striped table-sm">
+    <thead>
+        <tr>
+            <th>Vendor</th>
+            <th>Job Title</th>
+            <th>Positions</th>
+            <th>Location</th>
+            <th>Employment</th>
+            <th>Skills (Primary)</th>
+            <th>Priority</th>
+            <th>Created</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td>@r.Client?.CompanyName</td>
+                <td>@r.JobTitle</td>
+                <td>@r.Positions</td>
+                <td>@r.JobLocation</td>
+                <td>@r.EmploymentType</td>
+                <td>@r.SkillsPrimary</td>
+                <td>@r.RequirementPriority</td>
+                <td>@r.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@r.Id" class="btn btn-sm btn-outline-primary">Fetch Profile</a>
+                    <!-- <a asp-action="Edit" asp-route-id="@r.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@r.Id" class="btn btn-sm btn-outline-danger">Delete</a> -->
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

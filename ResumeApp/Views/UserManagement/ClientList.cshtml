@@ -1,0 +1,143 @@
+﻿@model IEnumerable<ResumeApp.Models.Client>
+
+@{
+    ViewData["Title"] = "Clients";
+}
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary">
+            <i class="bi bi-people-fill me-2"></i> Clients
+        </h2>
+        <a asp-action="ClientOnboarding" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i> Add New Client
+        </a>
+    </div>
+
+    <table class="table table-hover shadow-sm align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Company</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Requirement</th>
+                <th>Remark</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var client in Model)
+            {
+                <tr>
+                    <!-- Data from DB -->
+                    <td>@client.CompanyName</td>
+                    <td>@client.CompanyType</td>
+
+                    <!-- Fake Status (frontend only) -->
+                    <td>
+                        <span class="badge bg-success status-badge">Active</span>
+                        <select class="form-select form-select-sm d-inline-block w-auto status-dropdown ms-2">
+                            <option value="Active" selected>Active</option>
+                            <option value="Hold">Hold</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </td>
+
+                    <!--Requirement -->
+                    <td>
+                        <a asp-controller="ClientRequirements" asp-action="Create" asp-route-clientId="@client.Id"
+                           class="btn btn-sm btn-outline-info">
+                            <i class="bi bi-plus-circle me-1"></i> Add
+                        </a>
+                    </td>
+
+                    <!-- Fake Remark (frontend only) -->
+                    <td>
+                        <button type="button" class="btn btn-sm btn-outline-secondary add-remark-btn">
+                            <i class="bi bi-chat-left-text me-1"></i> Remark
+                        </button>
+                    </td>
+
+                    <!-- Data from DB -->
+                    <td>@client.CreatedAt.ToString("yyyy-MM-dd")</td>
+
+                    <!-- Actions (DB-related) -->
+                    <td>
+                        <a asp-action="Details" asp-route-id="@client.Id"
+                           class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a>
+                        <a asp-action="Edit" asp-route-id="@client.Id"
+                           class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></a>
+                        <a asp-action="Delete" asp-route-id="@client.Id"
+                           class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Remark Modal -->
+<div class="modal fade" id="remarkModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-secondary text-white">
+                <h5 class="modal-title">Add Remark</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <textarea class="form-control" id="remarkText" rows="4" placeholder="Enter remark"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" id="saveRemarkBtn">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Status change updates badge instantly (frontend only)
+        document.querySelectorAll('.status-dropdown').forEach(dropdown => {
+            dropdown.addEventListener('change', function () {
+                const badge = this.closest('td').querySelector('.status-badge');
+                const newStatus = this.value;
+
+                badge.textContent = newStatus;
+                badge.className = 'badge status-badge'; // reset
+
+                if (newStatus === "Active") badge.classList.add('bg-success');
+                else if (newStatus === "Hold") badge.classList.add('bg-warning', 'text-dark');
+                else if (newStatus === "Inactive") badge.classList.add('bg-danger');
+                else badge.classList.add('bg-secondary');
+            });
+        });
+
+        // Requirement modal
+        document.querySelectorAll('.add-req-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                new bootstrap.Modal(document.getElementById('requirementModal')).show();
+            });
+        });
+        document.getElementById('saveRequirementBtn').addEventListener('click', () => {
+            const text = document.getElementById('requirementText').value;
+            alert("Requirement saved (frontend only): " + text);
+            bootstrap.Modal.getInstance(document.getElementById('requirementModal')).hide();
+            document.getElementById('requirementText').value = "";
+        });
+
+        // Remark modal
+        document.querySelectorAll('.add-remark-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                new bootstrap.Modal(document.getElementById('remarkModal')).show();
+            });
+        });
+        document.getElementById('saveRemarkBtn').addEventListener('click', () => {
+            const text = document.getElementById('remarkText').value;
+            alert("Remark saved (frontend only): " + text);
+            bootstrap.Modal.getInstance(document.getElementById('remarkModal')).hide();
+            document.getElementById('remarkText').value = "";
+        });
+    </script>
+}

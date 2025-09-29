@@ -1,0 +1,431 @@
+﻿@model ResumeApp.ViewModels.ClientOnboardingViewModel
+@{
+    ViewData["Title"] = "Client Onboarding";
+}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-primary">
+            <i class="bi bi-building-check me-2"></i> Client Onboarding
+        </h2>
+        <p class="text-muted">Please provide your company and hiring details to get started.</p>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success shadow-sm">@TempData["Success"]</div>
+    }
+
+    <form asp-action="ClientOnboarding" method="post" class="needs-validation" novalidate>
+
+        <!-- Company Information -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-primary text-white fw-semibold">
+                <i class="bi bi-buildings me-2"></i> Company Information
+            </div>
+            <div class="card-body row g-4">
+                <div class="col-md-6">
+                    <label asp-for="CompanyName" class="form-label">Company Name *</label>
+                    <input asp-for="CompanyName" class="form-control" placeholder="Enter company name" required />
+                    <span asp-validation-for="CompanyName" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="WebsiteUrl" class="form-label">Website *</label>
+                    <input asp-for="WebsiteUrl" class="form-control" placeholder="https://example.com" required />
+                    <span asp-validation-for="WebsiteUrl" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="CompanyType" class="form-label">Company Type *</label>
+                    <select asp-for="CompanyType" class="form-select" required>
+                        <option value="">-- Select --</option>
+                        <option>Product Based</option>
+                        <option>Service Based</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="CompanySize" class="form-label">Company Size *</label>
+                    <select asp-for="CompanySize" class="form-select" required>
+                        <option value="">-- Select --</option>
+                        <option>1–50</option>
+                        <option>51–200</option>
+                        <option>201–500</option>
+                        <option>500+</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="HeadquarterLocation" class="form-label">Headquarter Location</label>
+                    <input asp-for="HeadquarterLocation" class="form-control" placeholder="City, Country" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="OtherOfficeLocations" class="form-label">Other Office Locations</label>
+                    <textarea asp-for="OtherOfficeLocations" rows="1" class="form-control" placeholder="List other locations"></textarea>
+                </div>
+            </div>
+        </div>
+        <!-- Primary Contact Details -->
+       
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-success text-white fw-semibold">
+                <i class="bi bi-person-lines-fill me-2"></i> Primary Contact Details
+            </div>
+            <div class="card-body row g-4">
+                <!-- Name -->
+                <div class="col-md-6">
+                    <label asp-for="ContactName" class="form-label">Name *</label>
+                    <input asp-for="ContactName" class="form-control" placeholder="Full name" required />
+                    <span asp-validation-for="ContactName" class="text-danger"></span>
+                </div>
+
+                <!-- Designation -->
+                <div class="col-md-6">
+                    <label asp-for="Designation" class="form-label">Designation</label>
+                    <input asp-for="Designation" class="form-control" placeholder="e.g., HR Manager" />
+                </div>
+
+                <!-- Phone -->
+                <div class="col-md-6">
+                    <label asp-for="Phone" class="form-label">Phone</label>
+                    <input asp-for="Phone" class="form-control" placeholder="+91-9876543210" />
+                </div>
+
+                <!-- Email -->
+                <div class="col-md-6">
+                    <label asp-for="Email" class="form-label">Email</label>
+                    <input asp-for="Email" class="form-control" placeholder="contact@company.com" />
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Preferred Communication *</label>
+                    <div class="d-flex flex-wrap gap-3">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="PreferredCommunication" value="Email" id="pcEmail">
+                            <label class="form-check-label" for="pcEmail">Email</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="PreferredCommunication" value="Phone" id="pcPhone">
+                            <label class="form-check-label" for="pcPhone">Phone</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="PreferredCommunication" value="WhatsApp" id="pcWhatsApp">
+                            <label class="form-check-label" for="pcWhatsApp">WhatsApp</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="PreferredCommunication" value="Other" id="pcOther">
+                            <label class="form-check-label" for="pcOther">Other</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Spokesperson Contact Details -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-success text-white fw-semibold d-flex justify-content-between align-items-center">
+                <div><i class="bi bi-person-lines-fill me-2"></i> Spokesperson Contact Details</div>
+                <button type="button" id="addSpokesperson" class="btn btn-light btn-sm">
+                    <i class="bi bi-plus-circle me-1"></i> Add Spokesperson
+                </button>
+            </div>
+
+            <div class="card-body">
+                <div id="spokespersonContainer">
+                    @* Server-side rendering of existing spokespersons (so Edit works) *@
+                    @if (Model?.Spokespersons != null && Model.Spokespersons.Any())
+                    {
+                        for (int i = 0; i < Model.Spokespersons.Count; i++)
+                        {
+                            var sp = Model.Spokespersons[i];
+                            <div class="spk-item border p-3 mb-3 rounded bg-light">
+                                <div class="row g-3">
+                                    <div class="col-md-5">
+                                        <label class="form-label">Name *</label>
+                                        <input type="text" name="Spokespersons[@i].Name" data-field="Name" class="form-control" value="@sp.Name" required />
+                                        <span class="text-danger" data-valmsg-for="Spokespersons[@i].Name" data-valmsg-replace="true"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Designation</label>
+                                        <input type="text" name="Spokespersons[@i].Designation" data-field="Designation" class="form-control" value="@sp.Designation" />
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Phone</label>
+                                        <input type="text" name="Spokespersons[@i].Phone" data-field="Phone" class="form-control" value="@sp.Phone" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" name="Spokespersons[@i].Email" data-field="Email" class="form-control" value="@sp.Email" />
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label class="form-label mb-2">Preferred Communication</label>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" name="Spokespersons[@i].PreferredCommunication" value="Email" @(sp.PreferredCommunication.Contains("Email") ? "checked" : "") />
+                                            <label class="form-check-label">Email</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" name="Spokespersons[@i].PreferredCommunication" value="Phone" @(sp.PreferredCommunication.Contains("Phone") ? "checked" : "") />
+                                            <label class="form-check-label">Phone</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" name="Spokespersons[@i].PreferredCommunication" value="WhatsApp" @(sp.PreferredCommunication.Contains("WhatsApp") ? "checked" : "") />
+                                            <label class="form-check-label">WhatsApp</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" name="Spokespersons[@i].PreferredCommunication" value="Other" @(sp.PreferredCommunication.Contains("Other") ? "checked" : "") />
+                                            <label class="form-check-label">Other</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 text-end">
+                                        <button type="button" class="btn btn-sm btn-danger removeSpokesperson">Remove</button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+
+        @* Client-side template (used by JS) *@
+        <template id="spk-template">
+            <div class="spk-item border p-3 mb-3 rounded bg-light">
+                <div class="row g-3">
+                    <div class="col-md-5">
+                        <label class="form-label">Name *</label>
+                        <input type="text" data-field="Name" class="form-control" required />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Designation</label>
+                        <input type="text" data-field="Designation" class="form-control" />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Phone</label>
+                        <input type="text" data-field="Phone" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Email</label>
+                        <input type="email" data-field="Email" class="form-control" />
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label mb-2">Preferred Communication</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" data-field="PreferredCommunication" value="Email" />
+                            <label class="form-check-label">Email</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" data-field="PreferredCommunication" value="Phone" />
+                            <label class="form-check-label">Phone</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" data-field="PreferredCommunication" value="WhatsApp" />
+                            <label class="form-check-label">WhatsApp</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" data-field="PreferredCommunication" value="Other" />
+                            <label class="form-check-label">Other</label>
+                        </div>
+                    </div>
+
+                    <div class="col-12 text-end">
+                        <button type="button" class="btn btn-sm btn-danger removeSpokesperson">Remove</button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Documents Section -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-dark text-white fw-semibold">
+                <i class="bi bi-file-earmark-text me-2"></i> Documents
+            </div>
+
+            <div class="card-body">
+                <div class="row g-4">
+                    <!-- Left Column (NDA + MSA) -->
+                    <div class="col-md-6">
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">NDA</label>
+                            <input asp-for="NDAFile" type="file" class="form-control" accept=".pdf" />
+                            <span asp-validation-for="NDAFile" class="text-danger small"></span>
+                            <small class="text-muted">PDF only, max 10 MB.</small>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">MSA</label>
+                            <input asp-for="MSAFile" type="file" class="form-control" accept=".pdf" />
+                            <span asp-validation-for="MSAFile" class="text-danger small"></span>
+                            <small class="text-muted">PDF only, max 10 MB.</small>
+                        </div>
+                    </div>
+
+                    <!-- Right Column (Corporate Presentation) -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Corporate Presentation</label>
+                        <input id="corporateFile" asp-for="CorporatePresentationFile" type="file" class="form-control mb-3" accept=".pdf" />
+
+                        <div class="position-relative">
+                            <textarea id="corporateText" asp-for="CorporatePresentationText" rows="6"
+                                      class="form-control" maxlength="4000"
+                                      placeholder="Or write presentation details (max 500 words)"></textarea>
+                            <span id="corpValidation" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-2">
+                            <small class="text-muted">Upload PDF or write text</small>
+                            <small id="wordCount" class="text-muted">0 / 500 words</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Hiring Requirements -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-info text-white fw-semibold">
+                <i class="bi bi-briefcase-fill me-2"></i> Hiring Requirements
+            </div>
+            <div class="card-body">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="EngagementTypes" value="Contract Staffing" id="contractStaffing">
+                    <label class="form-check-label" for="contractStaffing">Contract Staffing</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="EngagementTypes" value="Permanent Staffing" id="permanentStaffing">
+                    <label class="form-check-label" for="permanentStaffing">Permanent Staffing</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="EngagementTypes" value="Contract-to-Hire" id="contractToHire">
+                    <label class="form-check-label" for="contractToHire">Both</label>
+                </div>
+            </div>
+        </div>
+        <!-- Terms -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+                <div class="form-check">
+                    <input asp-for="AcceptTerms" class="form-check-input" type="checkbox" id="terms" />
+                    <label for="terms" class="form-check-label">
+                        I agree to the commercials & terms
+                    </label>
+                    <span asp-validation-for="AcceptTerms" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="text-center">
+            <button type="submit" class="btn btn-lg btn-primary px-5 shadow-sm">
+                <i class="bi bi-send-fill me-2"></i> Submit
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        (function () {
+            const container = document.getElementById('spokespersonContainer');
+            const template = document.getElementById('spk-template').innerHTML;
+            let spokesIndex = @((Model?.Spokespersons != null) ? Model.Spokespersons.Count : 0);
+
+            // Add new spokesperson
+            function addSpokesperson(data) {
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = template;
+                const item = wrapper.firstElementChild;
+
+                // assign names based on current index
+                setNamesForItem(item, spokesIndex);
+
+                // if data provided, fill values
+                if (data) {
+                    if (data.Name) item.querySelector('[data-field="Name"]').value = data.Name;
+                    if (data.Designation) item.querySelector('[data-field="Designation"]').value = data.Designation;
+                    if (data.Phone) item.querySelector('[data-field="Phone"]').value = data.Phone;
+                    if (data.Email) item.querySelector('[data-field="Email"]').value = data.Email;
+                    if (Array.isArray(data.PreferredCommunication)) {
+                        item.querySelectorAll('[data-field="PreferredCommunication"]').forEach(cb => {
+                            if (data.PreferredCommunication.includes(cb.value)) cb.checked = true;
+                        });
+                    }
+                }
+
+                // attach remove handler
+                item.querySelector('.removeSpokesperson').addEventListener('click', function () {
+                    item.remove();
+                    reindexAll();
+                    refreshValidation();
+                });
+
+                container.appendChild(item);
+                spokesIndex++;
+                refreshValidation();
+            }
+
+            // Set name attributes inside the item based on index
+            function setNamesForItem(item, index) {
+                item.querySelectorAll('[data-field]').forEach(el => {
+                    const field = el.getAttribute('data-field'); // e.g., Name, Phone, PreferredCommunication
+                    if (!field) return;
+
+                    if (el.type === 'checkbox') {
+                        el.name = `Spokespersons[${index}].${field}`;
+                    } else {
+                        el.name = `Spokespersons[${index}].${field}`;
+                    }
+                });
+            }
+
+            // Reindex all spk-items so names are contiguous (0..n-1)
+            function reindexAll() {
+                const items = container.querySelectorAll('.spk-item');
+                items.forEach((item, i) => {
+                    item.querySelectorAll('[data-field]').forEach(el => {
+                        const field = el.getAttribute('data-field');
+                        if (el.type === 'checkbox') {
+                            el.name = `Spokespersons[${i}].${field}`;
+                        } else {
+                            el.name = `Spokespersons[${i}].${field}`;
+                        }
+                    });
+                });
+                spokesIndex = items.length;
+            }
+
+            // call unobtrusive parser to wire up client validation for dynamically added inputs
+            function refreshValidation() {
+                const form = document.getElementById('clientOnboardingForm');
+                if (window.jQuery && window.jQuery.validator && window.jQuery.validator.unobtrusive) {
+                    // remove old validators for removed fields then parse again
+                    jQuery(form).removeData('validator');
+                    jQuery(form).removeData('unobtrusiveValidation');
+                    $.validator.unobtrusive.parse(form);
+                }
+            }
+
+            document.getElementById('addSpokesperson').addEventListener('click', function () {
+                addSpokesperson();
+            });
+
+            // If any server-rendered initial items exist, attach remove handlers and ensure names are correct
+            document.querySelectorAll('.spk-item').forEach((item, idx) => {
+                item.querySelectorAll('[data-field]').forEach(el => {
+                    // ensure data-field exists on server-rendered inputs
+                });
+                const removeBtn = item.querySelector('.removeSpokesperson');
+                if (removeBtn) {
+                    removeBtn.addEventListener('click', function () {
+                        item.remove();
+                        reindexAll();
+                        refreshValidation();
+                    });
+                }
+            });
+            refreshValidation();
+        })();
+    </script>
+}
