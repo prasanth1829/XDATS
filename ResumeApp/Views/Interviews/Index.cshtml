@@ -1,0 +1,105 @@
+﻿@using ResumeApp.ViewModels
+@model List<InterviewRowVm>
+
+@{
+    ViewData["Title"] = "Interviews";
+    var reqs = ViewBag.Requirements as List<ResumeApp.Models.ClientRequirement> ?? new();
+    var selectedReq = Context.Request.Query["requirementId"].ToString();
+}
+@functions {
+    (string css, string text) OutcomeBadge(InterviewOutcome o) => o switch
+    {
+        InterviewOutcome.None => ("secondary", "—"),
+        InterviewOutcome.CandidateAttended => ("success", "Candidate Attended"),
+        InterviewOutcome.CandidateNotAttended => ("danger", "Candidate Not Attended"),
+        InterviewOutcome.CandidatePostponed => ("warning", "Candidate Postponed"),
+        InterviewOutcome.CandidateNotResponding => ("danger", "Candidate Not Responding"),
+        InterviewOutcome.PanelNotAttended => ("danger", "Panel Not Attended"),
+        InterviewOutcome.PanelPostponed => ("warning", "Panel Postponed"),
+        _ => ("secondary", o.ToString())
+    };
+}
+
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+    <h3 class="mb-0">Scheduled Interviews</h3>
+
+    <form method="get" class="d-flex align-items-center gap-2">
+        <select name="requirementId" class="form-select form-select-sm" style="min-width:260px">
+            <option value="">— All JDs —</option>
+            @foreach (var r in reqs)
+            {
+                <option value="@r.Id" selected="@(selectedReq == r.Id.ToString() ? "selected" : null)">
+                    @r.JobTitle (ID @r.Id)
+                </option>
+            }
+        </select>
+        <button class="btn btn-sm btn-outline-secondary" type="submit">Filter</button>
+        <a class="btn btn-sm btn-light" href="@Url.Action("Index", "Interviews")">Reset</a>
+    </form>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No interviews scheduled.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>When</th>
+                    <th>Candidate</th>
+                    <th>JD</th>
+                    <th>Round</th>
+                    <th>Mode</th>
+                    <th>Status</th>
+                    <th>Outcome</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var i in Model)
+                {
+                    <tr>
+                        <td>
+                            <div class="fw-semibold">@i.StartLocal.ToString("ddd, dd MMM yyyy HH:mm")</div>
+                            <div class="small text-muted">
+                                to @i.EndLocal.ToString("HH:mm")
+                            </div>
+                        </td>
+                        <td>
+                            <div class="fw-semibold">@i.CandidateName</div>
+                            <div class="small text-muted">@i.CandidateEmail</div>
+                        </td>
+                        <td>@i.JobTitle</td>
+                        <td>
+                            <span class="badge bg-dark">Round @i.Round</span>
+                        </td>
+                        <td>
+                            <div>@i.Mode</div>
+                            @if (!string.IsNullOrWhiteSpace(i.LocationOrLink))
+                            {
+                                <div class="small text-muted">@i.LocationOrLink</div>
+                            }
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary">@i.Status</span>
+                        </td>
+                        @{
+                            var (ocss, otext) = OutcomeBadge(i.Outcome);
+                        }
+                        <td><span class="badge bg-@ocss">@otext</span></td>
+
+                        <td class="text-end">
+                            <a class="btn btn-sm btn-outline-primary"
+                               href="@Url.Action("Details", "Interviews", new { id = i.Id })">
+                                Details
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

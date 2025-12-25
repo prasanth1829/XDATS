@@ -1,0 +1,137 @@
+﻿@model ResumeApp.Models.ClientRequirement
+@{
+    Layout = "_Layout"; // or null for a completely clean print view
+    ViewData["Title"] = "Full Requirement Details";
+}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="fw-bold text-primary mb-0">
+            📄 @Model.JobTitle
+            <span class="text-muted"> (JD #@Model.Id)</span>
+        </h3>
+        <div class="text-end mb-3">
+            <button onclick="window.print()" class="btn btn-outline-dark btn-sm">🖨️ Print</button>
+        </div>
+
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">
+            ⬅️ Back
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-gradient bg-success text-white fw-semibold">
+            Full Requirement Information
+        </div>
+        <div class="card-body">
+            @Html.Partial("_RequirementInfo", Model)
+        </div>
+    </div>
+</div>
+<!-- Meeting Minutes (MOM) -->
+<div class="card shadow-sm mb-4 border-0">
+    <div class="card-header bg-gradient bg-warning text-dark fw-semibold d-flex justify-content-between align-items-center">
+        📝 Meeting Minutes (MOM)
+        <a asp-controller="RequirementMoms"
+           asp-action="Create"
+           asp-route-requirementId="@Model.Id"
+           class="btn btn-sm btn-dark">
+            + Add MOM
+        </a>
+    </div>
+    <div class="card-body">
+        @if (Model.MeetingNotes != null && Model.MeetingNotes.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-sm table-striped align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Title</th>
+                            <th>Date</th>
+                            <th>Created By</th>
+                            <th>Created At</th>
+                            <th>Last Edited</th>
+                            <th>Attachments</th>
+                            <th style="width: 150px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var mom in Model.MeetingNotes.OrderByDescending(m => m.MeetingDate ?? m.CreatedAt))
+                        {
+                            var files = (mom.AttachmentsPath ?? string.Empty)
+                            .Split(';', StringSplitOptions.RemoveEmptyEntries)
+                            .ToList();
+
+                            <tr>
+                                <td>@mom.Title</td>
+                                <td>@(mom.MeetingDate?.ToString("dd-MMM-yyyy") ?? "-")</td>
+                                <td>@mom.CreatedByUser?.FullName</td>
+                                <td>@mom.CreatedAt.ToString("dd-MMM-yyyy HH:mm")</td>
+                                <td>
+                                    @if (mom.LastEditedAt.HasValue)
+                                    {
+                                        @mom.LastEditedAt.Value.ToString("dd-MMM-yyyy HH:mm")
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (files.Any())
+                                    {
+                                        <ul class="list-unstyled mb-0">
+                                            @foreach (var f in files)
+                                            {
+                                                <li>
+                                                    <a asp-controller="RequirementMoms"
+                                                       asp-action="DownloadAttachment"
+                                                       asp-route-id="@mom.Id"
+                                                       asp-route-fileName="@f">
+                                                        @f
+                                                    </a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">No files</span>
+                                    }
+                                </td>
+                                <td>
+                                    <a asp-controller="RequirementMoms"
+                                       asp-action="Edit"
+                                       asp-route-id="@mom.Id"
+                                       class="btn btn-sm btn-outline-primary me-1">
+                                        Edit
+                                    </a>
+                                    <a asp-controller="RequirementMoms"
+                                       asp-action="History"
+                                       asp-route-id="@mom.Id"
+                                       class="btn btn-sm btn-outline-secondary">
+                                        History
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <p class="text-muted mb-0">
+                No MOMs recorded yet for this requirement. Use <strong>+ Add MOM</strong> to create one.
+            </p>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Optional: automatically open print dialog if "?print=true"
+        if (new URLSearchParams(window.location.search).get("print") === "true") {
+            window.print();
+        }
+    </script>
+}

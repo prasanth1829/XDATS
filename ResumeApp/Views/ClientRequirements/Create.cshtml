@@ -2,191 +2,591 @@
 @{
     ViewData["Title"] = "Add Requirement";
 }
+@{
+    var selectedQuals = Model.SelectedQualificationIds ?? new List<int>();
+}
 
-<h2>Add Requirement</h2>
+<div class="container py-3">
+    <h2 class="mb-3 fw-bold text-primary">Add Requirement</h2>
 
-<div class="card mb-3">
-    <div class="card-body">
-        <form asp-action="Create" method="post" enctype="multipart/form-data" class="row g-3">
-            <input type="hidden" asp-for="ClientId" />
-            <div class="col-12">
-                <h5>Vendor Details</h5>
-                <div class="row g-2">
-                    <div class="col-md-3">
-                        <input class="form-control" asp-for="ClientName" readonly />
-                    </div>
-                    <div class="col-md-3">
-                        <input class="form-control" asp-for="ContactName" readonly />
-                    </div>
-                    <div class="col-md-3">
-                        <input class="form-control" asp-for="ContactEmail" readonly />
-                    </div>
-                    <div class="col-md-3">
-                        <input class="form-control" asp-for="ContactNumber" readonly />
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <form asp-action="Create" method="post" enctype="multipart/form-data" class="row g-3">
+                <input type="hidden" asp-for="ClientId" />
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                <!-- VENDOR DETAILS -->
+                <div class="col-12">
+                    <div class="card shadow-sm border-0 mb-4">
+                        <div class="card-body">
+
+                            <!-- Header -->
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h5 class="fw-bold text-primary mb-1">
+                                        <i class="bi bi-building me-2"></i>Vendor Details
+                                    </h5>
+                                    <small class="text-muted">Select spokesperson and add any important vendor-related notes.</small>
+                                </div>
+                            </div>
+
+                            <!-- Vendor name -->
+                            <div class="mb-3">
+                                <label asp-for="ClientName" class="form-label fw-semibold small text-muted">Vendor / Client</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-primary text-white">
+                                        <i class="bi bi-buildings"></i>
+                                    </span>
+                                    <input class="form-control" asp-for="ClientName" readonly />
+                                </div>
+                            </div>
+
+                            <div class="row g-4">
+
+                                <!-- Spokesperson selection -->
+                                <div class="col-md-6">
+                                    <label asp-for="SelectedSpokespersonId" class="form-label fw-semibold small text-muted">
+                                        Spokesperson (for this Requirement)
+                                    </label>
+                                    <select asp-for="SelectedSpokespersonId"
+                                            asp-items="Model.SpokespersonList"
+                                            class="form-select"
+                                            id="SpokespersonSelect">
+                                        <option value="">-- Select spokesperson --</option>
+                                    </select>
+                                    <span asp-validation-for="SelectedSpokespersonId" class="text-danger"></span>
+                                </div>
+
+                                <!-- Vendor Comments -->
+                                <div class="col-md-6">
+                                    <label asp-for="VendorNotes" class="form-label fw-semibold small text-muted">
+                                        Vendor Comments / Notes
+                                    </label>
+                                    <textarea asp-for="VendorNotes"
+                                              rows="2"
+                                              class="form-control"
+                                              placeholder="Notes about vendor behaviour, special instructions, communication preference, etc."></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Spokesperson Info Auto-Filled -->
+                            <div class="mt-4">
+                                <h6 class="fw-bold text-secondary mb-3">
+                                    <i class="bi bi-person-lines-fill me-2"></i>Spokesperson Details
+                                </h6>
+
+                                <div class="row g-3">
+
+                                    <!-- Name -->
+                                    <div class="col-md-3">
+                                        <label class="form-label small text-muted">Name</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                            <input type="text" class="form-control" id="SpkName" readonly />
+                                        </div>
+                                    </div>
+
+                                    <!-- Designation -->
+                                    <div class="col-md-3">
+                                        <label class="form-label small text-muted">Designation</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-award"></i></span>
+                                            <input type="text" class="form-control" id="SpkDesignation" readonly />
+                                        </div>
+                                    </div>
+
+                                    <!-- Email -->
+                                    <div class="col-md-3">
+                                        <label class="form-label small text-muted">Email</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                            <input type="text" class="form-control" id="SpkEmail" readonly />
+                                        </div>
+                                    </div>
+
+                                    <!-- Phone -->
+                                    <div class="col-md-3">
+                                        <label class="form-label small text-muted">Phone</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                                            <input type="text" class="form-control" id="SpkPhone" readonly />
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <hr />
 
-            <div class="col-12">
-                <h5>Requirement Details</h5>
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label asp-for="JobTitle" class="form-label"></label>
-                        <input asp-for="JobTitle" class="form-control" />
-                        <span asp-validation-for="JobTitle" class="text-danger"></span>
-                    </div>
-                    <div class="col-md-6">
-                        <label asp-for="Positions" class="form-label"></label>
-                        <input asp-for="Positions" class="form-control" type="number" min="1" />
-                    </div>
 
-                    <div class="col-md-4">
-                        <label asp-for="JobLocation" class="form-label"></label>
-                        <select asp-for="JobLocation" class="form-select">
-                            <option value="">-- Select --</option>
-                            <option>Onsite</option>
-                            <option>Remote</option>
-                            <option>Hybrid</option>
-                        </select>
-                    </div>
+                <!-- REQUIREMENT DETAILS -->
+                <div class="col-12">
+                    <h5 class="section-title text-primary mb-2">Requirement Details</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="JobTitle" class="form-label">Job Title</label>
+                            <input asp-for="JobTitle" class="form-control" placeholder="e.g., Senior Java Developer" />
+                            <span asp-validation-for="JobTitle" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-2">
+                            <label asp-for="Positions" class="form-label">No. of Positions</label>
+                            <input asp-for="Positions" class="form-control" type="number" min="1" />
+                        </div>
 
-                    <div class="col-md-4">
-                        <label asp-for="EmploymentType" class="form-label"></label>
-                        <select asp-for="EmploymentType" class="form-select">
-                            <option value="">-- Select --</option>
-                            <option>Contract</option>
-                            <option>Permanent</option>
-                            <option>C2H (Contract-to-Hire)</option>
-                        </select>
-                    </div>
+                        <div class="col-md-4">
+                            <label asp-for="JobLocationId" class="form-label">Job Location</label>
+                            <select asp-for="JobLocationId"
+                                    asp-items="Model.ClientLocations"
+                                    class="form-select">
+                                <option value="">-- Select client location --</option>
+                            </select>
+                            <span asp-validation-for="JobLocationId" class="text-danger"></span>
+                        </div>
 
-                    <div class="col-md-4">
-                        <label asp-for="WorkShift" class="form-label"></label>
-                        <input asp-for="WorkShift" class="form-control" placeholder="e.g., IST, EST, Night Shift" />
+                        <div class="col-md-4">
+                            <label asp-for="EmploymentType" class="form-label">Employment Type</label>
+                            <select asp-for="EmploymentType" class="form-select">
+                                <option value="">-- Select --</option>
+                                <option>Contract</option>
+                                <option>Permanent</option>
+                                <option>C2H (Contract-to-Hire)</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label asp-for="WorkShift" class="form-label">Work Shift</label>
+                            <input asp-for="WorkShift" class="form-control" placeholder="e.g., IST, EST, Night Shift" />
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <hr />
+                <hr class="mt-3 mb-1" />
 
-            <div class="col-12">
-                <h5>Job Description</h5>
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label asp-for="SkillsPrimary"></label>
-                        <textarea asp-for="SkillsPrimary" rows="2" class="form-control"></textarea>
-                    </div>
-                  
+                <!-- JOB DESCRIPTION -->
+                <div class="col-12">
+                    <h5 class="section-title text-primary mb-2">Job Description</h5>
+                    <div class="row g-3">
 
-                    <div class="col-md-6">
-                        <label asp-for="SkillsSecondary"></label>
-                        <textarea asp-for="SkillsSecondary" rows="2" class="form-control"></textarea>
-                    </div>
-                    <div class="col-md-12">
-                        <label asp-for="Responsibilities"></label>
-                        <textarea asp-for="Responsibilities" rows="3" class="form-control"></textarea>
-                    </div>
-                    <div class="col-md-3">
-                        <label asp-for="ExperienceMin"></label>
-                        <input asp-for="ExperienceMin" class="form-control" type="number" min="0" />
-                    </div>
-                    <div class="col-md-3">
-                        <label asp-for="ExperienceMax"></label>
-                        <input asp-for="ExperienceMax" class="form-control" type="number" min="0" />
-                    </div>
-                    <div class="col-md-3">
-                        <label asp-for="Education"></label>
-                        <input asp-for="Education" class="form-control" />
-                    </div>
-                    <div class="col-md-3">
-                        <label asp-for="Certifications"></label>
-                        <input asp-for="Certifications" class="form-control" />
+                        <!-- Primary skills: Tagify directly on bound field -->
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Primary Skills <span class="text-danger">*</span>
+                            </label>
+                            <textarea asp-for="SkillsPrimary"
+                                      id="SkillsPrimary"
+                                      rows="2"
+                                      class="form-control"
+                                      placeholder="e.g., Java, Spring Boot, Microservices"></textarea>
+                            <span asp-validation-for="SkillsPrimary" class="text-danger"></span>
+                            <div class="form-text">
+                                Type a skill and press Enter or comma to add. Suggestions will appear as you type.
+                            </div>
+                        </div>
+
+                        <!-- Secondary skills: Tagify directly on bound field -->
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Secondary Skills
+                            </label>
+                            <textarea asp-for="SkillsSecondary"
+                                      id="SkillsSecondary"
+                                      rows="2"
+                                      class="form-control"
+                                      placeholder="e.g., Docker, React, Kubernetes"></textarea>
+                            <div class="form-text">
+                                Optional / nice-to-have skills for this position.
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label asp-for="Responsibilities" class="form-label">Responsibilities</label>
+                            <textarea asp-for="Responsibilities"
+                                      rows="3"
+                                      class="form-control"
+                                      placeholder="Key responsibilities, project details, stakeholder expectations, etc."></textarea>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label asp-for="ExperienceMin" class="form-label">Min Experience (years)</label>
+                            <input asp-for="ExperienceMin" class="form-control" type="number" min="0" />
+                        </div>
+                        <div class="col-md-3">
+                            <label asp-for="ExperienceMax" class="form-label">Max Experience (years)</label>
+                            <input asp-for="ExperienceMax" class="form-control" type="number" min="0" />
+                        </div>
+                        <!-- 🔹 Qualifications multi-select (dropdown with checkboxes) -->
+                        <div class="col-md-6">
+                            <label class="form-label">Qualifications</label>
+
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary w-100 text-start d-flex justify-content-between align-items-center"
+                                        type="button"
+                                        id="qualificationDropdown"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                    <span id="qualificationDropdownText" class="text-truncate">
+                                        Select qualifications
+                                    </span>
+                                    <i class="bi bi-chevron-down ms-2"></i>
+                                </button>
+
+                                <div class="dropdown-menu p-2 w-100" aria-labelledby="qualificationDropdown"
+                                     style="max-height: 260px; overflow-y: auto;">
+                                    @foreach (var q in Model.QualificationOptions)
+                                    {
+                                        var id = int.Parse(q.Value);
+                                        var isChecked = selectedQuals.Contains(id);
+
+                                        <div class="form-check">
+                                            <input class="form-check-input qual-checkbox"
+                                                   type="checkbox"
+                                                   name="SelectedQualificationIds"
+                                                   value="@q.Value"
+                                                   id="qual_@q.Value"
+                                                   @(isChecked ? "checked" : "") />
+                                            <label class="form-check-label" for="qual_@q.Value">
+                                                @q.Text
+                                            </label>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            <small class="text-muted">
+                                Choose one or more educational qualifications relevant for this role.
+                            </small>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label asp-for="Certifications" class="form-label">Certifications</label>
+                            <input asp-for="Certifications" class="form-control" placeholder="e.g., AWS, Azure, Scrum" />
+                        </div>
+
+                        <div class="col-md-6 mt-3">
+                            <label asp-for="Attachments" class="form-label">Attachments (Job Description / Supporting Docs)</label>
+                            <input asp-for="Attachments" type="file" class="form-control" multiple />
+                            <div class="form-text">
+                                Attach the official JD or any supporting documents (PDF, DOCX, etc.).
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <hr />
+                <hr class="mt-3 mb-1" />
 
-            <div class="col-12">
-                <h5>Compensation / Budget</h5>
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label asp-for="SalaryRange"></label>
-                        <input asp-for="SalaryRange" class="form-control" />
-                    </div>
-                    <div class="col-md-3">
-                        <label asp-for="BillingType"></label>
-                        <select asp-for="BillingType" class="form-select">
-                            <option value="">-- Select --</option>
-                            <option>Hourly</option>
-                            <option>Monthly</option>
-                            <option>Fixed</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label asp-for="NoticePeriod"></label>
-                        <input asp-for="NoticePeriod" class="form-control" />
+                <!-- COMPENSATION -->
+                <div class="col-12">
+                    <h5 class="section-title text-primary mb-2">Compensation / Budget</h5>
+                    <div class="row g-3">
+                        <!-- Salary / billing range -->
+                        <div class="col-md-6">
+                            <label asp-for="SalaryRange" class="form-label">Salary / Billing Range</label>
+                            <input asp-for="SalaryRange" class="form-control"
+                                   placeholder="e.g., 12–18 LPA or 5–7K USD per month" />
+                        </div>
+
+                        <!-- Notice period multi-select dropdown -->
+                        <div class="col-md-6">
+                            <label class="form-label">Expected Notice Period</label>
+
+                            <div class="dropdown w-100">
+                                <button class="btn btn-outline-secondary w-100 d-flex justify-content-between align-items-center"
+                                        type="button"
+                                        id="noticePeriodDropdownButton"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                    <span id="noticePeriodSummary">Select notice period</span>
+                                    <i class="bi bi-chevron-down ms-2"></i>
+                                </button>
+
+                                <div class="dropdown-menu p-3 w-100" aria-labelledby="noticePeriodDropdownButton"
+                                     style="max-height: 260px; overflow-y: auto; min-width: 100%;">
+                                    @foreach (var opt in Model.NoticePeriodOptions)
+                                    {
+                                        var intVal = int.Parse(opt.Value);
+                                        var isChecked = Model.SelectedNoticePeriodOptionIds != null
+                                        && Model.SelectedNoticePeriodOptionIds.Contains(intVal);
+
+                                        <div class="form-check mb-1">
+                                            <input class="form-check-input np-option"
+                                                   type="checkbox"
+                                                   name="SelectedNoticePeriodOptionIds"
+                                                   value="@opt.Value"
+                                                   id="np_@opt.Value"
+                                                   @(isChecked ? "checked" : "") />
+                                            <label class="form-check-label" for="np_@opt.Value">
+                                                @opt.Text
+                                            </label>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            <small class="text-muted">
+                                You can select multiple options (e.g., 0–15 days + 1 month).
+                            </small>
+                            <span asp-validation-for="SelectedNoticePeriodOptionIds" class="text-danger"></span>
+                        </div>
+
+                        <!-- Budget note full width -->
+                        <div class="col-12">
+                            <label asp-for="BudgetNote" class="form-label">Note for Budget</label>
+                            <textarea asp-for="BudgetNote" rows="2" class="form-control"
+                                      placeholder="Any special notes around budget / flexibility / exceptions"></textarea>
+                            <span asp-validation-for="BudgetNote" class="text-danger"></span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <hr />
 
-            <div class="col-12">
-                <h5>Priority & Timeline</h5>
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <label asp-for="RequirementPriority"></label>
-                        <select asp-for="RequirementPriority" class="form-select">
-                            <option value="">-- Select --</option>
-                            <option>High</option>
-                            <option>Medium</option>
-                            <option>Low</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label asp-for="Deadline"></label>
-                        <input asp-for="Deadline" class="form-control" type="date" />
-                    </div>
-                    <div class="col-md-4">
-                        <label asp-for="ExpectedJoiningDate"></label>
-                        <input asp-for="ExpectedJoiningDate" class="form-control" type="date" />
-                    </div>
-                </div>
-            </div>
-
-            <hr />
-
-            <div class="col-12">
-                <h5>Additional Information</h5>
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label asp-for="ScreeningQuestions"></label>
-                        <textarea asp-for="ScreeningQuestions" rows="2" class="form-control"></textarea>
-                    </div>
-                    <div class="col-md-6">
-                        <label asp-for="SpecialInstructions"></label>
-                        <textarea asp-for="SpecialInstructions" rows="2" class="form-control"></textarea>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="Attachments"></label>
-                        <input asp-for="Attachments" type="file" class="form-control" multiple />
+                <!-- PRIORITY & TIMELINE -->
+                <div class="col-12">
+                    <h5 class="section-title text-primary mb-2">Priority & Timeline</h5>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label asp-for="RequirementPriority" class="form-label">Priority</label>
+                            <select asp-for="RequirementPriority" class="form-select">
+                                <option value="">-- Select --</option>
+                                <option>High</option>
+                                <option>Medium</option>
+                                <option>Low</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Deadline" class="form-label">Target CV Submission Date</label>
+                            <input asp-for="Deadline" class="form-control" type="date" />
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="ExpectedJoiningDate" class="form-label">Expected Joining Date</label>
+                            <input asp-for="ExpectedJoiningDate" class="form-control" type="date" />
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-12 text-center mt-3">
-                <button type="submit" class="btn btn-primary">Submit Requirement</button>
-            </div>
-        </form>
+                <hr class="mt-3 mb-1" />
+
+                <!-- ADDITIONAL -->
+                <div class="col-12">
+                    <h5 class="section-title text-primary mb-2">Additional Information</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="ScreeningQuestions" class="form-label">Screening Questions</label>
+                            <textarea asp-for="ScreeningQuestions" rows="2" class="form-control"
+                                      placeholder="Any specific questions to be asked during screening"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="SpecialInstructions" class="form-label">Special Instructions</label>
+                            <textarea asp-for="SpecialInstructions" rows="2" class="form-control"
+                                      placeholder="Notes around client expectations, exclusion criteria, etc."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ACTIONS -->
+                <div class="col-12 text-center mt-4">
+                    <a asp-action="Index" class="btn btn-outline-secondary me-2">Cancel</a>
+                    <button type="submit" class="btn btn-primary px-4">
+                        Submit Requirement
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
+
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <!-- Tagify CSS & JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@yaireo/tagify/dist/tagify.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@@yaireo/tagify"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // 🔹 Skills coming from DB (Skills table), serialized in controller
+            const SKILLS = @Html.Raw(ViewBag.SkillNamesJson ?? "[]");
+
+            // Generic helper: attach Tagify to a textarea/input
+            function attachTagify(selector, placeholderText) {
+                const el = document.querySelector(selector);
+                if (!el) return null;
+
+                const tagify = new Tagify(el, {
+                    whitelist: SKILLS,          // ✅ from DB
+                    enforceWhitelist: false,    // allow free text also
+                    delimiters: ",",            // split by comma
+                    maxTags: 50,
+                    dropdown: {
+                        enabled: 1,             // show suggestions after 1 char
+                        maxItems: 20,
+                        closeOnSelect: true,
+                        highlightFirst: true,
+                        fuzzySearch: true
+                    },
+                    placeholder: placeholderText,
+                    originalInputValueFormat: valuesArr =>
+                        valuesArr.map(v => v.value).join(", ")
+                });
+
+                // Prevent Enter from submitting the form while typing skills
+                el.addEventListener("keydown", function (e) {
+                    if (e.key === "Enter") {
+                        const hasActive =
+                            tagify.DOM.dropdown &&
+                            tagify.DOM.dropdown.content &&
+                            tagify.DOM.dropdown.content.querySelector(".tagify__dropdown__item--active");
+
+                        if (!hasActive) {
+                            e.preventDefault(); // just add tag, don't submit form
+                        }
+                    }
+                });
+
+                // Optional: support paste with comma/newline separated skills
+                el.addEventListener("paste", function (e) {
+                    const text = (e.clipboardData || window.clipboardData).getData("text");
+                    if (text && text.includes(",")) {
+                        e.preventDefault();
+                        const parts = text
+                            .split(/[\n,]+/g)
+                            .map(s => s.trim())
+                            .filter(Boolean);
+                        if (parts.length) tagify.addTags(parts);
+                    }
+                });
+
+                return tagify;
+            }
+
+            // Attach Tagify to your two fields (IDs from asp-for)
+            const primaryTagify = attachTagify("#SkillsPrimary", "Primary skills (mandatory)…");
+            const secondaryTagify = attachTagify("#SkillsSecondary", "Secondary / nice-to-have skills…");
+
+            // Guard: require at least one primary skill
+            const form = document.querySelector("form[asp-action='Create']") || document.querySelector("form");
+            if (form && primaryTagify) {
+                form.addEventListener("submit", function (e) {
+                    if (!primaryTagify.value || primaryTagify.value.length === 0) {
+                        e.preventDefault();
+                        alert("Please add at least one Primary Skill.");
+                    }
+                });
+            }
+
+            // 🔹 NEW: Spokesperson auto-fill logic
+            const SPOKESPERSONS = @Html.Raw(ViewBag.SpokespersonsJson ?? "[]");
+            const spkSelect = document.getElementById("SpokespersonSelect");
+            const spkNameInput = document.getElementById("SpkName");
+            const spkEmailInput = document.getElementById("SpkEmail");
+            const spkPhoneInput = document.getElementById("SpkPhone");
+            const spkDesignationInput = document.getElementById("SpkDesignation");
+
+            function clearSpkFields() {
+                if (spkNameInput) spkNameInput.value = "";
+                if (spkEmailInput) spkEmailInput.value = "";
+                if (spkPhoneInput) spkPhoneInput.value = "";
+                if (spkDesignationInput) spkDesignationInput.value = "";
+            }
+
+            function populateSpkFields(id) {
+                const sid = parseInt(id, 10);
+                if (!sid || isNaN(sid)) {
+                    clearSpkFields();
+                    return;
+                }
+                const spk = SPOKESPERSONS.find(x => x.id === sid || x.Id === sid);
+                if (!spk) {
+                    clearSpkFields();
+                    return;
+                }
+                if (spkNameInput) spkNameInput.value = spk.name || spk.Name || "";
+                if (spkEmailInput) spkEmailInput.value = spk.email || spk.Email || "";
+                if (spkPhoneInput) spkPhoneInput.value = spk.phone || spk.Phone || "";
+                if (spkDesignationInput) spkDesignationInput.value = spk.designation || spk.Designation || "";
+            }
+
+            if (spkSelect) {
+                // On change, auto-fill
+                spkSelect.addEventListener("change", function () {
+                    populateSpkFields(this.value);
+                });
+
+                // On initial load (for validation errors), if a value is already selected, fill it
+                if (spkSelect.value) {
+                    populateSpkFields(spkSelect.value);
+                }
+            }
+                        // 🔹 Qualifications dropdown text updater
+            const qualCheckboxes = document.querySelectorAll(".qual-checkbox");
+            const qualTextSpan = document.getElementById("qualificationDropdownText");
+
+            function refreshQualificationText() {
+                if (!qualCheckboxes || !qualTextSpan) return;
+
+                const selected = [];
+                qualCheckboxes.forEach(cb => {
+                    if (cb.checked) {
+                        const label = document.querySelector("label[for='" + cb.id + "']");
+                        if (label) selected.push(label.innerText.trim());
+                    }
+                });
+
+                if (selected.length === 0) {
+                    qualTextSpan.textContent = "Select qualifications";
+                } else if (selected.length <= 3) {
+                    qualTextSpan.textContent = selected.join(", ");
+                } else {
+                    qualTextSpan.textContent = selected.slice(0, 2).join(", ") + " +" + (selected.length - 2) + " more";
+                }
+            }
+
+            if (qualCheckboxes && qualCheckboxes.length > 0) {
+                qualCheckboxes.forEach(cb => {
+                    cb.addEventListener("change", refreshQualificationText);
+                });
+                // initial state
+                refreshQualificationText();
+            }
+            // Notice Period dropdown summary
+            function updateNoticePeriodSummary() {
+                const checkboxes = document.querySelectorAll(".np-option");
+                const labels = [];
+
+                checkboxes.forEach(cb => {
+                    if (cb.checked) {
+                        const lbl = document.querySelector(`label[for="${cb.id}"]`);
+                        if (lbl) {
+                            labels.push(lbl.innerText.trim());
+                        }
+                    }
+                });
+
+                const summaryEl = document.getElementById("noticePeriodSummary");
+                if (!summaryEl) return;
+
+                if (labels.length === 0) {
+                    summaryEl.textContent = "Select notice period";
+                } else if (labels.length === 1) {
+                    summaryEl.textContent = labels[0];
+                } else {
+                    summaryEl.textContent = labels.length + " selected";
+                }
+            }
+
+            // Hook up change events
+            document.querySelectorAll(".np-option").forEach(cb => {
+                cb.addEventListener("change", updateNoticePeriodSummary);
+            });
+
+            // Initialize summary on page load
+            updateNoticePeriodSummary();
+
+
+        });
+    </script>
+
 }

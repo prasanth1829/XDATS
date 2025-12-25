@@ -15,7 +15,13 @@
         <div class="alert alert-success shadow-sm">@TempData["Success"]</div>
     }
 
-    <form asp-action="ClientOnboarding" method="post" class="needs-validation" novalidate>
+    <form id="clientOnboardingForm"
+          asp-action="ClientOnboarding"
+          method="post"
+          enctype="multipart/form-data"
+          class="needs-validation"
+          novalidate>
+        @Html.AntiForgeryToken()
 
         <!-- Company Information -->
         <div class="card shadow-sm border-0 mb-4">
@@ -40,6 +46,7 @@
                         <option>Product Based</option>
                         <option>Service Based</option>
                     </select>
+                    <span asp-validation-for="CompanyType" class="text-danger"></span>
                 </div>
                 <div class="col-md-6">
                     <label asp-for="CompanySize" class="form-label">Company Size *</label>
@@ -50,48 +57,64 @@
                         <option>201–500</option>
                         <option>500+</option>
                     </select>
+                    <span asp-validation-for="CompanySize" class="text-danger"></span>
                 </div>
                 <div class="col-md-6">
-                    <label asp-for="HeadquarterLocation" class="form-label">Headquarter Location</label>
-                    <input asp-for="HeadquarterLocation" class="form-control" placeholder="City, Country" />
+                    <label class="form-label">Headquarter Country</label>
+                    <select class="form-select" asp-for="HeadquarterCountryId" id="hqCountry"></select>
+                    <span class="text-danger" asp-validation-for="HeadquarterCountryId"></span>
                 </div>
                 <div class="col-md-6">
-                    <label asp-for="OtherOfficeLocations" class="form-label">Other Office Locations</label>
-                    <textarea asp-for="OtherOfficeLocations" rows="1" class="form-control" placeholder="List other locations"></textarea>
+                    <label class="form-label">Headquarter Location</label>
+                    <select class="form-select" asp-for="HeadquarterLocationId" id="hqLocation"></select>
+                    <span class="text-danger" asp-validation-for="HeadquarterLocationId"></span>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Other Office Locations</label>
+                    <div id="otherLocList" class="border rounded p-2" style="min-height:56px;">
+                        <!-- Checkboxes will render here based on HQ Country -->
+                    </div>
+                    <small class="text-muted">Locations are listed from the selected Headquarter Country.</small>
                 </div>
             </div>
         </div>
+
         <!-- Primary Contact Details -->
-       
         <div class="card shadow-sm border-0 mb-4">
             <div class="card-header bg-success text-white fw-semibold">
                 <i class="bi bi-person-lines-fill me-2"></i> Primary Contact Details
             </div>
             <div class="card-body row g-4">
-                <!-- Name -->
+                <div class="col-12">
+                    <small class="text-muted fst-italic">
+                        Note: If no Spokesperson is added, the Primary Contact Person will be treated as the Spokesperson by default.
+                    </small>
+                </div>
                 <div class="col-md-6">
                     <label asp-for="ContactName" class="form-label">Name *</label>
                     <input asp-for="ContactName" class="form-control" placeholder="Full name" required />
                     <span asp-validation-for="ContactName" class="text-danger"></span>
                 </div>
-
-                <!-- Designation -->
                 <div class="col-md-6">
-                    <label asp-for="Designation" class="form-label">Designation</label>
-                    <input asp-for="Designation" class="form-control" placeholder="e.g., HR Manager" />
+                    <label class="form-label">Designation</label>
+                    <select asp-for="DesignationId" id="designationSelect" class="form-select">
+                        <option value="">-- Select --</option>
+                    </select>
+                    <span class="text-danger" asp-validation-for="DesignationId"></span>
                 </div>
 
-                <!-- Phone -->
+
                 <div class="col-md-6">
                     <label asp-for="Phone" class="form-label">Phone</label>
                     <input asp-for="Phone" class="form-control" placeholder="+91-9876543210" />
+                    <span asp-validation-for="Phone" class="text-danger"></span>
                 </div>
-
-                <!-- Email -->
                 <div class="col-md-6">
                     <label asp-for="Email" class="form-label">Email</label>
                     <input asp-for="Email" class="form-control" placeholder="contact@company.com" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
+
                 <div class="col-12">
                     <label class="form-label">Preferred Communication *</label>
                     <div class="d-flex flex-wrap gap-3">
@@ -116,8 +139,6 @@
             </div>
         </div>
 
-
-
         <!-- Spokesperson Contact Details -->
         <div class="card shadow-sm border-0 mb-4">
             <div class="card-header bg-success text-white fw-semibold d-flex justify-content-between align-items-center">
@@ -129,7 +150,7 @@
 
             <div class="card-body">
                 <div id="spokespersonContainer">
-                    @* Server-side rendering of existing spokespersons (so Edit works) *@
+                    @* Server-side rendering of existing spokespersons (for Edit scenarios) *@
                     @if (Model?.Spokespersons != null && Model.Spokespersons.Any())
                     {
                         for (int i = 0; i < Model.Spokespersons.Count; i++)
@@ -144,8 +165,13 @@
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label">Designation</label>
-                                        <input type="text" name="Spokespersons[@i].Designation" data-field="Designation" class="form-control" value="@sp.Designation" />
+                                        <select class="form-select spk-designation"
+                                                data-field="DesignationId"
+                                                data-current="@sp.DesignationId">
+                                        </select>
+
                                     </div>
+
                                     <div class="col-md-3">
                                         <label class="form-label">Phone</label>
                                         <input type="text" name="Spokespersons[@i].Phone" data-field="Phone" class="form-control" value="@sp.Phone" />
@@ -158,19 +184,19 @@
                                     <div class="col-12">
                                         <label class="form-label mb-2">Preferred Communication</label>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" name="Spokespersons[@i].PreferredCommunication" value="Email" @(sp.PreferredCommunication.Contains("Email") ? "checked" : "") />
+                                            <input class="form-check-input" type="checkbox" name="Spokespersons[@i].PreferredCommunication" value="Email" @(sp.PreferredCommunication?.Contains("Email") == true ? "checked" : "") />
                                             <label class="form-check-label">Email</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" name="Spokespersons[@i].PreferredCommunication" value="Phone" @(sp.PreferredCommunication.Contains("Phone") ? "checked" : "") />
+                                            <input class="form-check-input" type="checkbox" name="Spokespersons[@i].PreferredCommunication" value="Phone" @(sp.PreferredCommunication?.Contains("Phone") == true ? "checked" : "") />
                                             <label class="form-check-label">Phone</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" name="Spokespersons[@i].PreferredCommunication" value="WhatsApp" @(sp.PreferredCommunication.Contains("WhatsApp") ? "checked" : "") />
+                                            <input class="form-check-input" type="checkbox" name="Spokespersons[@i].PreferredCommunication" value="WhatsApp" @(sp.PreferredCommunication?.Contains("WhatsApp") == true ? "checked" : "") />
                                             <label class="form-check-label">WhatsApp</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" name="Spokespersons[@i].PreferredCommunication" value="Other" @(sp.PreferredCommunication.Contains("Other") ? "checked" : "") />
+                                            <input class="form-check-input" type="checkbox" name="Spokespersons[@i].PreferredCommunication" value="Other" @(sp.PreferredCommunication?.Contains("Other") == true ? "checked" : "") />
                                             <label class="form-check-label">Other</label>
                                         </div>
                                     </div>
@@ -185,6 +211,11 @@
                 </div>
             </div>
         </div>
+        <!-- Hidden master list for designations (used to clone options into each Spokesperson row) -->
+        <select id="spkDesignationMaster" class="d-none">
+            <option value="">-- Select --</option>
+        </select>
+
 
         @* Client-side template (used by JS) *@
         <template id="spk-template">
@@ -196,7 +227,7 @@
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Designation</label>
-                        <input type="text" data-field="Designation" class="form-control" />
+                        <select class="form-select spk-designation" data-field="DesignationId"></select>
                     </div>
                     <div class="col-md-3">
                         <label class="form-label">Phone</label>
@@ -234,51 +265,61 @@
             </div>
         </template>
 
-        <!-- Documents Section -->
-        <div class="card shadow-sm border-0 mb-4">
-            <div class="card-header bg-dark text-white fw-semibold">
-                <i class="bi bi-file-earmark-text me-2"></i> Documents
+      <!-- Company Documents (fixed rows from Master Document Types) -->
+<div class="card shadow-sm border-0 mb-4">
+  <div class="card-header bg-dark text-white fw-semibold d-flex justify-content-between align-items-center">
+    <div><i class="bi bi-folder2-open me-2"></i> Company Documents</div>
+  </div>
+
+  <div class="card-body">
+    @if (Model.DocumentItems != null && Model.DocumentItems.Any())
+    {
+        for (int i = 0; i < Model.DocumentItems.Count; i++)
+        {
+            var row = Model.DocumentItems[i];
+            <div class="border rounded p-3 mb-2">
+                <input type="hidden" asp-for="DocumentItems[@i].DocumentTypeId" />
+                <input type="hidden" asp-for="DocumentItems[@i].DocumentTypeName" />
+                <input type="hidden" asp-for="DocumentItems[@i].IsMandatory" />
+
+                <label class="form-label">
+                    @row.DocumentTypeName
+                    @if (row.IsMandatory)
+                    {
+                        <span class="text-danger">*</span>
+                    }
+                </label>
+
+                            @if (row.IsMandatory)
+                            {
+                                <input asp-for="DocumentItems[@i].File"
+                                       type="file"
+                                       class="form-control"
+                                       required />
+                            }
+                            else
+                            {
+                                <input asp-for="DocumentItems[@i].File"
+                                       type="file"
+                                       class="form-control" />
+                            }
+
+
+                <span class="text-danger" asp-validation-for="DocumentItems[@i].File"></span>
             </div>
+        }
+    }
+    else
+    {
+        <div class="text-muted">No active document types defined.</div>
+    }
 
-            <div class="card-body">
-                <div class="row g-4">
-                    <!-- Left Column (NDA + MSA) -->
-                    <div class="col-md-6">
-                        <div class="mb-4">
-                            <label class="form-label fw-semibold">NDA</label>
-                            <input asp-for="NDAFile" type="file" class="form-control" accept=".pdf" />
-                            <span asp-validation-for="NDAFile" class="text-danger small"></span>
-                            <small class="text-muted">PDF only, max 10 MB.</small>
-                        </div>
+    <small class="text-muted d-block mt-2">
+        Fields marked with <span class="text-danger">*</span> are mandatory as per Master Settings.
+    </small>
+  </div>
+</div>
 
-                        <div class="mb-4">
-                            <label class="form-label fw-semibold">MSA</label>
-                            <input asp-for="MSAFile" type="file" class="form-control" accept=".pdf" />
-                            <span asp-validation-for="MSAFile" class="text-danger small"></span>
-                            <small class="text-muted">PDF only, max 10 MB.</small>
-                        </div>
-                    </div>
-
-                    <!-- Right Column (Corporate Presentation) -->
-                    <div class="col-md-6">
-                        <label class="form-label fw-semibold">Corporate Presentation</label>
-                        <input id="corporateFile" asp-for="CorporatePresentationFile" type="file" class="form-control mb-3" accept=".pdf" />
-
-                        <div class="position-relative">
-                            <textarea id="corporateText" asp-for="CorporatePresentationText" rows="6"
-                                      class="form-control" maxlength="4000"
-                                      placeholder="Or write presentation details (max 500 words)"></textarea>
-                            <span id="corpValidation" class="text-danger small"></span>
-                        </div>
-
-                        <div class="d-flex justify-content-between mt-2">
-                            <small class="text-muted">Upload PDF or write text</small>
-                            <small id="wordCount" class="text-muted">0 / 500 words</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
 
         <!-- Hiring Requirements -->
@@ -301,6 +342,7 @@
                 </div>
             </div>
         </div>
+
         <!-- Terms -->
         <div class="card shadow-sm border-0 mb-4">
             <div class="card-body">
@@ -316,116 +358,472 @@
 
         <!-- Submit -->
         <div class="text-center">
-            <button type="submit" class="btn btn-lg btn-primary px-5 shadow-sm">
+            <button type="button" id="triggerConfirm" class="btn btn-lg btn-primary px-5 shadow-sm">
                 <i class="bi bi-send-fill me-2"></i> Submit
             </button>
         </div>
     </form>
 </div>
 
+<!-- Confirm Onboarding Modal -->
+<div class="modal fade" id="confirmOnboardModal" tabindex="-1" aria-labelledby="confirmOnboardLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="confirmOnboardLabel">Confirm Onboarding</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Do you want to proceed with saving this client onboarding information?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">No</button>
+                <button type="button" id="confirmSaveBtn" class="btn btn-primary">Yes, Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        (async function(){
+        const desigSelect      = document.getElementById('designationSelect');   // Primary Contact
+          const masterDesignation= document.getElementById('spkDesignationMaster'); // Hidden master
+
+
+          function fillSelect(select, rows, placeholder){
+            select.innerHTML = '';
+            if (placeholder){
+              const ph = document.createElement('option');
+              ph.value = '';
+              ph.textContent = placeholder;
+              select.appendChild(ph);
+            }
+            rows.forEach(r=>{
+              const opt = document.createElement('option');
+              opt.value = (r.id ?? r.Id);
+              opt.textContent = (r.name ?? r.Name);
+              select.appendChild(opt);
+            });
+          }
+
+          async function loadDesignations(){
+            const res  = await fetch('@Url.Action("DesignationList", "MasterData")');
+            if (!res.ok) return; // optionally show a toast
+            const rows = await res.json();
+            fillSelect(desigSelect, rows, '-- Select --');
+
+            // restore selection on validation errors / edit
+            const sel = '@(Model?.DesignationId?.ToString() ?? "")';
+            if (sel) desigSelect.value = sel;
+            fillSelect(masterDesignation, rows, null);
+
+          }
+
+          await loadDesignations();
+        })();
+    </script>
 
     <script>
         (function () {
-            const container = document.getElementById('spokespersonContainer');
-            const template = document.getElementById('spk-template').innerHTML;
-            let spokesIndex = @((Model?.Spokespersons != null) ? Model.Spokespersons.Count : 0);
+          let DESIGNATIONS = [];
 
-            // Add new spokesperson
-            function addSpokesperson(data) {
-                const wrapper = document.createElement('div');
-                wrapper.innerHTML = template;
-                const item = wrapper.firstElementChild;
+          async function loadDesignations() {
+            const res = await fetch('@Url.Action("DesignationList", "MasterData")');
+            DESIGNATIONS = await res.json(); // each: { id, name }
+          }
 
-                // assign names based on current index
-                setNamesForItem(item, spokesIndex);
-
-                // if data provided, fill values
-                if (data) {
-                    if (data.Name) item.querySelector('[data-field="Name"]').value = data.Name;
-                    if (data.Designation) item.querySelector('[data-field="Designation"]').value = data.Designation;
-                    if (data.Phone) item.querySelector('[data-field="Phone"]').value = data.Phone;
-                    if (data.Email) item.querySelector('[data-field="Email"]').value = data.Email;
-                    if (Array.isArray(data.PreferredCommunication)) {
-                        item.querySelectorAll('[data-field="PreferredCommunication"]').forEach(cb => {
-                            if (data.PreferredCommunication.includes(cb.value)) cb.checked = true;
-                        });
-                    }
-                }
-
-                // attach remove handler
-                item.querySelector('.removeSpokesperson').addEventListener('click', function () {
-                    item.remove();
-                    reindexAll();
-                    refreshValidation();
-                });
-
-                container.appendChild(item);
-                spokesIndex++;
-                refreshValidation();
-            }
-
-            // Set name attributes inside the item based on index
-            function setNamesForItem(item, index) {
-                item.querySelectorAll('[data-field]').forEach(el => {
-                    const field = el.getAttribute('data-field'); // e.g., Name, Phone, PreferredCommunication
-                    if (!field) return;
-
-                    if (el.type === 'checkbox') {
-                        el.name = `Spokespersons[${index}].${field}`;
-                    } else {
-                        el.name = `Spokespersons[${index}].${field}`;
-                    }
-                });
-            }
-
-            // Reindex all spk-items so names are contiguous (0..n-1)
-            function reindexAll() {
-                const items = container.querySelectorAll('.spk-item');
-                items.forEach((item, i) => {
-                    item.querySelectorAll('[data-field]').forEach(el => {
-                        const field = el.getAttribute('data-field');
-                        if (el.type === 'checkbox') {
-                            el.name = `Spokespersons[${i}].${field}`;
-                        } else {
-                            el.name = `Spokespersons[${i}].${field}`;
-                        }
-                    });
-                });
-                spokesIndex = items.length;
-            }
-
-            // call unobtrusive parser to wire up client validation for dynamically added inputs
-            function refreshValidation() {
-                const form = document.getElementById('clientOnboardingForm');
-                if (window.jQuery && window.jQuery.validator && window.jQuery.validator.unobtrusive) {
-                    // remove old validators for removed fields then parse again
-                    jQuery(form).removeData('validator');
-                    jQuery(form).removeData('unobtrusiveValidation');
-                    $.validator.unobtrusive.parse(form);
-                }
-            }
-
-            document.getElementById('addSpokesperson').addEventListener('click', function () {
-                addSpokesperson();
+          function fillDesignationSelect(select, selected) {
+            select.innerHTML = '<option value="">-- Select --</option>';
+            DESIGNATIONS.forEach(d => {
+              const opt = document.createElement('option');
+              opt.value = d.id ?? d.Id;
+              opt.textContent = d.name ?? d.Name;
+              select.appendChild(opt);
             });
+            if (selected) select.value = selected;
+          }
 
-            // If any server-rendered initial items exist, attach remove handlers and ensure names are correct
-            document.querySelectorAll('.spk-item').forEach((item, idx) => {
-                item.querySelectorAll('[data-field]').forEach(el => {
-                    // ensure data-field exists on server-rendered inputs
-                });
-                const removeBtn = item.querySelector('.removeSpokesperson');
-                if (removeBtn) {
-                    removeBtn.addEventListener('click', function () {
-                        item.remove();
-                        reindexAll();
-                        refreshValidation();
-                    });
-                }
+          // Fill all existing spokesperson selects
+          async function hydrateExistingSpokespersons() {
+            await loadDesignations();
+            document.querySelectorAll('.spk-designation').forEach(sel => {
+              const selected = sel.getAttribute('data-selected');
+              fillDesignationSelect(sel, selected);
             });
-            refreshValidation();
+          }
+
+          document.addEventListener('DOMContentLoaded', hydrateExistingSpokespersons);
+
+          // Hook into your existing "addSpokesperson" to also populate designation
+          const originalAdd = window.addSpokesperson;
+          window.addSpokesperson = function(data) {
+            // call the original
+            const item = originalAdd ? originalAdd(data) : null;
+
+            // when a new block is added, fill its select
+            const last = document.querySelector('#spokespersonContainer .spk-item:last-child .spk-designation');
+            if (last) {
+              const selected = data?.DesignationId ?? null;
+              if (DESIGNATIONS.length) fillDesignationSelect(last, selected);
+              else loadDesignations().then(() => fillDesignationSelect(last, selected));
+            }
+            return item;
+          }
         })();
     </script>
+
+    <script>
+        (function(){
+          const hqCountry   = document.getElementById('hqCountry');
+          const hqLocation  = document.getElementById('hqLocation');
+          const otherLocBox = document.getElementById('otherLocList');
+
+          // Preselected "other" IDs from server
+          const preselectedOther = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                        Model?.OtherLocationIds ?? new List<int>()));
+
+      // If you also want to hide the HQ city from the checkbox list, set this true:
+      const excludeHqLocationFromOther = true;
+
+          // Endpoints
+          const urlCountries = '@Url.Action("CountriesJson", "MasterData")';
+          const urlLocs      = '@Url.Action("LocationsByCountry", "MasterData")'; // + ?countryId=###
+
+          function fillSelect(select, rows, placeholder){
+            select.innerHTML = '';
+            if (placeholder){
+              const ph = document.createElement('option');
+              ph.value = '';
+              ph.textContent = placeholder;
+              select.appendChild(ph);
+            }
+            rows.forEach(r=>{
+              const opt = document.createElement('option');
+              opt.value = (r.id ?? r.Id);
+              opt.textContent = (r.name ?? r.Name);
+              select.appendChild(opt);
+            });
+          }
+
+          function renderOtherCheckboxes(locations){
+            otherLocBox.innerHTML = '';
+            if (!locations || locations.length === 0){
+              otherLocBox.innerHTML = '<div class="text-muted small">No locations for this country.</div>';
+              return;
+            }
+
+            // Optionally skip the currently selected HQ location from the list
+            const currentHqLocId = hqLocation.value ? parseInt(hqLocation.value, 10) : null;
+
+            const frag = document.createDocumentFragment();
+            locations.forEach(l=>{
+              const id   = l.id ?? l.Id;
+              const name = l.name ?? l.Name;
+
+              if (excludeHqLocationFromOther && currentHqLocId && id === currentHqLocId) return;
+
+              const wrap  = document.createElement('div');
+              wrap.className = 'form-check form-check-inline me-3 mb-2';
+
+              const input = document.createElement('input');
+              input.type = 'checkbox';
+              input.className = 'form-check-input';
+              input.id = 'ol_' + id;
+              input.name = 'OtherLocationIds';
+              input.value = id;
+              if (preselectedOther.includes(id)) input.checked = true;
+
+              const label = document.createElement('label');
+              label.className = 'form-check-label';
+              label.htmlFor = input.id;
+              label.textContent = name;
+
+              wrap.appendChild(input);
+              wrap.appendChild(label);
+              frag.appendChild(wrap);
+            });
+            otherLocBox.appendChild(frag);
+          }
+
+          async function loadCountries(){
+            const res = await fetch(urlCountries);
+            if (!res.ok) return;
+            const rows = await res.json();
+            fillSelect(hqCountry, rows, '-- Select Country --');
+          }
+
+          async function loadLocationsForCountry(countryId){
+            if (!countryId){
+              fillSelect(hqLocation, [], '-- Select Location --');
+              renderOtherCheckboxes([]);
+              return;
+            }
+            const res = await fetch(urlLocs + '?countryId=' + countryId);
+            const rows = res.ok ? await res.json() : [];
+            fillSelect(hqLocation, rows, '-- Select Location --');
+            // Render checkboxes from the same rows
+            renderOtherCheckboxes(rows);
+          }
+
+          // When HQ country changes, refresh HQ location + other checkboxes
+          hqCountry.addEventListener('change', ()=> loadLocationsForCountry(hqCountry.value));
+
+          // When HQ location changes, optionally re-render to hide it from "Other"
+          hqLocation.addEventListener('change', async ()=>{
+            const cid = hqCountry.value;
+            if (!cid) return;
+            const res = await fetch(urlLocs + '?countryId=' + cid);
+            const rows = res.ok ? await res.json() : [];
+            renderOtherCheckboxes(rows);
+          });
+
+          // Boot: countries → (maybe) locations
+          (async function init(){
+            await loadCountries();
+
+            // Restore selected values (if server sent them back on validation errors)
+            const selCountry  = '@(Model?.HeadquarterCountryId?.ToString() ?? "")';
+            const selLocation = '@(Model?.HeadquarterLocationId?.ToString() ?? "")';
+
+            if (selCountry){
+              hqCountry.value = selCountry;
+              await loadLocationsForCountry(selCountry);
+              if (selLocation) {
+                hqLocation.value = selLocation;
+                // Re-render to ensure HQ city is excluded from "Other", if enabled
+                const res = await fetch(urlLocs + '?countryId=' + selCountry);
+                const rows = res.ok ? await res.json() : [];
+                renderOtherCheckboxes(rows);
+              }
+            }
+          })();
+        })();
+    </script>
+
+
+    <script>
+        (async function(){
+          const hqCountry     = document.getElementById('hqCountry');
+          const hqLocation    = document.getElementById('hqLocation');
+          const otherLocations= document.getElementById('otherLocations');
+
+          function fillSelect(select, rows, placeholder){
+            select.innerHTML = '';
+            if (placeholder){
+              const ph = document.createElement('option');
+              ph.value = '';
+              ph.textContent = placeholder;
+              select.appendChild(ph);
+            }
+            rows.forEach(r=>{
+              const opt = document.createElement('option');
+              opt.value = (r.id ?? r.Id);
+              opt.textContent = (r.name ?? r.Name);
+              select.appendChild(opt);
+            });
+          }
+
+          async function loadCountries(){
+            const res  = await fetch('@Url.Action("CountryList", "MasterData")');   // <-- FIXED
+            const rows = await res.json();
+            fillSelect(hqCountry, rows, '-- Select Country --');
+          }
+
+          async function loadLocationsForCountry(countryId, alsoFillOther){
+            if(!countryId){
+              fillSelect(hqLocation, [], '-- Select Location --');
+              fillSelect(otherLocations, [], null);
+              return;
+            }
+            const res  = await fetch('@Url.Action("LocationsByCountry", "MasterData")' + '?countryId=' + countryId);  // <-- FIXED
+            const rows = await res.json();
+            fillSelect(hqLocation, rows, '-- Select Location --');
+            if (alsoFillOther) fillSelect(otherLocations, rows, null);
+          }
+
+          hqCountry.addEventListener('change', async function(){
+            await loadLocationsForCountry(this.value, true);
+          });
+
+          await loadCountries();
+
+          // If you need to restore selected values after validation errors:
+          const selCountry  = '@(Model?.HeadquarterCountryId?.ToString() ?? "")';
+          const selLocation = '@(Model?.HeadquarterLocationId?.ToString() ?? "")';
+          if (selCountry) {
+            hqCountry.value = selCountry;
+            await loadLocationsForCountry(selCountry, true);
+            if (selLocation) hqLocation.value = selLocation;
+          }
+        })();
+    </script>
+
+    <!-- Modal + Submit wiring -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          const formEl     = document.getElementById('clientOnboardingForm');
+          const triggerBtn = document.getElementById('triggerConfirm');
+          const confirmBtn = document.getElementById('confirmSaveBtn');
+          const modalEl    = document.getElementById('confirmOnboardModal');
+
+          if (!formEl || !triggerBtn || !confirmBtn || !modalEl) {
+            console.error('Onboarding wiring: missing element(s).');
+            return;
+          }
+
+          if (!window.bootstrap || !bootstrap.Modal) {
+            // Fallback: if bootstrap JS is missing, submit directly
+            triggerBtn.addEventListener('click', () => {
+              if (typeof formEl.requestSubmit === 'function') formEl.requestSubmit();
+              else HTMLFormElement.prototype.submit.call(formEl);
+            });
+            return;
+          }
+
+          const confirmModal = new bootstrap.Modal(modalEl);
+
+          triggerBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            confirmModal.show();
+          });
+
+          confirmBtn.addEventListener('click', function () {
+            confirmBtn.disabled = true;
+            if (typeof formEl.requestSubmit === 'function') formEl.requestSubmit();
+            else HTMLFormElement.prototype.submit.call(formEl);
+          });
+        });
+    </script>
+
+    <script>
+        (function () {
+          const container    = document.getElementById('spokespersonContainer');
+          const templateHtml = document.getElementById('spk-template')?.innerHTML || '';
+          const masterDesig  = document.getElementById('spkDesignationMaster');
+          let spokesIndex    = @((Model?.Spokespersons != null) ? Model.Spokespersons.Count : 0);
+
+          function setNamesForItem(item, index) {
+            item.querySelectorAll('[data-field]').forEach(el => {
+              const field = el.getAttribute('data-field');
+              if (!field) return;
+              el.name = `Spokespersons[${index}].${field}`;
+            });
+          }
+
+          function reindexAll() {
+            const items = container.querySelectorAll('.spk-item');
+            items.forEach((item, i) => {
+              item.querySelectorAll('[data-field]').forEach(el => {
+                const field = el.getAttribute('data-field');
+                el.name = `Spokespersons[${i}].${field}`;
+              });
+            });
+            spokesIndex = items.length;
+          }
+
+          function refreshValidation() {
+            const formEl = document.getElementById('clientOnboardingForm');
+            if (window.jQuery && window.jQuery.validator && window.jQuery.validator.unobtrusive) {
+              jQuery(formEl).removeData('validator');
+              jQuery(formEl).removeData('unobtrusiveValidation');
+              jQuery.validator.unobtrusive.parse(formEl);
+            }
+          }
+
+          function hydrateDesignationSelect(selectEl, selected) {
+            if (!masterDesig || !selectEl) return;
+            // Copy all options from hidden master
+            selectEl.innerHTML = masterDesig.innerHTML;
+            if (selected != null && selected !== '') {
+              selectEl.value = String(selected);
+            }
+          }
+
+          // PUBLIC add function (kept same signature you use elsewhere)
+          function addSpokesperson(data) {
+            if (!templateHtml) return null;
+
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = templateHtml;
+            const item = wrapper.firstElementChild;
+
+            setNamesForItem(item, spokesIndex);
+
+            // Prefill text fields
+            if (data) {
+              if (data.Name)  item.querySelector('[data-field="Name"]').value  = data.Name;
+              if (data.Phone) item.querySelector('[data-field="Phone"]').value = data.Phone;
+              if (data.Email) item.querySelector('[data-field="Email"]').value = data.Email;
+              if (Array.isArray(data.PreferredCommunication)) {
+                item.querySelectorAll('[data-field="PreferredCommunication"]').forEach(cb => {
+                  if (data.PreferredCommunication.includes(cb.value)) cb.checked = true;
+                });
+              }
+            }
+
+            // Fill designation select from master + set selected value if provided
+            hydrateDesignationSelect(item.querySelector('.spk-designation'), data?.DesignationId);
+
+            // Remove handler
+            item.querySelector('.removeSpokesperson').addEventListener('click', function () {
+              item.remove();
+              reindexAll();
+              refreshValidation();
+            });
+
+            container.appendChild(item);
+            spokesIndex++;
+            refreshValidation();
+            return item;
+          }
+
+          // Expose for your "Add Spokesperson" button
+          window.addSpokesperson = addSpokesperson;
+
+          // Wire button
+          document.getElementById('addSpokesperson')?.addEventListener('click', () => addSpokesperson());
+
+          // Hydrate any server-rendered spokesperson rows (Edit scenario)
+          // After master has been filled (it is by previous script), copy options + set current value
+          document.addEventListener('DOMContentLoaded', function(){
+            container.querySelectorAll('.spk-item .spk-designation').forEach(sel => {
+              const current = sel.getAttribute('data-current') || '';
+              hydrateDesignationSelect(sel, current);
+            });
+          });
+
+        })();
+    </script>
+
+    <!-- Small UX helpers: word count + either text or file -->
+    <script>
+        (function () {
+          const textEl = document.getElementById('corporateText');
+          const wordCountEl = document.getElementById('wordCount');
+          const fileEl = document.getElementById('corporateFile');
+          const warnEl = document.getElementById('corpValidation');
+          function updateCount() {
+            if (!textEl || !wordCountEl) return;
+            const words = (textEl.value || '').trim().split(/\s+/).filter(Boolean);
+            wordCountEl.textContent = words.length + ' / 500 words';
+          }
+          textEl?.addEventListener('input', updateCount);
+          updateCount();
+
+          // Optional: discourage filling both file and text
+          function checkEitherOr() {
+            if (!fileEl || !textEl || !warnEl) return;
+            if (fileEl.value && textEl.value.trim()) {
+              warnEl.textContent = 'You attached a file and wrote text. Consider using one.';
+            } else {
+              warnEl.textContent = '';
+            }
+          }
+          fileEl?.addEventListener('change', checkEitherOr);
+          textEl?.addEventListener('input', checkEitherOr);
+        })();
+    </script>
+
 }

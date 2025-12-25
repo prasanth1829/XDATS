@@ -145,6 +145,7 @@ C:\Users\xeedo\source\repos\ResumeApp\ResumeApp\obj\Debug\net8.0\ResumeApp.cspro
 C:\Users\xeedo\source\repos\ResumeApp\ResumeApp\obj\Debug\net8.0\ResumeApp.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\xeedo\source\repos\ResumeApp\ResumeApp\obj\Debug\net8.0\ResumeApp.RazorAssemblyInfo.cache
 C:\Users\xeedo\source\repos\ResumeApp\ResumeApp\obj\Debug\net8.0\ResumeApp.RazorAssemblyInfo.cs
+C:\Users\xeedo\source\repos\ResumeApp\ResumeApp\obj\Debug\net8.0\ResumeApp.sourcelink.json
 C:\Users\xeedo\source\repos\ResumeApp\ResumeApp\obj\Debug\net8.0\rjimswa.dswa.cache.json
 C:\Users\xeedo\source\repos\ResumeApp\ResumeApp\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
 C:\Users\xeedo\source\repos\ResumeApp\ResumeApp\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
@@ -155,6 +156,7 @@ C:\Users\xeedo\source\repos\ResumeApp\ResumeApp\obj\Debug\net8.0\staticwebassets
 C:\Users\xeedo\source\repos\ResumeApp\ResumeApp\obj\Debug\net8.0\staticwebassets.build.json.cache
 C:\Users\xeedo\source\repos\ResumeApp\ResumeApp\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\xeedo\source\repos\ResumeApp\ResumeApp\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+C:\Users\xeedo\source\repos\ResumeApp\ResumeApp\obj\Debug\net8.0\swae.build.ex.cache
 C:\Users\xeedo\source\repos\ResumeApp\ResumeApp\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\xeedo\source\repos\ResumeApp\ResumeApp\obj\Debug\net8.0\ResumeApp.csproj.Up2Date
 C:\Users\xeedo\source\repos\ResumeApp\ResumeApp\obj\Debug\net8.0\ResumeApp.dll

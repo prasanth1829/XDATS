@@ -2,88 +2,161 @@
 
 @{
     ViewData["Title"] = "Clients";
+    var reqCounts = ViewBag.RequirementCounts as Dictionary<int, int> ?? new();
 }
 
 <div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold text-primary">
-            <i class="bi bi-people-fill me-2"></i> Clients
-        </h2>
-        <a asp-action="ClientOnboarding" class="btn btn-primary">
+    <!-- Header / Toolbar -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h2 class="fw-bold mb-1 text-primary d-flex align-items-center gap-2">
+                <i class="bi bi-people-fill"></i>
+                Clients
+            </h2>
+            <div class="text-muted small">Manage client details, requirements, and quick actions.</div>
+        </div>
+        <a asp-action="ClientOnboarding" class="btn btn-primary shadow-sm">
             <i class="bi bi-plus-circle me-1"></i> Add New Client
         </a>
     </div>
 
-    <table class="table table-hover shadow-sm align-middle">
-        <thead class="table-light">
-            <tr>
-                <th>Company</th>
-                <th>Type</th>
-                <th>Status</th>
-                <th>Requirement</th>
-                <th>Remark</th>
-                <th>Created</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var client in Model)
-            {
-                <tr>
-                    <!-- Data from DB -->
-                    <td>@client.CompanyName</td>
-                    <td>@client.CompanyType</td>
+    <!-- Table Card -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0 client-table">
+                    <thead class="table-light sticky-top">
+                        <tr>
+                            <th style="min-width: 280px;">Company</th>
+                            <th style="min-width: 140px;">Type</th>
+                            <th style="min-width: 220px;">Status</th>
+                            <th style="min-width: 200px;">Requirement</th>
+                           <!-- <th style="min-width: 140px;">Remark</th>-->
+                            <th style="min-width: 130px;">Created</th>
+                            <th style="min-width: 140px;" class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var client in Model)
+                        {
+                            var count = reqCounts.TryGetValue(client.Id, out var c) ? c : 0;
+                            var initials = (client.CompanyName ?? "C").Trim();
+                            initials = initials.Length >= 2 ? initials.Substring(0, 2).ToUpper() : initials.ToUpper();
 
-                    <!-- Fake Status (frontend only) -->
-                    <td>
-                        <span class="badge bg-success status-badge">Active</span>
-                        <select class="form-select form-select-sm d-inline-block w-auto status-dropdown ms-2">
-                            <option value="Active" selected>Active</option>
-                            <option value="Hold">Hold</option>
-                            <option value="Inactive">Inactive</option>
-                        </select>
-                    </td>
+                            <tr class="row-hover">
+                                <!-- Company -->
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-circle me-3">
+                                            <span>@initials</span>
+                                        </div>
+                                        <div>
+                                            <div class="fw-semibold text-dark">@client.CompanyName</div>
+                                            <div class="small text-muted">@client.WebsiteUrl</div>
+                                        </div>
+                                    </div>
+                                </td>
 
-                    <!--Requirement -->
-                    <td>
-                        <a asp-controller="ClientRequirements" asp-action="Create" asp-route-clientId="@client.Id"
-                           class="btn btn-sm btn-outline-info">
-                            <i class="bi bi-plus-circle me-1"></i> Add
-                        </a>
-                    </td>
+                                <!-- Type -->
+                                <td>
+                                    @if (!string.IsNullOrWhiteSpace(client.CompanyType))
+                                    {
+                                        var typeClass = client.CompanyType?.Contains("Product", StringComparison.OrdinalIgnoreCase) == true
+                                        ? "badge-soft-primary"
+                                        : "badge-soft-secondary";
+                                        <span class="badge @typeClass">@client.CompanyType</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">—</span>
+                                    }
+                                </td>
 
-                    <!-- Fake Remark (frontend only) -->
-                    <td>
-                        <button type="button" class="btn btn-sm btn-outline-secondary add-remark-btn">
-                            <i class="bi bi-chat-left-text me-1"></i> Remark
-                        </button>
-                    </td>
+                                <!-- Status (frontend only, unchanged functionality) -->
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="badge bg-success status-badge">Active</span>
+                                        <select class="form-select form-select-sm status-dropdown w-auto">
+                                            <option value="Active" selected>Active</option>
+                                            <option value="Hold">Hold</option>
+                                            <option value="Inactive">Inactive</option>
+                                        </select>
+                                    </div>
+                                </td>
 
-                    <!-- Data from DB -->
-                    <td>@client.CreatedAt.ToString("yyyy-MM-dd")</td>
+                                <!-- Requirement -->
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <a asp-controller="ClientRequirements"
+                                           asp-action="Index"
+                                           asp-route-clientId="@client.Id"
+                                           class="badge req-count pill text-decoration-none"
+                                           data-count="@count"
+                                           title="View requirements">
+                                            <i class="bi bi-list-check me-1"></i>@count
+                                        </a>
 
-                    <!-- Actions (DB-related) -->
-                    <td>
-                        <a asp-action="Details" asp-route-id="@client.Id"
-                           class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a>
-                        <a asp-action="Edit" asp-route-id="@client.Id"
-                           class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></a>
-                        <a asp-action="Delete" asp-route-id="@client.Id"
-                           class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                                        <a asp-controller="ClientRequirements"
+                                           asp-action="Create"
+                                           asp-route-clientId="@client.Id"
+                                           class="btn btn-sm btn-outline-info">
+                                            <i class="bi bi-plus-circle me-1"></i> Add
+                                        </a>
+                                    </div>
+                                </td>
+
+                                <!-- Remark (frontend only)
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary add-remark-btn">
+                                        <i class="bi bi-chat-left-text me-1"></i> Remark
+                                    </button>
+                                </td>-->
+
+                                <!-- Created -->
+                                <td class="text-muted small">@client.CreatedAt.ToString("yyyy-MM-dd")</td>
+
+                                <!-- Actions -->
+                                <td class="text-end">
+                                    <div class="btn-group" role="group">
+                                        <a asp-controller="Clients" asp-action="Details" asp-route-id="@client.Id"
+                                           class="btn btn-sm btn-outline-info" title="Details">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a asp-controller="Clients" asp-action="Edit" asp-route-id="@client.Id"
+                                           class="btn btn-sm btn-outline-warning" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form asp-controller="Clients" asp-action="Delete" asp-route-id="@client.Id"
+                                              method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete"
+                                                    onclick="return confirm('Delete this client? You cannot delete if there are active requirements.')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Footer hint -->
+            <div class="px-3 py-2 text-muted small border-top">
+                Tip: Requirement count colors reflect urgency (0 = grey, 1–5 = primary, 6+ = success).
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- Remark Modal -->
-<div class="modal fade" id="remarkModal" tabindex="-1">
+<!-- Remark Modal (unchanged functionality) -->
+<div class="modal fade" id="remarkModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <div class="modal-content shadow">
             <div class="modal-header bg-secondary text-white">
                 <h5 class="modal-title">Add Remark</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <textarea class="form-control" id="remarkText" rows="4" placeholder="Enter remark"></textarea>
@@ -96,9 +169,76 @@
     </div>
 </div>
 
+<style>
+    .client-table thead th {
+        font-weight: 600;
+        letter-spacing: .2px;
+    }
+
+    .client-table tbody td {
+        vertical-align: middle;
+    }
+
+    .row-hover:hover {
+        background: rgba(0,0,0,.02);
+    }
+
+    .avatar-circle {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(13,110,253,.15), rgba(32,201,151,.15));
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: #0d6efd;
+        border: 1px solid rgba(13,110,253,.25);
+    }
+
+    .badge-soft-primary {
+        color: #0d6efd;
+        background: rgba(13,110,253,.08);
+        border: 1px solid rgba(13,110,253,.2);
+    }
+
+    .badge-soft-secondary {
+        color: #6c757d;
+        background: rgba(108,117,125,.08);
+        border: 1px solid rgba(108,117,125,.2);
+    }
+
+    .req-count.pill {
+        border-radius: 999px;
+        padding: .35rem .6rem;
+        font-weight: 600;
+        border: 1px solid transparent;
+        display: inline-flex;
+        align-items: center;
+    }
+    /* Default (0) */
+    .req-zero {
+        color: #6c757d;
+        background: rgba(108,117,125,.08);
+        border-color: rgba(108,117,125,.25);
+    }
+    /* 1–5 */
+    .req-low {
+        color: #0d6efd;
+        background: rgba(13,110,253,.08);
+        border-color: rgba(13,110,253,.25);
+    }
+    /* 6+ */
+    .req-high {
+        color: #198754;
+        background: rgba(25,135,84,.08);
+        border-color: rgba(25,135,84,.25);
+    }
+</style>
+
 @section Scripts {
     <script>
-        // Status change updates badge instantly (frontend only)
+        // Status change updates badge instantly (frontend only — unchanged)
         document.querySelectorAll('.status-dropdown').forEach(dropdown => {
             dropdown.addEventListener('change', function () {
                 const badge = this.closest('td').querySelector('.status-badge');
@@ -114,20 +254,7 @@
             });
         });
 
-        // Requirement modal
-        document.querySelectorAll('.add-req-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                new bootstrap.Modal(document.getElementById('requirementModal')).show();
-            });
-        });
-        document.getElementById('saveRequirementBtn').addEventListener('click', () => {
-            const text = document.getElementById('requirementText').value;
-            alert("Requirement saved (frontend only): " + text);
-            bootstrap.Modal.getInstance(document.getElementById('requirementModal')).hide();
-            document.getElementById('requirementText').value = "";
-        });
-
-        // Remark modal
+        // Remark modal (frontend only — unchanged)
         document.querySelectorAll('.add-remark-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 new bootstrap.Modal(document.getElementById('remarkModal')).show();
@@ -138,6 +265,15 @@
             alert("Remark saved (frontend only): " + text);
             bootstrap.Modal.getInstance(document.getElementById('remarkModal')).hide();
             document.getElementById('remarkText').value = "";
+        });
+
+        // Requirement count coloring (visual only, no functional change)
+        document.querySelectorAll('.req-count').forEach(b => {
+            const n = parseInt(b.getAttribute('data-count') || '0', 10);
+            b.classList.remove('req-zero','req-low','req-high');
+            if (n <= 0) b.classList.add('req-zero');
+            else if (n <= 5) b.classList.add('req-low');
+            else b.classList.add('req-high');
         });
     </script>
 }

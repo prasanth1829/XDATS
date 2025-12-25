@@ -1,0 +1,62 @@
+﻿@using ResumeApp.Models
+@model Location
+@{
+    ViewData["Title"] = "Create Location";
+    var countries = ViewBag.Countries as IEnumerable<dynamic> ?? Enumerable.Empty<dynamic>();
+}
+<h3 class="mb-3">Create Location</h3>
+
+<form asp-action="CreateLocation" method="post" class="row g-3">
+    @Html.AntiForgeryToken()
+
+    <div class="col-md-6">
+        <label class="form-label">Country *</label>
+        <select asp-for="CountryId" class="form-select" required>
+            <option value="">-- Select Country --</option>
+            @foreach (var c in countries)
+            {
+                <option value="@c.Id">@c.Name</option>
+            }
+        </select>
+        <span asp-validation-for="CountryId" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="Name" class="form-label">Location / City *</label>
+        <input asp-for="Name" class="form-control" placeholder="e.g., Bengaluru" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="StateOrProvince" class="form-label">State / Province</label>
+        <input asp-for="StateOrProvince" class="form-control" placeholder="Karnataka" />
+        <span asp-validation-for="StateOrProvince" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-3">
+        <label asp-for="Timezone" class="form-label">Timezone</label>
+        <input asp-for="Timezone" class="form-control" placeholder="Asia/Kolkata" />
+        <span asp-validation-for="Timezone" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-3">
+        <label asp-for="SortOrder" class="form-label">Sort Order</label>
+        <input asp-for="SortOrder" type="number" class="form-control" />
+    </div>
+
+    <div class="col-12">
+        <div class="form-check">
+            <input asp-for="IsActive" class="form-check-input" id="lActive" />
+            <label class="form-check-label" for="lActive">Active</label>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <button class="btn btn-primary" type="submit">Save Location</button>
+        <a asp-action="Locations" class="btn btn-light">Back to List</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ResumeApp.Models;
 using ResumeApp.ViewModels;
@@ -16,7 +17,12 @@ namespace ResumeApp.Controllers
             this.signInManager = signInManager;
             this.userManager = userManager;
         }
-
+        [AllowAnonymous]
+        public IActionResult AccessDenied(string? returnUrl = null)
+        {
+            ViewBag.ReturnUrl = returnUrl;
+            return View();
+        }
         public IActionResult Login()
         {
             return View();
@@ -48,8 +54,6 @@ namespace ResumeApp.Controllers
                     ModelState.AddModelError("", "Your account request was denied by Admin.");
                     return View(model);
                 }
-
-
                 var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
 
                 if (result.Succeeded)
@@ -59,6 +63,19 @@ namespace ResumeApp.Controllers
 
                     if (roles.Contains("Reviewer"))
                         return RedirectToAction("ReviewerDashboard", "Home");
+
+                    if (roles.Contains("Team Lead"))
+                        return RedirectToAction("TeamLead", "Dashboard");
+
+                    if (roles.Contains("Manager"))
+                        return RedirectToAction("Manager", "Dashboard");
+
+                    if (roles.Contains("Vendor"))
+                        return RedirectToAction("Vendor", "Dashboard");
+
+                    if (roles.Contains("Panel"))
+                        return RedirectToAction("Panel", "Dashboard");
+
 
                     return RedirectToAction("Index", "Home");
                 }

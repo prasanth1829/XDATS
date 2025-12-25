@@ -185,6 +185,41 @@ namespace ResumeApp.Migrations
                     b.ToTable("ActivityLogs");
                 });
 
+            modelBuilder.Entity("ResumeApp.Models.CandidateStatusHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("ChangedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ChangedByUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Comment")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<int>("RequirementId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ResumeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RequirementId", "ResumeId", "ChangedAt");
+
+                    b.ToTable("CandidateStatusHistories");
+                });
+
             modelBuilder.Entity("ResumeApp.Models.Client", b =>
                 {
                     b.Property<int>("Id")
@@ -227,13 +262,17 @@ namespace ResumeApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("HeadquarterLocation")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("HeadquarterCountryId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("OtherOfficeLocations")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("HeadquarterLocationId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Phone")
                         .IsRequired()
@@ -248,6 +287,10 @@ namespace ResumeApp.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("HeadquarterCountryId");
+
+                    b.HasIndex("HeadquarterLocationId");
 
                     b.ToTable("Clients");
                 });
@@ -282,6 +325,64 @@ namespace ResumeApp.Migrations
                     b.ToTable("ClientDocuments");
                 });
 
+            modelBuilder.Entity("ResumeApp.Models.ClientDocumentItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DocumentTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("UploadedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("DocumentTypeId");
+
+                    b.ToTable("ClientDocumentItems");
+                });
+
+            modelBuilder.Entity("ResumeApp.Models.ClientOtherLocation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("LocationId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LocationId");
+
+                    b.HasIndex("ClientId", "LocationId")
+                        .IsUnique();
+
+                    b.ToTable("ClientOtherLocations");
+                });
+
             modelBuilder.Entity("ResumeApp.Models.ClientRequirement", b =>
                 {
                     b.Property<int>("Id")
@@ -291,15 +392,15 @@ namespace ResumeApp.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AttachmentsPath")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BillingType")
-                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BudgetNote")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Certifications")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ClientId")
@@ -311,12 +412,13 @@ namespace ResumeApp.Migrations
                     b.Property<DateTime?>("Deadline")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Education")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EmploymentType")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("ExpectedJoiningDate")
@@ -328,16 +430,20 @@ namespace ResumeApp.Migrations
                     b.Property<int?>("ExperienceMin")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("JobLocation")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("JobLocationId")
+                        .HasColumnType("int");
 
                     b.Property<string>("JobTitle")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NoticePeriod")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Positions")
@@ -345,47 +451,657 @@ namespace ResumeApp.Migrations
                         .HasColumnName("Positions");
 
                     b.Property<string>("RequirementPriority")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Responsibilities")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Responsibilities");
 
                     b.Property<string>("SalaryRange")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ScreeningQuestions")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SkillsPrimary")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SkillsRequired")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SkillsSecondary")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SpecialInstructions")
-                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("SpokespersonId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("StatusUpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("VendorNotes")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("WorkShift")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
 
+                    b.HasIndex("JobLocationId");
+
+                    b.HasIndex("SpokespersonId");
+
                     b.ToTable("ClientRequirements");
+                });
+
+            modelBuilder.Entity("ResumeApp.Models.Country", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("IsoCode")
+                        .HasMaxLength(3)
+                        .HasColumnType("nvarchar(3)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsActive", "SortOrder", "Name");
+
+                    b.ToTable("Countries");
+                });
+
+            modelBuilder.Entity("ResumeApp.Models.Designation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsActive", "SortOrder", "Name");
+
+                    b.ToTable("Designations");
+                });
+
+            modelBuilder.Entity("ResumeApp.Models.DocumentType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsMandatory")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DocumentTypes");
+                });
+
+            modelBuilder.Entity("ResumeApp.Models.InterviewFeedback", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CommScore")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Comments")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("CultureScore")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Decision")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InterviewScheduleId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PanelUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("RequirementId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ResumeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Round")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TechScore")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InterviewScheduleId", "PanelUserId")
+                        .IsUnique();
+
+                    b.HasIndex("RequirementId", "ResumeId", "Round");
+
+                    b.ToTable("InterviewFeedbacks");
+                });
+
+            modelBuilder.Entity("ResumeApp.Models.InterviewSchedule", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("ActualEndUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ActualStartUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LocationOrLink")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Mode")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("Outcome")
+                        .HasColumnType("int");
+
+                    b.Property<string>("OutcomeNote")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("PanelUserIdsCsv")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<int>("RequirementId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ResumeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Round")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ScheduledEndUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ScheduledStartUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ScheduledStartUtc");
+
+                    b.HasIndex("RequirementId", "ResumeId", "Round");
+
+                    b.ToTable("InterviewSchedules");
+                });
+
+            modelBuilder.Entity("ResumeApp.Models.Location", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CountryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StateOrProvince")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Timezone")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CountryId", "IsActive", "SortOrder", "Name");
+
+                    b.ToTable("Locations");
+                });
+
+            modelBuilder.Entity("ResumeApp.Models.Master.NoticePeriodOption", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsActive", "SortOrder", "Name");
+
+                    b.ToTable("NoticePeriodOptions");
+                });
+
+            modelBuilder.Entity("ResumeApp.Models.Master.Qualification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.HasIndex("IsActive", "SortOrder");
+
+                    b.ToTable("Qualifications");
+                });
+
+            modelBuilder.Entity("ResumeApp.Models.Master.RequirementQualification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("QualificationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RequirementId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QualificationId");
+
+                    b.HasIndex("RequirementId", "QualificationId")
+                        .IsUnique();
+
+                    b.ToTable("RequirementQualifications");
+                });
+
+            modelBuilder.Entity("ResumeApp.Models.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Body")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<string>("Url")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId", "IsRead", "CreatedAt");
+
+                    b.ToTable("Notifications");
+                });
+
+            modelBuilder.Entity("ResumeApp.Models.PanelAssignment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("AssignedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("AssignedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PanelUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("RequirementId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ResumeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PanelUserId", "RequirementId", "ResumeId")
+                        .IsUnique();
+
+                    b.ToTable("PanelAssignments");
+                });
+
+            modelBuilder.Entity("ResumeApp.Models.PanelFeedback", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DecidedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Decision")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PanelUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Remark")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("RequirementId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ResumeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PanelUserId", "RequirementId", "ResumeId", "DecidedAt");
+
+                    b.ToTable("PanelFeedbacks");
+                });
+
+            modelBuilder.Entity("ResumeApp.Models.RequirementAssignment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("AssignedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RequirementId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RequirementId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RequirementAssignments");
+                });
+
+            modelBuilder.Entity("ResumeApp.Models.RequirementMom", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AttachmentsPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedByUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("LastEditedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastEditedByUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("MeetingDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Minutes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RequirementId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedByUserId");
+
+                    b.HasIndex("LastEditedByUserId");
+
+                    b.HasIndex("RequirementId", "MeetingDate", "CreatedAt");
+
+                    b.ToTable("RequirementMoms");
+                });
+
+            modelBuilder.Entity("ResumeApp.Models.RequirementMomHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AttachmentsPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("EditedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EditedByUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("NotesHtml")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RequirementMomId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EditedByUserId");
+
+                    b.HasIndex("RequirementMomId", "EditedAt");
+
+                    b.ToTable("RequirementMomHistories");
+                });
+
+            modelBuilder.Entity("ResumeApp.Models.RequirementSkill", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsPrimary")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("RequirementId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SkillId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SkillId");
+
+                    b.HasIndex("RequirementId", "SkillId", "IsPrimary")
+                        .IsUnique();
+
+                    b.ToTable("RequirementSkills");
                 });
 
             modelBuilder.Entity("ResumeApp.Models.Resume", b =>
@@ -445,6 +1161,97 @@ namespace ResumeApp.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Resumes");
+                });
+
+            modelBuilder.Entity("ResumeApp.Models.ResumeRequirementLink", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("LastComment")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<DateTime?>("LastScoredAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("LinkedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LinkedByUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("MatchBreakdownJson")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<short?>("MatchScore")
+                        .HasColumnType("smallint");
+
+                    b.Property<int>("RequirementId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ResumeId")
+                        .HasColumnType("int");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LinkedByUserId");
+
+                    b.HasIndex("ResumeId");
+
+                    b.HasIndex("RequirementId", "MatchScore");
+
+                    b.ToTable("ResumeRequirementLinks");
+                });
+
+            modelBuilder.Entity("ResumeApp.Models.Skill", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.HasIndex("IsActive", "SortOrder");
+
+                    b.ToTable("Skills");
                 });
 
             modelBuilder.Entity("ResumeApp.Models.Spokesperson", b =>
@@ -622,6 +1429,23 @@ namespace ResumeApp.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ResumeApp.Models.Client", b =>
+                {
+                    b.HasOne("ResumeApp.Models.Country", "HeadquarterCountry")
+                        .WithMany()
+                        .HasForeignKey("HeadquarterCountryId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("ResumeApp.Models.Location", "HeadquarterLocation")
+                        .WithMany()
+                        .HasForeignKey("HeadquarterLocationId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("HeadquarterCountry");
+
+                    b.Navigation("HeadquarterLocation");
+                });
+
             modelBuilder.Entity("ResumeApp.Models.ClientDocument", b =>
                 {
                     b.HasOne("ResumeApp.Models.Client", "Client")
@@ -633,6 +1457,44 @@ namespace ResumeApp.Migrations
                     b.Navigation("Client");
                 });
 
+            modelBuilder.Entity("ResumeApp.Models.ClientDocumentItem", b =>
+                {
+                    b.HasOne("ResumeApp.Models.Client", "Client")
+                        .WithMany("ClientDocumentItems")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ResumeApp.Models.DocumentType", "DocumentType")
+                        .WithMany()
+                        .HasForeignKey("DocumentTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("DocumentType");
+                });
+
+            modelBuilder.Entity("ResumeApp.Models.ClientOtherLocation", b =>
+                {
+                    b.HasOne("ResumeApp.Models.Client", "Client")
+                        .WithMany("OtherLocationsMap")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ResumeApp.Models.Location", "Location")
+                        .WithMany()
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Location");
+                });
+
             modelBuilder.Entity("ResumeApp.Models.ClientRequirement", b =>
                 {
                     b.HasOne("ResumeApp.Models.Client", "Client")
@@ -641,7 +1503,133 @@ namespace ResumeApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ResumeApp.Models.Location", "JobLocationRef")
+                        .WithMany()
+                        .HasForeignKey("JobLocationId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("ResumeApp.Models.Spokesperson", "Spokesperson")
+                        .WithMany()
+                        .HasForeignKey("SpokespersonId");
+
                     b.Navigation("Client");
+
+                    b.Navigation("JobLocationRef");
+
+                    b.Navigation("Spokesperson");
+                });
+
+            modelBuilder.Entity("ResumeApp.Models.Location", b =>
+                {
+                    b.HasOne("ResumeApp.Models.Country", "Country")
+                        .WithMany()
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Country");
+                });
+
+            modelBuilder.Entity("ResumeApp.Models.Master.RequirementQualification", b =>
+                {
+                    b.HasOne("ResumeApp.Models.Master.Qualification", "Qualification")
+                        .WithMany()
+                        .HasForeignKey("QualificationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ResumeApp.Models.ClientRequirement", "Requirement")
+                        .WithMany("RequirementQualifications")
+                        .HasForeignKey("RequirementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Qualification");
+
+                    b.Navigation("Requirement");
+                });
+
+            modelBuilder.Entity("ResumeApp.Models.RequirementAssignment", b =>
+                {
+                    b.HasOne("ResumeApp.Models.ClientRequirement", "Requirement")
+                        .WithMany("RequirementAssignments")
+                        .HasForeignKey("RequirementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ResumeApp.Models.Users", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Requirement");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ResumeApp.Models.RequirementMom", b =>
+                {
+                    b.HasOne("ResumeApp.Models.Users", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ResumeApp.Models.Users", "LastEditedByUser")
+                        .WithMany()
+                        .HasForeignKey("LastEditedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("ResumeApp.Models.ClientRequirement", "Requirement")
+                        .WithMany("MeetingNotes")
+                        .HasForeignKey("RequirementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CreatedByUser");
+
+                    b.Navigation("LastEditedByUser");
+
+                    b.Navigation("Requirement");
+                });
+
+            modelBuilder.Entity("ResumeApp.Models.RequirementMomHistory", b =>
+                {
+                    b.HasOne("ResumeApp.Models.Users", "EditedByUser")
+                        .WithMany()
+                        .HasForeignKey("EditedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ResumeApp.Models.RequirementMom", "RequirementMom")
+                        .WithMany("History")
+                        .HasForeignKey("RequirementMomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("EditedByUser");
+
+                    b.Navigation("RequirementMom");
+                });
+
+            modelBuilder.Entity("ResumeApp.Models.RequirementSkill", b =>
+                {
+                    b.HasOne("ResumeApp.Models.ClientRequirement", "Requirement")
+                        .WithMany("RequirementSkills")
+                        .HasForeignKey("RequirementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ResumeApp.Models.Skill", "Skill")
+                        .WithMany()
+                        .HasForeignKey("SkillId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Requirement");
+
+                    b.Navigation("Skill");
                 });
 
             modelBuilder.Entity("ResumeApp.Models.Resume", b =>
@@ -651,6 +1639,33 @@ namespace ResumeApp.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ResumeApp.Models.ResumeRequirementLink", b =>
+                {
+                    b.HasOne("ResumeApp.Models.Users", "LinkedByUser")
+                        .WithMany()
+                        .HasForeignKey("LinkedByUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ResumeApp.Models.ClientRequirement", "Requirement")
+                        .WithMany()
+                        .HasForeignKey("RequirementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ResumeApp.Models.Resume", "Resume")
+                        .WithMany()
+                        .HasForeignKey("ResumeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("LinkedByUser");
+
+                    b.Navigation("Requirement");
+
+                    b.Navigation("Resume");
                 });
 
             modelBuilder.Entity("ResumeApp.Models.Spokesperson", b =>
@@ -666,9 +1681,29 @@ namespace ResumeApp.Migrations
 
             modelBuilder.Entity("ResumeApp.Models.Client", b =>
                 {
+                    b.Navigation("ClientDocumentItems");
+
                     b.Navigation("Documents");
 
+                    b.Navigation("OtherLocationsMap");
+
                     b.Navigation("Spokespersons");
+                });
+
+            modelBuilder.Entity("ResumeApp.Models.ClientRequirement", b =>
+                {
+                    b.Navigation("MeetingNotes");
+
+                    b.Navigation("RequirementAssignments");
+
+                    b.Navigation("RequirementQualifications");
+
+                    b.Navigation("RequirementSkills");
+                });
+
+            modelBuilder.Entity("ResumeApp.Models.RequirementMom", b =>
+                {
+                    b.Navigation("History");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,0 +1,48 @@
+﻿@model ResumeApp.Models.Skill
+
+@{
+    ViewData["Title"] = "Edit Skill";
+}
+
+<div class="container py-3">
+    <h2 class="fw-bold text-primary mb-3">Edit Skill</h2>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <form asp-action="EditSkill" method="post" class="row g-3">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
+
+                <div class="col-md-6">
+                    <label asp-for="Name" class="form-label">Skill Name</label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-3">
+                    <label asp-for="SortOrder" class="form-label">Sort Order</label>
+                    <input asp-for="SortOrder" class="form-control" />
+                    <span asp-validation-for="SortOrder" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-3 d-flex align-items-center">
+                    <div class="form-check mt-3">
+                        <input asp-for="IsActive" class="form-check-input" />
+                        <label asp-for="IsActive" class="form-check-label">Active</label>
+                    </div>
+                </div>
+
+                <div class="col-12 mt-3">
+                    <a asp-action="Skills" class="btn btn-outline-secondary me-2">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -12,6 +12,8 @@ using System.Security.Claims;
 using System.Text.RegularExpressions;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
+using System.Linq;
+
 
 
 namespace ResumeApp.Controllers
@@ -158,76 +160,111 @@ namespace ResumeApp.Controllers
                 return body?.InnerText ?? string.Empty;
             }
         }
+        private Task<Resume?> FindExistingResumeAsync(string fileHash, string? email)
+        {
+            return _context.Resumes.FirstOrDefaultAsync(r =>
+                r.FileHash == fileHash ||
+                (!string.IsNullOrWhiteSpace(email) && r.Email == email));
+        }
+
+        private async Task<bool> LinkResumeToRequirementAsync(int resumeId, int requirementId, string? userId)
+        {
+            var alreadyLinked = await _context.ResumeRequirementLinks
+                .AnyAsync(l => l.RequirementId == requirementId && l.ResumeId == resumeId);
+
+            if (alreadyLinked) return false;
+
+            _context.ResumeRequirementLinks.Add(new ResumeRequirementLink
+            {
+                ResumeId = resumeId,
+                RequirementId = requirementId,
+                LinkedByUserId = userId,
+                LinkedAt = DateTime.Now
+            });
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
 
         [HttpGet]
-        public IActionResult Upload() => View();
+        public IActionResult Upload(int? requirementId)
+        {
+            ViewBag.RequirementId = requirementId;
+            return View();
+        }
 
         [HttpPost]
-        public async Task<IActionResult> Upload(IFormFile file)
+        public async Task<IActionResult> Upload(IFormFile file, int? requirementId)
         {
             if (file == null || file.Length == 0)
             {
                 TempData["UploadError"] = "No file selected.";
-                return RedirectToAction("Upload");
+                return RedirectToAction("Upload", new { requirementId });
             }
 
             var extension = Path.GetExtension(file.FileName).ToLower();
             if (!AllowedExtensions.Contains(extension))
             {
                 TempData["UploadError"] = $"Unsupported file type: {extension}";
-                return RedirectToAction("Upload");
+                return RedirectToAction("Upload", new { requirementId });
             }
 
-            // Validate PDF magic bytes if PDF
+            // Validate PDF magic bytes
             if (extension == ".pdf" && !IsPdfFile(file))
             {
-                TempData["UploadError"] = "The uploaded file is not a valid PDF.";
-                return RedirectToAction("Upload");
+                TempData["UploadError"] = "Invalid PDF file.";
+                return RedirectToAction("Upload", new { requirementId });
             }
 
             var fileHash = ComputeFileHash(file);
             string extractedText = "";
 
+            // Extract Text
             if (extension == ".pdf")
             {
-                using (var stream = file.OpenReadStream())
-                using (var pdf = PdfDocument.Open(stream))
-                {
-                    foreach (var page in pdf.GetPages())
-                    {
-                        extractedText += string.Join(" ", page.GetWords().Select(w => w.Text))
-                                       + Environment.NewLine + Environment.NewLine;
-                    }
-
-                }
+                using var stream = file.OpenReadStream();
+                using var pdf = PdfDocument.Open(stream);
+                foreach (var page in pdf.GetPages())
+                    extractedText += string.Join(" ", page.GetWords().Select(w => w.Text)) + "\n";
             }
             else if (extension == ".docx")
-            {
                 extractedText = ExtractTextFromDocx(file);
-            }
             else if (extension == ".txt")
-            {
                 using (var reader = new StreamReader(file.OpenReadStream()))
-                {
                     extractedText = await reader.ReadToEndAsync();
-                }
-            }
 
+            // Parse & check duplicates
             var parsed = ParseResume(extractedText);
 
-            if (_context.Resumes.Any(r => r.Email == parsed.Email || r.FileHash == fileHash))
-            {
-                TempData["UploadError"] = "Duplicate resume detected (email or file already exists).";
-                return RedirectToAction("Upload");
-            }
+            // Strong: file hash; Fallback: email
+            var existing = await FindExistingResumeAsync(fileHash, parsed.Email);
 
+            if (existing != null)
+            {
+                if (requirementId.HasValue)
+                {
+                    var uploaderId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                    var linked = await LinkResumeToRequirementAsync(existing.Id, requirementId.Value, uploaderId);
+
+                    TempData["UploadSuccess"] = linked
+                        ? $"Existing profile ({existing.Name ?? existing.Email ?? "Profile"}) linked to this JD."
+                        : "This profile is already linked to this JD.";
+
+                    return RedirectToAction("SharedProfiles", "ClientRequirements", new { id = requirementId.Value });
+                }
+
+                TempData["UploadError"] = "Duplicate resume detected: same file/email already exists.";
+                return RedirectToAction("List");
+            }
+            // Save file
             var uploads = Path.Combine(_env.WebRootPath, "uploads");
             Directory.CreateDirectory(uploads);
             var filePath = Path.Combine(uploads, file.FileName);
             using (var saveStream = new FileStream(filePath, FileMode.Create))
-            {
                 await file.CopyToAsync(saveStream);
-            }
+
+            var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
             var resume = new Resume
             {
@@ -242,36 +279,45 @@ namespace ResumeApp.Controllers
                 Experience = parsed.Experience,
                 FileHash = fileHash,
                 YearsOfExperience = parsed.Years,
-
-                UserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
-
+                UserId = currentUserId
             };
 
             _context.Resumes.Add(resume);
             await _context.SaveChangesAsync();
-            await _logger.LogAsync("Upload", $"Uploaded single resume: {resume.FileName}");
 
-
-            var nameParts = resume.Name?.Split(' ', 2);
-            var formModel = new ResumeFormViewModel
+            // ✅ LINK TO REQUIREMENT
+            if (requirementId.HasValue)
             {
-                ResumeId = resume.Id,
-                FirstName = nameParts?.FirstOrDefault() ?? "",
-                LastName = nameParts?.Skip(1).FirstOrDefault() ?? "",
-                Email = resume.Email,
-                Phone = resume.Phone,
-                Skills = resume.Skills,
-                Experience = resume.Experience,
-                ResumeFileName = resume.FileName
-            };
+                var link = new ResumeRequirementLink
+                {
+                    ResumeId = resume.Id,
+                    RequirementId = requirementId.Value,
+                    LinkedByUserId = currentUserId,
+                    LinkedAt = DateTime.Now
+                };
 
-            return View("ReviewParsed", formModel);
+                _context.ResumeRequirementLinks.Add(link);
+                await _context.SaveChangesAsync();
 
+                Console.WriteLine($"✅ Linked Resume ID {resume.Id} to Requirement {requirementId.Value}");
+
+                // ✅ Redirect to Shared Profiles
+                return RedirectToAction("SharedProfiles", "ClientRequirements", new { id = requirementId.Value });
+            }
+
+            // fallback if no JD
+            return RedirectToAction("List");
         }
 
+
         [HttpPost]
-        public async Task<IActionResult> UploadMultiple(List<IFormFile> files)
+        public async Task<IActionResult> UploadMultiple(List<IFormFile> files, int? requirementId = null)
         {
+            if (requirementId.HasValue)
+            {
+                TempData["UploadError"] = "Multi-upload is disabled when uploading against a JD. Use single upload.";
+                return RedirectToAction("Upload", new { requirementId });
+            }
             if (files == null || files.Count == 0)
             {
                 TempData["UploadError"] = "Please select at least one resume to upload.";
@@ -329,14 +375,13 @@ namespace ResumeApp.Controllers
 
                     var parsed = ParseResume(extractedText);
 
-                    bool isDuplicate = _context.Resumes.Any(r =>
-                        r.Email == parsed.Email || r.FileHash == fileHash);
-
-                    if (isDuplicate)
+                    var existing = await FindExistingResumeAsync(fileHash, parsed.Email);
+                    if (existing != null)
                     {
                         skipped++;
                         continue;
                     }
+
 
                     var filePath = Path.Combine(uploads, file.FileName);
                     using (var saveStream = new FileStream(filePath, FileMode.Create))
@@ -428,41 +473,85 @@ namespace ResumeApp.Controllers
             return RedirectToAction("List");
         }
 
-        public async Task<IActionResult> List(string? search, int page = 1, int pageSize = 100)
+        public async Task<IActionResult> List(
+              string? search,
+              int? minExperience,
+              string? mandatorySkills,
+              string? optionalSkills,
+              int page = 1,
+              int pageSize = 100)
         {
             var resumes = _context.Resumes.AsQueryable();
 
-            // Apply search filter
+            // 1️⃣ Experience filter (HARD)
+            if (minExperience.HasValue)
+            {
+                resumes = resumes.Where(r => r.YearsOfExperience >= minExperience.Value);
+            }
+
+            // 2️⃣ Mandatory skills (ALL must exist)
+            var mandatory = SplitSkills(mandatorySkills)
+                .Select(NormalizeSkill)
+                .ToList();
+
+            foreach (var skill in mandatory)
+            {
+                resumes = resumes.Where(r =>
+                    EF.Functions.Like(r.Skills.ToLower(), $"%{skill}%"));
+            }
+
+            // 3️⃣ Optional skills (score only)
+            var optional = SplitSkills(optionalSkills)
+                .Select(NormalizeSkill)
+                .ToList();
+
+            var scoredQuery = resumes.Select(r => new
+            {
+                Resume = r,
+                OptionalScore = optional.Count == 0 ? 0 :
+                    optional.Count(s => r.Skills.ToLower().Contains(s))
+            });
+
+            // 4️⃣ Old simple text search (fallback / optional)
             if (!string.IsNullOrWhiteSpace(search))
             {
                 search = search.ToLower();
-                resumes = resumes.Where(r =>
-                    EF.Functions.Like(r.Name.ToLower(), $"%{search}%") ||
-                    EF.Functions.Like(r.Email.ToLower(), $"%{search}%") ||
-                    EF.Functions.Like(r.Phone, $"%{search}%") ||
-                    EF.Functions.Like(r.Skills.ToLower(), $"%{search}%") ||
-                    EF.Functions.Like(r.Experience.ToLower(), $"%{search}%"));
+                scoredQuery = scoredQuery.Where(x =>
+                    EF.Functions.Like(x.Resume.Name.ToLower(), $"%{search}%") ||
+                    EF.Functions.Like(x.Resume.Email.ToLower(), $"%{search}%") ||
+                    EF.Functions.Like(x.Resume.Phone, $"%{search}%") ||
+                    EF.Functions.Like(x.Resume.Skills.ToLower(), $"%{search}%") ||
+                    EF.Functions.Like(x.Resume.Experience.ToLower(), $"%{search}%"));
             }
 
-            // Count total for pagination
-            int totalCount = await resumes.CountAsync();
+            // 5️⃣ Ordering (BEST ATS BEHAVIOR)
+            var ordered = scoredQuery
+                .OrderByDescending(x => x.OptionalScore)
+                .ThenByDescending(x => x.Resume.YearsOfExperience)
+                .ThenByDescending(x => x.Resume.UploadedAt);
 
-            // Fetch only current page
-            var result = await resumes
-                .Include(r => r.User)
-                .OrderByDescending(r => r.UploadedAt)
+            int totalCount = await ordered.CountAsync();
+
+            var result = await ordered
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
+                .Select(x => x.Resume)
+                .Include(r => r.User)
                 .ToListAsync();
 
-            // Pass pagination info to the view
             ViewBag.TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
             ViewBag.CurrentPage = page;
             ViewBag.PageSize = pageSize;
             ViewBag.TotalCount = totalCount;
 
+            // preserve filters in UI
+            ViewBag.MinExperience = minExperience;
+            ViewBag.MandatorySkills = mandatorySkills;
+            ViewBag.OptionalSkills = optionalSkills;
+
             return View(result);
         }
+
 
         [Authorize(Roles = "Reviewer")]
         public async Task<IActionResult> MyUploads(string? search)
@@ -688,6 +777,62 @@ namespace ResumeApp.Controllers
             return File(excelData, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Resumes.xlsx");
         }
 
+
+        [HttpPost]
+        [Authorize(Roles = "Admin,Reviewer,Vendor,Team Lead")]
+        public async Task<IActionResult> LinkToRequirement(int resumeId, int requirementId)
+        {
+            var resume = await _context.Resumes.FindAsync(resumeId);
+            var requirement = await _context.ClientRequirements.FindAsync(requirementId);
+
+            if (resume == null || requirement == null)
+                return NotFound();
+
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            // prevent duplicates
+            var exists = await _context.ResumeRequirementLinks
+                .AnyAsync(x => x.ResumeId == resumeId && x.RequirementId == requirementId);
+            if (exists)
+                return Json(new { success = false, message = "Resume already linked to this requirement." });
+
+            var link = new ResumeRequirementLink
+            {
+                ResumeId = resumeId,
+                RequirementId = requirementId,
+                LinkedByUserId = userId
+            };
+
+            _context.ResumeRequirementLinks.Add(link);
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, message = "Linked successfully!" });
+        }
+        private static List<string> SplitSkills(string? input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return new List<string>();
+
+            return input
+                .ToLower()
+                .Split(new[] { ',', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(s => s.Trim())
+                .Distinct()
+                .ToList();
+        }
+
+        // Phase-1 simple normalization
+        private static string NormalizeSkill(string skill)
+        {
+            return skill switch
+            {
+                "c sharp" => "c#",
+                "csharp" => "c#",
+                "ms sql" => "sql",
+                "mssql" => "sql",
+                _ => skill
+            };
+        }
 
     }
 }

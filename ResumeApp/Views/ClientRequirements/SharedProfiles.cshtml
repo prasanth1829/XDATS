@@ -1,0 +1,531 @@
+﻿@using ResumeApp.Models
+@model List<ResumeRequirementLink>
+
+@{
+    bool isTL = User.IsInRole("Team Lead") || User.IsInRole("Manager") || User.IsInRole("Admin") || User.IsInRole("Reviewer");
+
+    ViewData["Title"] = "Internally Shared Profiles";
+    var requirement = ViewBag.Requirement as ClientRequirement;
+    var canChange = (bool)(ViewBag.CanChangeStatus ?? false);
+    var histories = ViewBag.Histories as Dictionary<int, List<CandidateStatusHistory>>;
+    var currentFilter = ViewBag.StatusFilter as CandidateStatus?;
+
+    // Sorting URLs (preserve current filter)
+    string sortParam = Context.Request.Query["sort"].ToString();
+    string urlSortUpdated = Url.Action("SharedProfiles", "ClientRequirements", new { id = requirement?.Id, statusFilter = currentFilter, sort = (string)null });
+    string urlSortScore = Url.Action("SharedProfiles", "ClientRequirements", new { id = requirement?.Id, statusFilter = currentFilter, sort = "score" });
+
+    // Base preview URL for Send-to-client
+    string previewBaseUrl = Url.Action("SharePreview", "ClientRequirements", new { id = requirement?.Id });
+
+    string BadgeCss(CandidateStatus s) => (s switch
+    {
+        CandidateStatus.New => "secondary",
+        CandidateStatus.Shortlisted => "success",
+        CandidateStatus.Rejected => "danger",
+        CandidateStatus.Hold => "warning",
+        CandidateStatus.PanelShortlisted => "info",
+        CandidateStatus.InterviewScheduled => "primary",
+        CandidateStatus.Selected => "success",
+        CandidateStatus.OfferReleased => "primary",
+        CandidateStatus.Joined => "dark",
+        _ => "secondary"
+    });
+
+    string BadgeText(CandidateStatus s) => (s switch
+    {
+        CandidateStatus.New => "New",
+        CandidateStatus.Shortlisted => "Shortlisted",
+        CandidateStatus.Rejected => "Rejected",
+        CandidateStatus.Hold => "On Hold",
+        CandidateStatus.PanelShortlisted => "Panel Shortlisted",
+        CandidateStatus.InterviewScheduled => "Interview Scheduled",
+        CandidateStatus.Selected => "Selected",
+        CandidateStatus.OfferReleased => "Offer Released",
+        CandidateStatus.Joined => "Joined",
+        _ => s.ToString()
+    });
+}
+
+<style>
+    /* Modern, clean table & toolbar */
+    .page-header-card {
+        border: 0;
+        border-radius: 1rem;
+        box-shadow: 0 8px 24px rgba(0,0,0,.06);
+        background: linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: .5rem;
+        padding: .35rem .6rem;
+        border-radius: 999px;
+        background: #f1f5f9;
+        font-size: .85rem;
+    }
+
+        .chip .dot {
+            width: .5rem;
+            height: .5rem;
+            border-radius: 999px;
+            display: inline-block;
+        }
+
+    .table thead th {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        background: #f8fafc;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #fbfdff;
+    }
+
+    .score-bar {
+        height: .4rem;
+        border-radius: .3rem;
+        background: #e9ecef;
+        overflow: hidden;
+    }
+
+        .score-bar > span {
+            display: block;
+            height: 100%;
+            background: linear-gradient(90deg,#22c55e,#0ea5e9);
+        }
+
+    .sel-col {
+        width: 42px;
+    }
+
+    .toolbar-note {
+        line-height: 1.2;
+    }
+
+    .table-secondary-row {
+        background: #fafafa;
+    }
+</style>
+
+<!-- Header / JD summary & actions -->
+<div class="card page-header-card mb-3">
+    <div class="card-body">
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+            <div>
+                <h3 class="mb-1">Internally Shared Profiles</h3>
+                @if (requirement != null)
+                {
+                    <div class="text-muted small">
+                        <span class="chip me-2">
+                            <span class="dot" style="background:#16a34a"></span>
+                            JD #@requirement.Id
+                        </span>
+                        <span class="chip me-2">
+                            <i class="bi bi-briefcase"></i> @requirement.JobTitle
+                        </span>
+                        <span class="chip me-2">
+                            <i class="bi bi-geo"></i> @(requirement.JobLocation ?? "—")
+                        </span>
+                        <span class="chip">
+                            <i class="bi bi-lightning-charge"></i> Priority:
+                            <span class="badge bg-@(requirement.RequirementPriority == "High" ? "danger" : requirement.RequirementPriority == "Medium" ? "warning text-dark" : "success")">
+                                @requirement.RequirementPriority
+                            </span>
+                        </span>
+                    </div>
+                }
+            </div>
+
+            <!-- Share to client actions (keeps same ids used by your JS) -->
+            <div class="d-flex align-items-center gap-2">
+                <div class="toolbar-note text-muted small me-2 d-none d-md-block text-end">
+                    <div><strong>Panel Shortlisted</strong> only will be shared</div>
+                </div>
+                <div class="btn-group">
+                    <button id="btnPreviewBrand" type="button" class="btn btn-sm btn-primary">Share With Client</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters & Sort -->
+        @if (requirement != null)
+        {
+            <div class="d-flex flex-wrap align-items-center gap-2 mt-3">
+                <div class="me-2 text-muted small">Filter:</div>
+                <div class="btn-group btn-group-sm" role="group" aria-label="Status filters">
+                    <a class="btn @(currentFilter == null ? "btn-secondary" : "btn-outline-secondary")"
+                       href="@Url.Action("SharedProfiles", new { id = requirement.Id })">All</a>
+
+                    <a class="btn @(currentFilter == CandidateStatus.Hold ? "btn-warning" : "btn-outline-warning")"
+                       href='@Url.Action("SharedProfiles", new { id = requirement.Id, statusFilter = CandidateStatus.Hold })'>TL Hold</a>
+
+                    <a class="btn @(currentFilter == CandidateStatus.PanelShortlisted ? "btn-success" : "btn-outline-success")"
+                       href='@Url.Action("SharedProfiles", new { id = requirement.Id, statusFilter = CandidateStatus.PanelShortlisted })'>Submitted to Panel</a>
+
+                    <a class="btn @(currentFilter == CandidateStatus.Rejected ? "btn-danger" : "btn-outline-danger")"
+                       href='@Url.Action("SharedProfiles", new { id = requirement.Id, statusFilter = CandidateStatus.Rejected })'>Rejected</a>
+                </div>
+
+                <div class="vr mx-2 d-none d-md-block"></div>
+
+                <div class="me-2 text-muted small">Sort:</div>
+                <div class="btn-group btn-group-sm" role="group" aria-label="Sort">
+                    <a class="btn @(string.IsNullOrEmpty(sortParam) ? "btn-secondary" : "btn-outline-secondary")" href="@urlSortUpdated">Updated</a>
+                    <a class="btn @(sortParam == "score" ? "btn-secondary" : "btn-outline-secondary")" href="@urlSortScore">Score</a>
+                </div>
+
+                <!-- Select all (kept same id for script) -->
+                <div class="ms-auto d-flex align-items-center gap-2">
+                    <label class="small text-muted mb-0" for="selAll">Select all shortlisted</label>
+                    <input id="selAll" type="checkbox" class="form-check-input" title="Select all (Panel Shortlisted only)" />
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success shadow-sm">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger shadow-sm">@TempData["Error"]</div>
+}
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info shadow-sm">No profiles linked yet for this JD.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th class="sel-col"></th>
+                    <th style="min-width:220px;">Candidate</th>
+                    <th>Email</th>
+                    <th style="min-width:110px;">Experience</th>
+                    <th style="min-width:200px;">Uploaded By</th>
+                    <th style="min-width:140px;">Score</th>
+                    <th style="min-width:200px;">Status</th>
+                    <th class="text-end" style="min-width:320px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    var css = BadgeCss(item.Status);
+                    var text = BadgeText(item.Status);
+                    var recent = (histories != null && histories.ContainsKey(item.ResumeId))
+                    ? histories[item.ResumeId] : new List<CandidateStatusHistory>();
+                    var modalAssignId = $"assignPanel_{item.RequirementId}_{item.ResumeId}";
+                    bool alreadySubmitted = item.Status == CandidateStatus.PanelShortlisted || item.Status == CandidateStatus.Rejected;
+                    bool eligibleToSend = item.Status == CandidateStatus.PanelShortlisted;
+
+                    short? score = item.MatchScore;
+                    string scoreBadge = "secondary";
+                    if (score >= 80) scoreBadge = "success";
+                    else if (score >= 60) scoreBadge = "primary";
+                    else if (score >= 40) scoreBadge = "warning";
+                    var bdId = $"bd_{item.RequirementId}_{item.ResumeId}";
+
+                    <tr>
+                        <td class="sel-col">
+                            <input type="checkbox"
+                                   class="form-check-input selRow"
+                                   value="@item.ResumeId"
+                                   data-resumeid="@item.ResumeId"
+                                   @(eligibleToSend ? null : "disabled")
+                                   title="@(eligibleToSend ? "Select this candidate" : "Only Panel Shortlisted candidates can be sent")" />
+                        </td>
+
+                        <td>
+                            <div class="fw-semibold">@item.Resume?.Name</div>
+                            <div class="small text-muted">Linked @item.LinkedAt.ToLocalTime()</div>
+                        </td>
+
+                        <td class="small">@item.Resume?.Email</td>
+
+                        <td>
+                            <div class="fw-semibold">@((item.Resume?.YearsOfExperience ?? 0)) yrs</div>
+                        </td>
+
+                        <td>
+                            <div class="fw-semibold">@item.Resume?.User?.FullName</div>
+                            <div class="small text-muted">@item.Resume?.User?.Email</div>
+                        </td>
+
+                        <td style="min-width:140px;">
+                            @if (score.HasValue)
+                            {
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="badge bg-@scoreBadge">@score</span>   
+                                </div>
+                                <div class="score-bar mt-1" aria-hidden="true"><span style="width:@(Math.Clamp((int)score.Value, 0, 100))%"></span></div>
+                                <script type="application/json" id="@bdId">@Html.Raw(item.MatchBreakdownJson ?? "{}")</script>
+                            }
+                            else
+                            {
+                                <span class="text-muted small">—</span>
+                            }
+                        </td>
+
+                        <td>
+                            <span class="badge bg-@css">@text</span>
+                            @if (!string.IsNullOrWhiteSpace(item.LastComment))
+                            {
+                                <span class="ms-2 text-muted small">(@item.LastComment)</span>
+                            }
+                            <div class="small text-muted">Updated @item.UpdatedAt.ToLocalTime()</div>
+                        </td>
+
+                        <td class="text-end">
+                            <a class="btn btn-sm btn-outline-secondary me-2"
+                               href="@Url.Action("Details", "Resume", new { id = item.ResumeId })"
+                               target="_blank" rel="noopener">View Resume</a>
+
+                            @if (isTL)
+                            {
+                                <form asp-action="TLDecision" asp-controller="ClientRequirements" method="post" class="d-inline-block me-2">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="requirementId" value="@item.RequirementId" />
+                                    <input type="hidden" name="resumeId" value="@item.ResumeId" />
+                                    <input type="hidden" name="remark" value="" />
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <button name="decision" value="hold" type="submit" class="btn btn-warning">⏸ Hold</button>
+                                        <button name="decision" value="reject" type="submit" class="btn btn-danger">❌ Reject</button>
+                                    </div>
+                                </form>
+
+                                @if (alreadySubmitted)
+                                {
+                                    <button type="button" class="btn btn-sm btn-outline-success" disabled>Submit to Panel</button>
+                                }
+                                else
+                                {
+                                    <button type="button"
+                                            class="btn btn-sm btn-success"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#@modalAssignId">
+                                        Submit to Panel
+                                    </button>
+                                }
+
+                                <div class="modal fade" id="@modalAssignId" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <form asp-controller="ClientRequirements" asp-action="AssignToPanel" method="post">
+                                                @Html.AntiForgeryToken()
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Submit to Panel — @item.Resume?.Name</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <input type="hidden" name="requirementId" value="@item.RequirementId" />
+                                                    <input type="hidden" name="resumeId" value="@item.ResumeId" />
+
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Select screener(s) <span class="text-muted">(Panel / Admin / Manager)</span></label>
+                                                        <select name="panelUserIds" multiple class="form-select" size="6" required>
+                                                            @{
+                                                                var panelists = ViewBag.Panelists as IList<Users> ?? new List<Users>();
+                                                            }
+                                                            @foreach (var p in panelists)
+                                                            {
+                                                                <option value="@p.Id">
+                                                                    @(string.IsNullOrWhiteSpace(p.FullName) ? p.Email : $"{p.FullName} ({p.Email})")
+                                                                </option>
+                                                            }
+                                                        </select>
+                                                        <div class="form-text">Hold Ctrl/Cmd to select multiple.</div>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Remark (optional)</label>
+                                                        <textarea name="remark" class="form-control" rows="3" placeholder="Add context for the panel (optional)"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button class="btn btn-light" data-bs-dismiss="modal" type="button">Cancel</button>
+                                                    <button class="btn btn-success" type="submit">Submit to Panel</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @if (item.Status == CandidateStatus.PanelScreenSelected)
+                                {
+                                    <a class="btn btn-sm btn-primary ms-2"
+                                       href='@Url.Action("Create", "Interviews", new { requirementId = item.RequirementId, resumeId = item.ResumeId })'>📅 Schedule Interview</a>
+                                }
+                            }
+                            else
+                            {
+                                <span class="text-muted small">Read-only</span>
+                            }
+                        </td>
+                    </tr>
+
+                    <tr class="table-secondary-row">
+                        <td colspan="8" class="py-2">
+                            <div class="d-flex flex-column flex-md-row gap-3 px-2">
+                                <div class="flex-grow-1">
+                                    <strong class="small">Recent Updates</strong>
+                                    <ul class="list-group list-group-flush small mt-1">
+                                        @if (recent.Any())
+                                        {
+                                            @foreach (var h in recent.Take(3))
+                                            {
+                                                <li class="list-group-item px-0 py-1">
+                                                    <strong>@h.Status</strong>
+                                                    <span class="text-muted"> — @h.ChangedAt.ToLocalTime()</span>
+                                                    @if (!string.IsNullOrWhiteSpace(h.Comment))
+                                                    {
+                                                        <div class="text-muted">@h.Comment</div>
+                                                    }
+                                                </li>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <li class="list-group-item px-0 py-1 text-muted">No updates yet.</li>
+                                        }
+                                    </ul>
+
+                                    @if (item.MatchScore.HasValue)
+                                    {
+                                        <div class="small text-muted mt-2">
+                                            Match score cached @item.LastScoredAt?.ToLocalTime() — higher is better.
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<!-- Score breakdown modal (unchanged ids for JS) -->
+<div class="modal fade" id="scoreBreakdownModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Match Score Breakdown</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="scoreBreakdownBody" class="small">
+                    <div class="text-muted">Loading…</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-light" data-bs-dismiss="modal" type="button">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @* Your original scripts kept exactly as-is *@
+    <script>
+        /* Select All (only enabled checkboxes) */
+        (function () {
+          const selAll = document.getElementById('selAll');
+          if (!selAll) return;
+          selAll.addEventListener('change', function () {
+            document.querySelectorAll('.selRow:not(:disabled)').forEach(cb => { cb.checked = selAll.checked; });
+          });
+        })();
+
+        /* Build Preview URL with selected resumeIds */
+        (function () {
+          const baseUrl = '@previewBaseUrl';
+
+          function getSelectedIds() {
+            const ids = [];
+            document.querySelectorAll('.selRow:checked').forEach(cb => ids.push(cb.value));
+            return ids;
+          }
+
+          function openPreview(branded) {
+            const ids = getSelectedIds();
+            if (ids.length === 0) {
+              alert('Please select at least one Panel Shortlisted candidate.');
+              return;
+            }
+            const params = new URLSearchParams();
+            ids.forEach(id => params.append('resumeIds', id));
+            if (branded) params.append('branded', 'true');
+
+            const url = baseUrl + (baseUrl.includes('?') ? '&' : '?') + params.toString();
+            window.open(url, '_blank', 'noopener');
+          }
+
+          document.getElementById('btnPreviewPlain')?.addEventListener('click', () => openPreview(false));
+          document.getElementById('btnPreviewBrand')?.addEventListener('click', () => openPreview(true));
+        })();
+
+        /* Score Breakdown modal loader */
+        (function () {
+          const modalEl = document.getElementById('scoreBreakdownModal');
+          const bodyEl  = document.getElementById('scoreBreakdownBody');
+
+          modalEl.addEventListener('show.bs.modal', function (evt) {
+            bodyEl.innerHTML = '<div class="text-muted">Loading…</div>';
+            const btn = evt.relatedTarget;
+            if (!btn) return;
+
+            const dataId = btn.getAttribute('data-bdid');
+            if (!dataId) return;
+
+            const scriptTag = document.getElementById(dataId);
+            if (!scriptTag) { bodyEl.innerHTML = '<div class="text-muted">No breakdown available.</div>'; return; }
+
+            try {
+              const json = JSON.parse(scriptTag.textContent || '{}');
+
+              const rows = [];
+              if (json.score !== undefined) rows.push(`<div class="mb-2"><strong>Total Score:</strong> ${json.score}</div>`);
+
+              function section(title, list) {
+                if (!Array.isArray(list) || list.length === 0) return '';
+                let html = `<div class="mb-2"><strong>${title}</strong><div class="mt-1">`;
+                html += '<ul class="list-group list-group-flush">';
+                for (const it of list) {
+                  const ok = it.present ? '✅' : '—';
+                  const cnt = (it.count !== undefined) ? ` <span class="text-muted">(hits: ${it.count})</span>` : '';
+                  html += `<li class="list-group-item px-0 py-1">${ok} ${it.skill}${cnt}</li>`;
+                }
+                html += '</ul></div></div>';
+                return html;
+              }
+
+              rows.push(section('Primary skills',   json.primary));
+              rows.push(section('Secondary skills', json.secondary));
+              rows.push(section('Required keywords', json.required));
+
+              if (json.exp) {
+                rows.push(
+                  `<div class="mt-2"><strong>Experience:</strong> ${json.exp.resumeYears} yrs
+                   <span class="text-muted">(JD: ${json.exp.min ?? '-'}–${json.exp.max ?? '-'})</span>
+                   ${json.exp.ok ? ' ✅' : ' ❗'}</div>`
+                );
+              }
+
+              bodyEl.innerHTML = rows.join('') || '<div class="text-muted">No breakdown available.</div>';
+            } catch {
+              bodyEl.innerHTML = '<div class="text-danger">Failed to parse breakdown.</div>';
+            }
+          });
+        })();
+    </script>
+}

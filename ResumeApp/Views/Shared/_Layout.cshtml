@@ -29,6 +29,8 @@
     <link rel="stylesheet" href="~/css/custom.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ResumeApp.styles.css" asp-append-version="true" />
+
+
 </head>
 <body class="d-flex flex-column min-vh-100" style="padding-top:70px;">
     <header>
@@ -59,6 +61,28 @@
                                 <i class="bi bi-file-earmark-text me-1"></i> View Resumes
                             </a>
                         </li>
+                        @if (User.IsInRole("Panel") || User.IsInRole("Admin") || User.IsInRole("Manager"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle fw-semibold" href="#" id="screeningDropdown"
+                                   role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-people me-1"></i> Screening
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="screeningDropdown">
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Panel" asp-action="Index">
+                                            <i class="bi bi-person-lines-fill me-1"></i> Panel Screening
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Interviews" asp-action="Index">
+                                            <i class="bi bi-calendar-check me-1"></i> Interviews
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+
                         @if (role == "Admin")
                         {
                             <li class="nav-item dropdown">
@@ -82,6 +106,12 @@
                                             <i class="bi bi-clipboard-data me-1"></i> Activity Logs
                                         </a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="MasterData" asp-action="Index">
+                                            <i class="bi bi-gear-wide-connected me-1"></i> Master Settings
+                                        </a>
+                                    </li>
+
                                 </ul>
                             </li>
                         }
@@ -93,10 +123,13 @@
                                 </a>
                             </li>
                         }
+                      
+
                     </ul>
                     <ul class="navbar-nav ms-auto">
                         @if (SignInManager.IsSignedIn(User))
                         {
+                            @await Component.InvokeAsync("NotificationsBell")
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle text-primary fw-semibold d-flex align-items-center"
                                    href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"
@@ -160,7 +193,7 @@
     <footer class="bg-light text-center text-lg-start border-top shadow-sm mt-auto">
         <div class="container py-3 d-flex flex-column flex-md-row justify-content-between align-items-center">
             <div class="text-muted">
-                &copy; 2025 <strong class="text-primary">Xeedo ATS 1.0v</strong>
+                &copy; 2025 <strong class="text-primary">Xeedo ATS 1.1v</strong>
             </div>
             <div>
                 <a asp-controller="Home" asp-action="ReviewerTerms" class="text-decoration-none text-muted me-3">Privacy Policy</a>

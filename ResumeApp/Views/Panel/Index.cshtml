@@ -1,0 +1,143 @@
+﻿@using ResumeApp.Models
+@model List<ResumeRequirementLink>
+@{
+    var selectedReqId = Context.Request.Query["requirementId"].ToString();
+}
+@{
+    ViewData["Title"] = "Panel Screening";
+    // Optional: a small dictionary of requirementId -> ClientRequirement to show title
+    var reqs = ViewBag.Requirements as List<ClientRequirement> ?? new List<ClientRequirement>();
+    var reqNames = reqs.ToDictionary(r => r.Id, r => r.JobTitle);
+}
+
+@functions {
+    (string Css, string Text) Badge(CandidateStatus s) => s switch
+    {
+        CandidateStatus.PanelShortlisted     => ("info", "Submitted to Panel"),
+        CandidateStatus.PanelScreenSelected  => ("success", "Screen Select"),
+        CandidateStatus.PanelScreenRejected  => ("danger", "Screen Reject"),
+        CandidateStatus.PanelScreenHold      => ("warning", "Screen Hold"),
+
+        CandidateStatus.Shortlisted          => ("success", "Shortlisted"),
+        CandidateStatus.Rejected             => ("danger", "Rejected"),
+        CandidateStatus.Hold                 => ("warning", "On Hold"),
+        CandidateStatus.InterviewScheduled   => ("primary", "Interview Scheduled"),
+        CandidateStatus.Selected             => ("success", "Selected"),
+        CandidateStatus.OfferReleased        => ("primary", "Offer Released"),
+        CandidateStatus.Joined               => ("dark", "Joined"),
+        _                                    => ("secondary", s.ToString())
+    };
+}
+
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+    <h3 class="mb-0">Panel Screening</h3>
+
+    <!-- Optional filter by JD -->
+    <form method="get" class="d-flex align-items-center gap-2">
+        <select name="requirementId" class="form-select form-select-sm" style="min-width:240px">
+            <option value="">— All JDs —</option>
+            @foreach (var r in reqs.OrderBy(x => x.JobTitle))
+            {
+                <option value="@r.Id" selected="@(selectedReqId == r.Id.ToString() ? "selected" : null)">
+                    @r.JobTitle (ID @r.Id)
+                </option>
+            }
+        </select>
+        <button class="btn btn-sm btn-outline-secondary" type="submit">Filter</button>
+        <a class="btn btn-sm btn-light" href="@Url.Action("Index", "Panel")">Reset</a>
+    </form>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info">
+        No profiles have been assigned to you for screening.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th style="min-width:220px;">Candidate</th>
+                    <th>Email</th>
+                    <th>Experience</th>
+                    <th>JD</th>
+                    <th>Status</th>
+                    <th class="text-end" style="min-width:320px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model)
+            {
+                var (css, text) = Badge(item.Status);
+                <tr>
+                    <td>
+                        <div class="fw-semibold">@item.Resume?.Name</div>
+                        <div class="small text-muted">Linked @item.LinkedAt.ToLocalTime()</div>
+                    </td>
+                    <td>@item.Resume?.Email</td>
+                    <td>@(item.Resume != null ? $"{item.Resume.YearsOfExperience} yrs" : "-")</td>
+                    <td>
+                        @if (reqNames.TryGetValue(item.RequirementId, out var jt))
+                        {
+                            <span class="small">@jt</span>
+                        }
+                        else
+                        {
+                            <span class="small text-muted">JD #@item.RequirementId</span>
+                        }
+                    </td>
+                    <td>
+                        <span class="badge bg-@css">@text</span>
+                        @if (!string.IsNullOrWhiteSpace(item.LastComment))
+                        {
+                            <div class="small text-muted mt-1">(@item.LastComment)</div>
+                        }
+                        <div class="small text-muted">Updated @item.UpdatedAt.ToLocalTime()</div>
+                    </td>
+                    <td class="text-end">
+                        <!-- Quick decision form -->
+                        <form asp-controller="Panel" asp-action="Decide" method="post" class="d-inline-block text-end">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="requirementId" value="@item.RequirementId" />
+                            <input type="hidden" name="resumeId" value="@item.ResumeId" />
+
+                            <div class="input-group input-group-sm mb-1" style="max-width:340px; margin-left:auto;">
+                                <input name="remark" class="form-control" placeholder="Remark (optional)" />
+                            </div>
+
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button name="decision" value="select" type="submit" class="btn btn-success">✅ Screen Select</button>
+                                <button name="decision" value="hold" type="submit" class="btn btn-warning">⏸ Hold</button>
+                                <button name="decision" value="reject" type="submit" class="btn btn-danger">❌ Screen Reject</button>
+                            </div>
+                        </form>
+                            @if (item.Status == CandidateStatus.PanelScreenSelected)
+                            {
+                                <a class="btn btn-sm btn-primary ms-2"
+                                   href="@Url.Action("Create", "Interviews", new { requirementId = item.RequirementId, resumeId = item.ResumeId })">
+                                    📅 Schedule Interview
+                                </a>
+                            }
+                        <a class="btn btn-sm btn-outline-primary ms-2"
+                           href="@Url.Action("Review","Panel", new { requirementId = item.RequirementId, resumeId = item.ResumeId })">
+                            Review
+                        </a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}

@@ -1,0 +1,408 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|c:\\users\\xeedo\\source\\repos\\resumeapp\\resumeapp\\views\\dashboard\\reviewer.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|solutionrelative:resumeapp\\views\\dashboard\\reviewer.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|c:\\users\\xeedo\\source\\repos\\resumeapp\\resumeapp\\views\\resume\\list.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|solutionrelative:resumeapp\\views\\resume\\list.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|c:\\users\\xeedo\\source\\repos\\resumeapp\\resumeapp\\controllers\\resumecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|solutionrelative:resumeapp\\controllers\\resumecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|c:\\users\\xeedo\\source\\repos\\resumeapp\\resumeapp\\viewmodels\\resumeadvancedsearchviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|solutionrelative:resumeapp\\viewmodels\\resumeadvancedsearchviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|c:\\users\\xeedo\\source\\repos\\resumeapp\\resumeapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|solutionrelative:resumeapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|c:\\users\\xeedo\\source\\repos\\resumeapp\\resumeapp\\controllers\\dashboardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|solutionrelative:resumeapp\\controllers\\dashboardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|c:\\users\\xeedo\\source\\repos\\resumeapp\\resumeapp\\services\\dashboardservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|solutionrelative:resumeapp\\services\\dashboardservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|c:\\users\\xeedo\\source\\repos\\resumeapp\\resumeapp\\services\\idashboardservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|solutionrelative:resumeapp\\services\\idashboardservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|c:\\users\\xeedo\\source\\repos\\resumeapp\\resumeapp\\viewmodels\\requirementmomviewmodels.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|solutionrelative:resumeapp\\viewmodels\\requirementmomviewmodels.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|c:\\users\\xeedo\\source\\repos\\resumeapp\\resumeapp\\viewmodels\\recruiterdashboardviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|solutionrelative:resumeapp\\viewmodels\\recruiterdashboardviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|c:\\users\\xeedo\\source\\repos\\resumeapp\\resumeapp\\controllers\\clientrequirementscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|solutionrelative:resumeapp\\controllers\\clientrequirementscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|c:\\users\\xeedo\\source\\repos\\resumeapp\\resumeapp\\models\\candidatestatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|solutionrelative:resumeapp\\models\\candidatestatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|c:\\users\\xeedo\\source\\repos\\resumeapp\\resumeapp\\models\\clientrequirement.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|solutionrelative:resumeapp\\models\\clientrequirement.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|c:\\users\\xeedo\\source\\repos\\resumeapp\\resumeapp\\models\\users.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|solutionrelative:resumeapp\\models\\users.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|c:\\users\\xeedo\\source\\repos\\resumeapp\\resumeapp\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|solutionrelative:resumeapp\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|c:\\users\\xeedo\\source\\repos\\resumeapp\\resumeapp\\controllers\\usermanagementcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|solutionrelative:resumeapp\\controllers\\usermanagementcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|c:\\users\\xeedo\\source\\repos\\resumeapp\\resumeapp\\models\\resumerequirementlink.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|solutionrelative:resumeapp\\models\\resumerequirementlink.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|c:\\users\\xeedo\\source\\repos\\resumeapp\\resumeapp\\views\\home\\reviewerdashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|solutionrelative:resumeapp\\views\\home\\reviewerdashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|c:\\users\\xeedo\\source\\repos\\resumeapp\\resumeapp\\models\\resume.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|solutionrelative:resumeapp\\models\\resume.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|c:\\users\\xeedo\\source\\repos\\resumeapp\\resumeapp\\controllers\\clientscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|solutionrelative:resumeapp\\controllers\\clientscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|c:\\users\\xeedo\\source\\repos\\resumeapp\\resumeapp\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|solutionrelative:resumeapp\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|c:\\users\\xeedo\\source\\repos\\resumeapp\\resumeapp\\views\\clientrequirements\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|solutionrelative:resumeapp\\views\\clientrequirements\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|c:\\users\\xeedo\\source\\repos\\resumeapp\\resumeapp\\views\\usermanagement\\clientlist.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|solutionrelative:resumeapp\\views\\usermanagement\\clientlist.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|c:\\users\\xeedo\\source\\repos\\resumeapp\\resumeapp\\viewmodels\\clientrequirementcreateviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4EE959D7-DA2B-4D76-B2D6-C825A6E6F665}|ResumeApp\\ResumeApp.csproj|solutionrelative:resumeapp\\viewmodels\\clientrequirementcreateviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ResumeAdvancedSearchViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\ViewModels\\ResumeAdvancedSearchViewModel.cs",
+              "RelativeDocumentMoniker": "ResumeApp\\ViewModels\\ResumeAdvancedSearchViewModel.cs",
+              "ToolTip": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\ViewModels\\ResumeAdvancedSearchViewModel.cs",
+              "RelativeToolTip": "ResumeApp\\ViewModels\\ResumeAdvancedSearchViewModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-25T05:37:43.178Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "List.cshtml",
+              "DocumentMoniker": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Views\\Resume\\List.cshtml",
+              "RelativeDocumentMoniker": "ResumeApp\\Views\\Resume\\List.cshtml",
+              "ToolTip": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Views\\Resume\\List.cshtml",
+              "RelativeToolTip": "ResumeApp\\Views\\Resume\\List.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACcAAAAzAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-25T04:46:11.677Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ResumeController.cs",
+              "DocumentMoniker": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Controllers\\ResumeController.cs",
+              "RelativeDocumentMoniker": "ResumeApp\\Controllers\\ResumeController.cs",
+              "ToolTip": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Controllers\\ResumeController.cs",
+              "RelativeToolTip": "ResumeApp\\Controllers\\ResumeController.cs",
+              "ViewState": "AgIAAM8BAAAAAAAAAAAYwOUBAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-25T04:40:03.626Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Reviewer.cshtml",
+              "DocumentMoniker": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Views\\Dashboard\\Reviewer.cshtml",
+              "RelativeDocumentMoniker": "ResumeApp\\Views\\Dashboard\\Reviewer.cshtml",
+              "ToolTip": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Views\\Dashboard\\Reviewer.cshtml",
+              "RelativeToolTip": "ResumeApp\\Views\\Dashboard\\Reviewer.cshtml",
+              "ViewState": "AgIAAAUBAAAAAAAAAAAAACQBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-17T07:12:48.107Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "DashboardService.cs",
+              "DocumentMoniker": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Services\\DashboardService.cs",
+              "RelativeDocumentMoniker": "ResumeApp\\Services\\DashboardService.cs",
+              "ToolTip": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Services\\DashboardService.cs",
+              "RelativeToolTip": "ResumeApp\\Services\\DashboardService.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAIwK8AAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-22T05:54:27.697Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "RecruiterDashboardViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\ViewModels\\RecruiterDashboardViewModel.cs",
+              "RelativeDocumentMoniker": "ResumeApp\\ViewModels\\RecruiterDashboardViewModel.cs",
+              "ToolTip": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\ViewModels\\RecruiterDashboardViewModel.cs",
+              "RelativeToolTip": "ResumeApp\\ViewModels\\RecruiterDashboardViewModel.cs",
+              "ViewState": "AgIAAEYAAAAAAAAAAAAuwE4AAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-22T05:50:47.199Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Program.cs",
+              "RelativeDocumentMoniker": "ResumeApp\\Program.cs",
+              "ToolTip": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Program.cs",
+              "RelativeToolTip": "ResumeApp\\Program.cs",
+              "ViewState": "AgIAAC0AAAAAAAAAAAAlwDsAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-26T11:17:31.428Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "ResumeApp\\Controllers\\HomeController.cs",
+              "ToolTip": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "ResumeApp\\Controllers\\HomeController.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAAwEYAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-22T09:21:35.475Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "DashboardController.cs",
+              "DocumentMoniker": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Controllers\\DashboardController.cs",
+              "RelativeDocumentMoniker": "ResumeApp\\Controllers\\DashboardController.cs",
+              "ToolTip": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Controllers\\DashboardController.cs",
+              "RelativeToolTip": "ResumeApp\\Controllers\\DashboardController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACwAAAA4AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-17T07:10:11.302Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "ClientRequirementsController.cs",
+              "DocumentMoniker": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Controllers\\ClientRequirementsController.cs",
+              "RelativeDocumentMoniker": "ResumeApp\\Controllers\\ClientRequirementsController.cs",
+              "ToolTip": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Controllers\\ClientRequirementsController.cs",
+              "RelativeToolTip": "ResumeApp\\Controllers\\ClientRequirementsController.cs",
+              "ViewState": "AgIAAGoEAAAAAAAAAAAiwHcEAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-26T09:22:39.349Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "IDashboardService.cs",
+              "DocumentMoniker": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Services\\IDashboardService.cs",
+              "RelativeDocumentMoniker": "ResumeApp\\Services\\IDashboardService.cs",
+              "ToolTip": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Services\\IDashboardService.cs",
+              "RelativeToolTip": "ResumeApp\\Services\\IDashboardService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-22T05:57:48.201Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "RequirementMomViewModels.cs",
+              "DocumentMoniker": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\ViewModels\\RequirementMomViewModels.cs",
+              "RelativeDocumentMoniker": "ResumeApp\\ViewModels\\RequirementMomViewModels.cs",
+              "ToolTip": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\ViewModels\\RequirementMomViewModels.cs",
+              "RelativeToolTip": "ResumeApp\\ViewModels\\RequirementMomViewModels.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAAkwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-24T11:04:19.281Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "ClientRequirement.cs",
+              "DocumentMoniker": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Models\\ClientRequirement.cs",
+              "RelativeDocumentMoniker": "ResumeApp\\Models\\ClientRequirement.cs",
+              "ToolTip": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Models\\ClientRequirement.cs",
+              "RelativeToolTip": "ResumeApp\\Models\\ClientRequirement.cs",
+              "ViewState": "AgIAADoAAAAAAAAAAAAzwEUAAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-26T09:22:51.732Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "CandidateStatus.cs",
+              "DocumentMoniker": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Models\\CandidateStatus.cs",
+              "RelativeDocumentMoniker": "ResumeApp\\Models\\CandidateStatus.cs",
+              "ToolTip": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Models\\CandidateStatus.cs",
+              "RelativeToolTip": "ResumeApp\\Models\\CandidateStatus.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-22T05:43:58.918Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "ReviewerDashboard.cshtml",
+              "DocumentMoniker": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Views\\Home\\ReviewerDashboard.cshtml",
+              "RelativeDocumentMoniker": "ResumeApp\\Views\\Home\\ReviewerDashboard.cshtml",
+              "ToolTip": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Views\\Home\\ReviewerDashboard.cshtml",
+              "RelativeToolTip": "ResumeApp\\Views\\Home\\ReviewerDashboard.cshtml",
+              "ViewState": "AgIAADoAAAAAAAAAAAAiwEMAAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-17T06:53:05.518Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "ResumeRequirementLink.cs",
+              "DocumentMoniker": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Models\\ResumeRequirementLink.cs",
+              "RelativeDocumentMoniker": "ResumeApp\\Models\\ResumeRequirementLink.cs",
+              "ToolTip": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Models\\ResumeRequirementLink.cs",
+              "RelativeToolTip": "ResumeApp\\Models\\ResumeRequirementLink.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-22T05:46:13.595Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "Users.cs",
+              "DocumentMoniker": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Models\\Users.cs",
+              "RelativeDocumentMoniker": "ResumeApp\\Models\\Users.cs",
+              "ToolTip": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Models\\Users.cs",
+              "RelativeToolTip": "ResumeApp\\Models\\Users.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-22T05:46:58.206Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "UserManagementController.cs",
+              "DocumentMoniker": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Controllers\\UserManagementController.cs",
+              "RelativeDocumentMoniker": "ResumeApp\\Controllers\\UserManagementController.cs",
+              "ToolTip": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Controllers\\UserManagementController.cs",
+              "RelativeToolTip": "ResumeApp\\Controllers\\UserManagementController.cs",
+              "ViewState": "AgIAAE0CAAAAAAAAAAA2wG4CAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-26T11:18:36.422Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "Resume.cs",
+              "DocumentMoniker": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Models\\Resume.cs",
+              "RelativeDocumentMoniker": "ResumeApp\\Models\\Resume.cs",
+              "ToolTip": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Models\\Resume.cs",
+              "RelativeToolTip": "ResumeApp\\Models\\Resume.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-22T05:46:38.467Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\appsettings.json",
+              "RelativeDocumentMoniker": "ResumeApp\\appsettings.json",
+              "ToolTip": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\appsettings.json",
+              "RelativeToolTip": "ResumeApp\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-12-18T06:13:09.372Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Views\\ClientRequirements\\Index.cshtml",
+              "RelativeDocumentMoniker": "ResumeApp\\Views\\ClientRequirements\\Index.cshtml",
+              "ToolTip": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Views\\ClientRequirements\\Index.cshtml",
+              "RelativeToolTip": "ResumeApp\\Views\\ClientRequirements\\Index.cshtml",
+              "ViewState": "AgIAABcAAAAAAAAAAAASwC8AAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-17T06:35:14.505Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "ClientList.cshtml",
+              "DocumentMoniker": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Views\\UserManagement\\ClientList.cshtml",
+              "RelativeDocumentMoniker": "ResumeApp\\Views\\UserManagement\\ClientList.cshtml",
+              "ToolTip": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Views\\UserManagement\\ClientList.cshtml",
+              "RelativeToolTip": "ResumeApp\\Views\\UserManagement\\ClientList.cshtml",
+              "ViewState": "AgIAAEoAAAAAAAAAAAAiwGcAAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-17T06:25:37.493Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "ClientsController.cs",
+              "DocumentMoniker": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Controllers\\ClientsController.cs",
+              "RelativeDocumentMoniker": "ResumeApp\\Controllers\\ClientsController.cs",
+              "ToolTip": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\Controllers\\ClientsController.cs",
+              "RelativeToolTip": "ResumeApp\\Controllers\\ClientsController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGcAAACAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-17T06:24:08.595Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "ClientRequirementCreateViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\ViewModels\\ClientRequirementCreateViewModel.cs",
+              "RelativeDocumentMoniker": "ResumeApp\\ViewModels\\ClientRequirementCreateViewModel.cs",
+              "ToolTip": "C:\\Users\\xeedo\\source\\repos\\ResumeApp\\ResumeApp\\ViewModels\\ClientRequirementCreateViewModel.cs",
+              "RelativeToolTip": "ResumeApp\\ViewModels\\ClientRequirementCreateViewModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEIAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-26T09:23:34.01Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

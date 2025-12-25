@@ -18,7 +18,7 @@
     </div>
 
     <!-- Dashboard Cards -->
-    <div class="row g-4">
+    <div class="row g-4">  
         <!-- Assigned Resumes -->
         <div class="col-sm-6 col-md-4 col-lg-3">
             <div class="card h-100 shadow-sm border-0">
@@ -33,7 +33,7 @@
                 </div>
             </div>
         </div>
-
+        
         <!-- Client Onboarding -->
         <div class="col-sm-6 col-md-4 col-lg-3">
             <div class="card h-100 shadow-sm border-0">
@@ -78,5 +78,15 @@
                 </div>
             </div>
         </div>
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="card-title">📌 My Assigned JDs</h5>
+                <p class="card-text">View all job descriptions assigned to you by Admin.</p>
+                <a asp-controller="Dashboard" asp-action="MyAssignments" class="btn btn-primary">
+                    View Assignments
+                </a>
+            </div>
+        </div>
+
     </div>
 </div>

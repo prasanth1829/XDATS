@@ -1,0 +1,948 @@
+﻿@model ResumeApp.ViewModels.RecruiterDashboardViewModel
+@{
+    ViewData["Title"] = "Recruiter Dashboard";
+    var today = DateTime.Now.ToString("dddd, dd MMM yyyy");
+}
+@{
+    string StatusBadge(string s) =>
+        s == "Active" ? "success" :
+        s == "Hold" ? "warning text-dark" :
+        s == "Closed" ? "secondary" :
+        "secondary";
+}
+
+
+<div class="container-fluid px-4 py-4 dashboard-bg">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Recruiter Dashboard</h2>
+            <div class="text-muted">
+                Welcome back  · @Model.RecruiterName · @today
+            </div>
+
+        </div>
+    </div>
+
+    <div class="kpi-2row-grid mb-4">
+
+        <!-- ROW 1 -->
+        <a class="kpi-box submitted"
+           href="@Url.Action(
+                       "SharedProfiles",
+                       "ClientRequirements",
+                       new { id = Model.MyRecruitments.First().RequirementId, statusFilter = CandidateStatus.New }
+                  )">
+            <span class="label">Profile Submitted</span>
+            <span class="value">@Model.ProfileSubmittedCount</span>
+        </a>
+
+        <a class="kpi-box pipeline"
+           href="@Url.Action(
+                       "SharedProfiles",
+                       "ClientRequirements",
+                       new { id = Model.MyRecruitments.First().RequirementId, statusFilter = CandidateStatus.Shortlisted }
+                  )">
+            <span class="label">Pipeline</span>
+            <span class="value">@Model.PipelineCount</span>
+        </a>
+
+        <a class="kpi-box screening"
+           href="@Url.Action(
+                       "SharedProfiles",
+                       "ClientRequirements",
+                       new { id = Model.MyRecruitments.First().RequirementId, statusFilter = CandidateStatus.PanelShortlisted }
+                  )">
+            <span class="label">Screening Pending</span>
+            <span class="value">@Model.ScreeningPendingCount</span>
+        </a>
+
+        <a class="kpi-box interview"
+           href="@Url.Action(
+                       "SharedProfiles",
+                       "ClientRequirements",
+                       new { id = Model.MyRecruitments.First().RequirementId, statusFilter = CandidateStatus.InterviewScheduled }
+                  )">
+            <span class="label">IV Scheduled</span>
+            <span class="value">@Model.InterviewScheduledCount</span>
+        </a>
+
+        <!-- ROW 2 -->
+        <a class="kpi-box success"
+             href="@Url.Action(
+                    "SharedProfiles",
+                    "ClientRequirements",
+        new {
+            id = Model.MyRecruitments.First().RequirementId,
+            statusFilter = CandidateStatus.Selected
+        }
+           )">
+    <span class="label">Final Select</span>
+    <span class="value">@Model.FinalSelectCount</span>
+</a>
+
+
+        <a class="kpi-box offer"
+           href="@Url.Action(
+                       "SharedProfiles",
+                       "ClientRequirements",
+                       new { id = Model.MyRecruitments.First().RequirementId, statusFilter = CandidateStatus.OfferReleased }
+                  )">
+            <span class="label">Offer Released</span>
+            <span class="value">@Model.OfferReleasedCount</span>
+        </a>
+
+        <a class="kpi-box joined"
+           href="@Url.Action(
+                       "SharedProfiles",
+                       "ClientRequirements",
+                       new { id = Model.MyRecruitments.First().RequirementId, statusFilter = CandidateStatus.Joined }
+                  )">
+            <span class="label">Joined</span>
+            <span class="value">@Model.JoinedCount</span>
+        </a>
+
+        <a class="kpi-box followup"
+           href="@Url.Action(
+                       "SharedProfiles",
+                       "ClientRequirements",
+                       new { id = Model.MyRecruitments.First().RequirementId, statusFilter = CandidateStatus.Hold }
+                  )">
+            <span class="label">Follow-up</span>
+            <span class="value">@Model.FollowUpCount</span>
+        </a>
+
+    </div>
+
+
+    <!-- MAIN GRID -->
+    <div class="row g-4">
+
+        <!-- MY RECRUITMENT -->
+        <div class="col-xl-8">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white fw-semibold d-flex justify-content-between">
+                    <span>Active Requirements</span>
+                        <a class="btn btn-sm btn-outline-primary"
+                           href="@Url.Action("MyAssignments", "Dashboard")">
+                            View All
+                        </a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Client</th>
+                                <th>Job Title</th>
+                                <th>Positions</th>
+                                <th>Uploaded</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.MyRecruitments.Any())
+                            {
+                                foreach (var r in Model.MyRecruitments)
+                                {
+                                    <tr class="clickable-row" data-href="@Url.Action("SharedProfiles", "ClientRequirements", new { id = r.RequirementId })">
+
+                                        <td><strong>@r.ClientName</strong></td>
+                                        <td>
+                                              <a class="jd-link"
+                                                 href="@Url.Action(
+                                                      "FullDetails",
+                                                      "ClientRequirements",
+                                                      new { id = r.RequirementId }
+                                                 )">
+                                                  @r.JobTitle
+                                                  </a>
+                                        </td>
+
+                                        <td>@r.Positions</td>
+
+                                        <td>
+                                            @if (r.UploadedCount == 0)
+                                            {
+                                                <span class="text-danger fw-bold">0</span>
+                                            }
+                                            else
+                                            {
+                                                @r.UploadedCount
+                                            }
+                                        </td>
+
+                                        <td>
+                                            <span class="badge bg-secondary">@r.Status</span>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-3">
+                                        No assigned requirements found.
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- STATUS OVERVIEW -->
+        <div class="col-xl-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white fw-semibold">
+                    Profile Status Overview
+                </div>
+                <div class="card-body text-center">
+                    <i class="bi bi-pie-chart-fill fs-1 text-primary"></i>
+                    <div class="mt-3 small text-muted">
+                        @foreach (var s in Model.StatusCounts)
+                        {
+                            <div class="small text-muted">
+                                @s.Key : @s.Value
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- ================= Recruitment Funnel (Frontend Only) ================= -->
+    <div class="row g-4 mt-3">
+
+        <!-- CHART -->
+        <div class="col-xl-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white fw-semibold">
+                    Recruitment Funnel
+                </div>
+                <div class="card-body">
+                    <canvas id="funnelChart" height="120"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- FILTERS -->
+        <div class="col-xl-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white fw-semibold">
+                    Filter
+                </div>
+
+                <div class="card-body">
+                    <div class="mb-2">
+                        <label class="small">From Date</label>
+                        <input type="date" id="fromDate" class="form-control" />
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="small">To Date</label>
+                        <input type="date" id="toDate" class="form-control" />
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="small">Client</label>
+                             <select id="clientId" class="form-select">
+                                <option value="">All Clients</option>
+                                @foreach (var c in Model.ClientFilters)
+                                {
+                                    <option value="@c.Id">@c.Name</option>
+                                }
+                            </select>
+
+                            <select id="requirementId" class="form-select">
+                                <option value="">All Requirements</option>
+                                @foreach (var r in Model.RequirementFilters)
+                                {
+                                    <option value="@r.Id">@r.Name</option>
+                                }
+                            </select>
+                    </div>
+
+                    <button class="btn btn-primary w-100" onclick="applyFilter()">
+                    Apply Filter
+                    </button>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- ================= Recruiter To-Do List ================= -->
+    <div class="row g-4 mt-4">
+        <div class="col-xl-12">
+            <div class="card shadow-sm border-0">
+
+                <!-- Header -->
+                <div class="card-header bg-white fw-semibold d-flex justify-content-between align-items-center">
+                    <span>📝 My To-Do List</span>
+                   
+                </div>
+
+                <!-- Active Tasks -->
+                <div class="card-body todo-list" id="activeTasks">
+
+                    <!-- Task 1 -->
+                    <div class="todo-item info">
+                        <div class="todo-left">
+                            <span class="todo-dot"></span>
+                            <div>
+                                <div class="todo-title">Upload profiles for assigned JD</div>
+                                <div class="todo-sub">QA Engineer · ABC Corp</div>
+                            </div>
+                        </div>
+                        <div class="todo-actions">
+                            <span class="todo-badge">Pending</span>
+                            <button class="todo-done-btn" title="Mark as done">✓</button>
+                        </div>
+                    </div>
+
+                    <!-- Task 2 -->
+                    <div class="todo-item success">
+                        <div class="todo-left">
+                            <span class="todo-dot"></span>
+                            <div>
+                                <div class="todo-title">Interview scheduled today</div>
+                                <div class="todo-sub">Amit S · React Developer · DataGaps</div>
+                            </div>
+                        </div>
+                        <div class="todo-actions">
+                            <span class="todo-badge">Today</span>
+                            <button class="todo-done-btn" title="Mark as done">✓</button>
+                        </div>
+                    </div>
+
+                    <!-- Task 3 -->
+                    <div class="todo-item warning">
+                        <div class="todo-left">
+                            <span class="todo-dot"></span>
+                            <div>
+                                <div class="todo-title">Panel feedback pending</div>
+                                <div class="todo-sub">3 profiles · Data Engineer · FinTech Co</div>
+                            </div>
+                        </div>
+                        <div class="todo-actions">
+                            <span class="todo-badge">2 days</span>
+                            <button class="todo-done-btn" title="Mark as done">✓</button>
+                        </div>
+                    </div>
+
+                    <!-- Task 4 -->
+                    <div class="todo-item urgent">
+                        <div class="todo-left">
+                            <span class="todo-dot"></span>
+                            <div>
+                                <div class="todo-title">Follow-up – Offer Released</div>
+                                <div class="todo-sub">Rahul Sharma · Data Engineer · DataGaps</div>
+                            </div>
+                        </div>
+                        <div class="todo-actions">
+                            <span class="todo-badge">Today</span>
+                            <button class="todo-done-btn" title="Mark as done">✓</button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Completed Tasks -->
+                <div class="card-footer bg-white">
+                    <div class="completed-header" onclick="toggleCompleted()">
+                        ✔ Completed Tasks <span class="text-muted small">(click to expand)</span>
+                    </div>
+                    <div id="completedTasks" class="completed-list d-none"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM GRID -->
+    <div class="row g-4 mt-1">
+
+        <!-- RECENT UPLOADS -->
+        <div class="col-xl-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white fw-semibold">
+                    Recent Uploads
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-sm mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Candidate</th>
+                                <th>JD</th>
+                                <th>Uploaded</th>
+                                <th>Status</th>
+                                <th>Match</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.RecentUploads.Any())
+                            {
+                                foreach (var r in Model.RecentUploads)
+                                {
+                                    <tr>
+                                        <td>
+                                            <strong>@r.CandidateName</strong>
+                                        </td>
+
+                                        <td>@r.JobTitle</td>
+
+                                        <td class="text-muted small">
+                                            @r.UploadedAt.ToLocalTime().ToString("dd MMM, hh:mm tt")
+                                        </td>
+
+                                        <td>
+                                            <span class="badge bg-@StatusBadge(r.Status.ToString())">
+                                                @r.Status
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            @if (r.MatchScore.HasValue)
+                                            {
+                                                <span class="fw-semibold">@r.MatchScore%</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">—</span>
+                                            }
+                                        </td>
+
+                                        <td class="text-end">
+                                            <div class="btn-group btn-group-sm">
+                                                <a class="btn btn-outline-primary"
+                                                   title="View in JD"
+                                                   href="@Url.Action("SharedProfiles", "ClientRequirements", new { id = r.RequirementId })">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+
+                                                <a class="btn btn-outline-secondary"
+                                                   title="View Resume"
+                                                   href="@Url.Action("Details", "Resume", new { id = r.ResumeId })">
+                                                    <i class="bi bi-file-earmark-text"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-3">
+                                        No recent uploads found.
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="col-xl-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white fw-semibold">
+                    Actions Needed
+                </div>
+                @if (Model.ActionItems.Any())
+                {
+                    foreach (var a in Model.ActionItems)
+                    {
+                        <div class="action-item @a.Type">
+                            <i class="bi bi-info-circle"></i>
+                            @a.Message
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="text-muted small">
+                        🎉 No actions needed right now
+                    </div>
+                }
+
+            </div>
+        </div>
+        <!-- QUICK ACTIONS -->
+        <div class="row g-3 mt-4">
+            <div class="col-12">
+                <h6 class="fw-semibold text-muted mb-2">
+                    Quick Actions
+                </h6>
+            </div>
+
+            @foreach (var qa in Model.QuickActions)
+            {
+                <div class="col-sm-6 col-lg-3">
+                    <a class="quick-action-card"
+                       href="@(
+                       qa.Key == "uploads" ? Url.Action("MyUploads", "Resume") :
+                       qa.Key == "requirements" ? Url.Action("Index", "ClientRequirements") :
+                       qa.Key == "clients" ? Url.Action("ClientList", "UserManagement") :
+                       Url.Action("MyAssignments", "Dashboard")
+                              )">
+
+                        <span>@qa.Title</span>
+
+                        <span class="badge bg-@qa.BadgeType ms-auto">
+                            @qa.Count
+                        </span>
+                    </a>
+                </div>
+            }
+        </div>
+
+
+
+
+    </div>
+</div>
+
+<style>
+    .dashboard-bg {
+        background: #f4f6f9;
+        min-height: 100vh;
+    }
+
+    .kpi-2row-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+    }
+
+    .kpi-box {
+        background: #ffffff;
+        border-radius: 14px;
+        padding: 16px 18px;
+        text-decoration: none;
+        color: #111827;
+        box-shadow: 0 2px 10px rgba(0,0,0,.06);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: all .2s ease;
+    }
+
+        .kpi-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 28px rgba(0,0,0,.14);
+        }
+
+        .kpi-box .label {
+            font-size: .72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            opacity: .75;
+        }
+
+        .kpi-box .value {
+            font-size: 2rem;
+            font-weight: 800;
+        }
+
+    /* COLOR STRIP (LEFT BORDER) */
+    .submitted {
+        border-left: 4px solid #3b82f6;
+    }
+
+    .pipeline {
+        border-left: 4px solid #6366f1;
+    }
+
+    .screening {
+        border-left: 4px solid #f59e0b;
+    }
+
+    .interview {
+        border-left: 4px solid #8b5cf6;
+    }
+
+    .success {
+        border-left: 4px solid #22c55e;
+    }
+
+    .offer {
+        border-left: 4px solid #14b8a6;
+    }
+
+    .joined {
+        border-left: 4px solid #16a34a;
+    }
+
+    .followup {
+        border-left: 4px solid #ef4444;
+    }
+
+    /* RESPONSIVE */
+   
+
+
+
+
+    /* Gradients */
+    .gradient-primary {
+        background: linear-gradient(135deg, #4f46e5, #3b82f6);
+    }
+
+    .gradient-info {
+        background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+    }
+
+    .gradient-warning {
+        background: linear-gradient(135deg, #f59e0b, #fbbf24);
+    }
+
+    .gradient-success {
+        background: linear-gradient(135deg, #16a34a, #22c55e);
+    }
+
+    /* Actions */
+    .action-item {
+        padding: .75rem;
+        border-radius: 10px;
+        font-size: .9rem;
+        margin-bottom: .6rem;
+        display: flex;
+        gap: .6rem;
+        align-items: center;
+    }
+
+        .action-item.warning {
+            background: #fff3cd;
+        }
+
+        .action-item.info {
+            background: #e7f3ff;
+        }
+
+        .action-item.secondary {
+            background: #f1f1f1;
+        }
+
+    .clickable-row {
+        cursor: pointer;
+    }
+
+        .clickable-row:hover {
+            background-color: #f1f5f9;
+        }
+
+    .quick-action-card {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+        background: #ffffff;
+        border-radius: 12px;
+        text-decoration: none;
+        color: #111827;
+        font-weight: 500;
+        box-shadow: 0 2px 8px rgba(0,0,0,.06);
+        transition: all .2s ease;
+    }
+
+        .quick-action-card i {
+            font-size: 1.4rem;
+        }
+
+        .quick-action-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0,0,0,.12);
+            background: #f8fafc;
+        }
+    @@media (max-width: 1200px) {
+        .kpi-2row-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .kpi-2row-grid {
+            grid-template-columns: repeat(1, 1fr);
+        }
+    }
+    /* ===== Recruiter To-Do List ===== */
+
+    .todo-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    /* Card-like SaaS row */
+    .todo-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 16px;
+        background: #ffffff;
+        border-radius: 14px;
+        border-left: 5px solid transparent;
+        box-shadow: 0 2px 10px rgba(0,0,0,.05);
+        transition: all .2s ease;
+    }
+
+        .todo-item:hover {
+            background: #f8fafc;
+            transform: translateY(-1px);
+        }
+
+    /* Left section */
+    .todo-left {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .todo-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-top: 6px;
+    }
+
+    /* Text */
+    .todo-title {
+        font-weight: 600;
+        font-size: .95rem;
+    }
+
+    .todo-sub {
+        font-size: .75rem;
+        color: #6b7280;
+    }
+
+    /* Actions */
+    .todo-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .todo-badge {
+        font-size: .7rem;
+        padding: 5px 10px;
+        border-radius: 999px;
+        background: #e5e7eb;
+        font-weight: 600;
+    }
+
+    /* Done button */
+    .todo-done-btn {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: none;
+        background: #f3f4f6;
+        font-weight: 700;
+        cursor: pointer;
+        opacity: 0;
+        transition: all .2s ease;
+    }
+
+    .todo-item:hover .todo-done-btn {
+        opacity: 1;
+    }
+
+    .todo-done-btn:hover {
+        background: #22c55e;
+        color: #fff;
+    }
+
+    /* Priority colors (LEFT BORDER ONLY) */
+    .todo-item.info {
+        border-left-color: #3b82f6;
+    }
+
+    .todo-item.success {
+        border-left-color: #22c55e;
+    }
+
+    .todo-item.warning {
+        border-left-color: #f59e0b;
+    }
+
+    .todo-item.urgent {
+        border-left-color: #ef4444;
+    }
+
+    /* Completed tasks */
+    .todo-item.completed {
+        background: #f9fafb;
+        border-left-color: #9ca3af;
+    }
+
+        .todo-item.completed .todo-title {
+            text-decoration: line-through;
+            color: #6b7280;
+        }
+
+    /* Completed section */
+    .completed-header {
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 12px;
+    }
+
+    .completed-list {
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .jd-link {
+    font-weight: 600;
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.jd-link:hover {
+    text-decoration: underline;
+    color: #1d4ed8;
+}
+
+</style>
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".clickable-row").forEach(row => {
+                row.addEventListener("click", function () {
+                    const url = this.getAttribute("data-href");
+                    if (url) window.location.href = url;
+                });
+            });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+async function applyFilter() {
+
+    const fromDate = document.getElementById("fromDate").value;
+    const toDate = document.getElementById("toDate").value;
+    const clientId = document.getElementById("clientId").value;
+    const requirementId = document.getElementById("requirementId").value;
+
+    const params = new URLSearchParams({
+        fromDate,
+        toDate,
+        clientId,
+        requirementId
+    });
+
+    const res = await fetch(`/Dashboard/GetRecruitmentFunnel?${params}`);
+    const data = await res.json();
+
+    funnelChart.data.datasets[0].data = [
+        data.profileSubmitted,
+        data.selected,
+        data.interviewScheduled,
+        data.offerReleased,
+        data.joined
+    ];
+
+    funnelChart.update();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    initFunnelChart();
+    applyFilter(); // load default data
+});
+</script>
+
+    <script>
+        let funnelChart;
+
+        // Dummy dataset (simulate backend)
+        const dummyData = {
+            default: [20, 14, 4, 4, 2],
+            DataGaps: [10, 7, 2, 2, 1],
+            FinTech: [6, 4, 1, 1, 0],
+            ABC: [4, 3, 1, 1, 1]
+        };
+
+        document.addEventListener("DOMContentLoaded", function () {
+            initFunnelChart();
+            loadDefaultFunnel();
+        });
+
+        function initFunnelChart() {
+            const ctx = document.getElementById("funnelChart");
+
+            funnelChart = new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: [
+                        "Profile Submitted",
+                        "Select",
+                        "IV Scheduled",
+                        "Offer Released",
+                        "Joined"
+                    ],
+                    datasets: [{
+                        label: "Candidates",
+                        data: [],
+                        backgroundColor: "#3b82f6",
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 }
+                        }
+                    }
+                }
+            });
+        }
+
+       
+
+       
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll(".todo-done-btn").forEach(btn => {
+                btn.addEventListener("click", e => {
+                    e.stopPropagation();
+                    markTaskDone(btn.closest(".todo-item"));
+                });
+            });
+        });
+
+        function markTaskDone(item) {
+            item.classList.add("completed");
+
+            // remove ✓ button
+            const btn = item.querySelector(".todo-done-btn");
+            if (btn) btn.remove();
+
+            // move to completed section
+            document.getElementById("completedTasks").appendChild(item);
+        }
+
+        function toggleCompleted() {
+            document.getElementById("completedTasks")
+                .classList.toggle("d-none");
+        }
+    </script>
+}

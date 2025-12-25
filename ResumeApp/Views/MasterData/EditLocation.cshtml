@@ -1,0 +1,73 @@
+﻿@model ResumeApp.Models.Location
+@{
+    ViewData["Title"] = "Edit Location";
+    var countries = (IEnumerable<dynamic>)(ViewBag.Countries ?? new List<object>());
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0"><i class="bi bi-geo-alt me-2"></i>Edit Location</h3>
+        <a asp-action="Locations" class="btn btn-light">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <form asp-action="EditLocation" method="post" class="row g-3">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
+
+                <div class="col-md-6">
+                    <label class="form-label">Country</label>
+                    <select asp-for="CountryId" class="form-select" required>
+                        <option value="">-- Select Country --</option>
+                        @foreach (var c in countries)
+                        {
+                            <option value="@c.Id" selected="@(Model.CountryId == (int)c.Id)">
+                                @c.Name
+                            </option>
+                        }
+                    </select>
+                    <span class="text-danger" asp-validation-for="CountryId"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Location Name</label>
+                    <input asp-for="Name" class="form-control" placeholder="e.g., Bengaluru" required />
+                    <span class="text-danger" asp-validation-for="Name"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">State / Province (optional)</label>
+                    <input asp-for="StateOrProvince" class="form-control" placeholder="e.g., Karnataka" />
+                    <span class="text-danger" asp-validation-for="StateOrProvince"></span>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Sort Order</label>
+                    <input asp-for="SortOrder" type="number" class="form-control" />
+                    <span class="text-danger" asp-validation-for="SortOrder"></span>
+                </div>
+
+                <div class="col-md-3 d-flex align-items-end">
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="IsActive" id="chkActive" />
+                        <label class="form-check-label" for="chkActive">Active</label>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save me-1"></i> Save
+                    </button>
+                    <a asp-action="Locations" class="btn btn-light">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

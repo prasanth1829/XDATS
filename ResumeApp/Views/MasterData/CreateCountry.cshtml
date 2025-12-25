@@ -1,0 +1,45 @@
+﻿@using ResumeApp.Models
+@model Country
+@{
+    ViewData["Title"] = "Create Country";
+}
+<h3 class="mb-3">Create Country</h3>
+
+@await Html.PartialAsync("_ToastTempData") <!-- optional small partial for TempData success/error -->
+
+<form asp-action="CreateCountry" method="post" class="row g-3">
+    @Html.AntiForgeryToken()
+
+    <div class="col-md-6">
+        <label asp-for="Name" class="form-label">Country Name *</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-3">
+        <label asp-for="IsoCode" class="form-label">ISO Code</label>
+        <input asp-for="IsoCode" class="form-control" placeholder="IN, US..." />
+        <span asp-validation-for="IsoCode" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-3">
+        <label asp-for="SortOrder" class="form-label">Sort Order</label>
+        <input asp-for="SortOrder" type="number" class="form-control" />
+    </div>
+
+    <div class="col-12">
+        <div class="form-check">
+            <input asp-for="IsActive" class="form-check-input" id="cActive" />
+            <label class="form-check-label" for="cActive">Active</label>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <button class="btn btn-primary" type="submit">Save Country</button>
+        <a asp-action="Countries" class="btn btn-light">Back to List</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

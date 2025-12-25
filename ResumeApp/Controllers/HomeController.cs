@@ -13,48 +13,31 @@ public class HomeController : Controller
         _context = context;
     }
 
-    public async Task<IActionResult> Index()
+    [Authorize]
+    public IActionResult Index()
     {
-        var model = new HomeDashboardViewModel();
+        if (User.IsInRole("Reviewer"))
+            return RedirectToAction("Reviewer", "Dashboard");
 
-        var today = DateTime.Today;
-        var monthStart = new DateTime(today.Year, today.Month, 1);
+        if (User.IsInRole("Admin"))
+            return View("AdminDashboard");
 
-        model.TotalResumes = await _context.Resumes.CountAsync();
-        model.ResumesToday = await _context.Resumes.CountAsync(r => r.UploadedAt >= today && r.UploadedAt < today.AddDays(1));
-        model.ResumesThisMonth = await _context.Resumes.CountAsync(r => r.UploadedAt >= monthStart && r.UploadedAt < monthStart.AddMonths(1));
+        if (User.IsInRole("Team Lead"))
+            return RedirectToAction("TeamLead", "Dashboard");
 
-        var lastResume = await _context.Resumes.Include(r => r.User).OrderByDescending(r => r.UploadedAt).FirstOrDefaultAsync();
-        if (lastResume != null)
-        {
-            model.LastUploadedBy = lastResume.User?.FullName ?? "Unknown";
-            model.LatestUpload = lastResume.UploadedAt;
-        }
+        if (User.IsInRole("Manager"))
+            return RedirectToAction("Manager", "Dashboard");
 
-        // Last 7 days
-        var start = today.AddDays(-6).Date;
-        var end = today.AddDays(1).Date;
-        var grouped = await _context.Resumes
-            .Where(r => r.UploadedAt >= start && r.UploadedAt < end)
-            .GroupBy(r => new { r.UploadedAt.Year, r.UploadedAt.Month, r.UploadedAt.Day })
-            .Select(g => new { g.Key.Year, g.Key.Month, g.Key.Day, Count = g.Count() })
-            .ToListAsync();
+        if (User.IsInRole("Vendor"))
+            return RedirectToAction("Vendor", "Dashboard");
 
-        var labels = new List<string>();
-        var counts = new List<int>();
-        for (int i = 6; i >= 0; i--)
-        {
-            var d = today.AddDays(-i).Date;
-            labels.Add(d.ToString("dd MMM"));
-            var grp = grouped.FirstOrDefault(g => g.Year == d.Year && g.Month == d.Month && g.Day == d.Day);
-            counts.Add(grp?.Count ?? 0);
-        }
+        if (User.IsInRole("Panel"))
+            return RedirectToAction("Panel", "Dashboard");
 
-        model.Last7DaysLabels = labels;
-        model.Last7DaysCounts = counts;
-
-        return View(model);
+        return Forbid();
     }
+
+
     [HttpGet]
     public async Task<IActionResult> GetUploadStats()
     {
@@ -109,7 +92,8 @@ public class HomeController : Controller
     [Authorize(Roles = "Reviewer")]
     public IActionResult ReviewerDashboard()
     {
-        return View();
+        // Redirect old URL to new SaaS dashboard
+        return RedirectToAction("Reviewer", "Dashboard");
     }
     public IActionResult ReviewerTerms()
     {

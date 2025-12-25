@@ -1,0 +1,76 @@
+﻿@model ResumeApp.Models.Client
+@{
+    ViewData["Title"] = "Edit Client";
+}
+
+<h3 class="mb-3">Edit Client</h3>
+@await Html.PartialAsync("_ClientAlerts")
+
+<form asp-action="Edit" method="post" class="row g-3">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+
+    <div class="col-md-6">
+        <label class="form-label">Company Name</label>
+        <input class="form-control" asp-for="CompanyName" />
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Website</label>
+        <input class="form-control" asp-for="WebsiteUrl" />
+    </div>
+
+    <div class="col-md-4">
+        <label class="form-label">Company Type</label>
+        <input class="form-control" asp-for="CompanyType" />
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Company Size</label>
+        <input class="form-control" asp-for="CompanySize" />
+    </div>
+    <div class="col-md-4">
+        <div class="form-check mt-4">
+            <input class="form-check-input" asp-for="IsActive" id="chkActive" />
+            <label class="form-check-label" for="chkActive">Active</label>
+        </div>
+    </div>
+
+    
+    
+
+    <div class="col-md-6">
+        <label class="form-label">Contact Name</label>
+        <input class="form-control" asp-for="ContactName" />
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Designation</label>
+        <input class="form-control" asp-for="Designation" />
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Phone</label>
+        <input class="form-control" asp-for="Phone" />
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Email</label>
+        <input class="form-control" asp-for="Email" />
+    </div>
+
+    <div class="col-12">
+        <label class="form-label">Preferred Communication</label>
+        <input class="form-control" asp-for="PreferredCommunication" />
+    </div>
+
+    <div class="col-12">
+        <label class="form-label">Engagement Types</label>
+        <input class="form-control" asp-for="EngagementTypes" />
+    </div>
+
+    <div class="col-12">
+        <button class="btn btn-primary" type="submit">Save</button>
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-light">Cancel</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

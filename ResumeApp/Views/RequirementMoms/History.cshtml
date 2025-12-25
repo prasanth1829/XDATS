@@ -1,0 +1,160 @@
+﻿@model ResumeApp.Models.RequirementMom
+
+@{
+    ViewData["Title"] = "MOM History";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h3 class="mb-0">📜 MOM History</h3>
+            <div class="text-muted small">
+                Requirement #@Model.RequirementId —
+                @Model.Requirement?.JobTitle
+            </div>
+        </div>
+
+        <a asp-controller="ClientRequirements"
+           asp-action="Details"
+           asp-route-id="@Model.RequirementId"
+           class="btn btn-outline-secondary btn-sm">
+            ⬅️ Back to Requirement
+        </a>
+    </div>
+
+    <!-- Current (latest) version -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-gradient bg-primary text-white fw-semibold">
+            📝 Current Version
+        </div>
+        <div class="card-body">
+            <h5 class="fw-bold">@Model.Title</h5>
+            <p class="text-muted small mb-2">
+                Meeting Date:
+                @(Model.MeetingDate?.ToString("dd-MMM-yyyy") ?? "-")
+            </p>
+            <p class="text-muted small mb-3">
+                Created by <strong>@Model.CreatedByUser?.FullName</strong>
+                on @Model.CreatedAt.ToString("dd-MMM-yyyy HH:mm")
+                @if (Model.LastEditedAt.HasValue)
+                {
+                    <span>
+                        | Last edited by <strong>@Model.LastEditedByUser?.FullName</strong>
+                        on @Model.LastEditedAt.Value.ToString("dd-MMM-yyyy HH:mm")
+                    </span>
+                }
+            </p>
+
+            <div class="border rounded p-3 bg-light mb-3">
+                @if (!string.IsNullOrWhiteSpace(Model.Minutes))
+                {
+                    @Html.Raw(Model.Minutes)
+                }
+                else
+                {
+                    <span class="text-muted">No minutes recorded.</span>
+                }
+            </div>
+
+            <div>
+                <strong>Attachments:</strong>
+                @{
+                    var filesNow = (Model.AttachmentsPath ?? string.Empty)
+                    .Split(';', StringSplitOptions.RemoveEmptyEntries)
+                    .ToList();
+                }
+                @if (filesNow.Any())
+                {
+                    <ul class="list-unstyled mt-2">
+                        @foreach (var f in filesNow)
+                        {
+                            <li>
+                                <a asp-controller="RequirementMoms"
+                                   asp-action="DownloadAttachment"
+                                   asp-route-id="@Model.Id"
+                                   asp-route-fileName="@f">
+                                    @f
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <span class="text-muted">No attachments.</span>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- History timeline -->
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-gradient bg-secondary text-white fw-semibold">
+            ⏱️ Past Versions
+        </div>
+        <div class="card-body">
+            @if (Model.History != null && Model.History.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-sm table-striped align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Edited At</th>
+                                <th>Edited By</th>
+                                <th>Notes Snapshot</th>
+                                <th>Attachments Snapshot</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var h in Model.History
+                                                    .OrderByDescending(x => x.EditedAt))
+                            {
+                                var filesHist = (h.AttachmentsPath ?? string.Empty)
+                                .Split(';', StringSplitOptions.RemoveEmptyEntries)
+                                .ToList();
+
+                                <tr>
+                                    <td>@h.EditedAt.ToString("dd-MMM-yyyy HH:mm")</td>
+                                    <td>@h.EditedByUser?.FullName (@h.EditedByUser?.Email)</td>
+                                    <td style="max-width: 400px;">
+                                        <div class="border rounded p-2 bg-light small" style="max-height: 200px; overflow:auto;">
+                                            @if (!string.IsNullOrWhiteSpace(h.NotesHtml))
+                                            {
+                                                @Html.Raw(h.NotesHtml)
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">No text snapshot.</span>
+                                            }
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @if (filesHist.Any())
+                                        {
+                                            <ul class="list-unstyled mb-0 small">
+                                                @foreach (var f in filesHist)
+                                                {
+                                                    <li>@f</li>
+                                                }
+                                            </ul>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted small">No attachments snapshot.</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted mb-0">
+                    No previous versions recorded yet. History entries will appear here after edits.
+                </p>
+            }
+        </div>
+    </div>
+</div>

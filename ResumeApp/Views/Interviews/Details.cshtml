@@ -1,0 +1,339 @@
+﻿@using ResumeApp.Models
+@model ResumeApp.ViewModels.InterviewDetailsVm
+
+@{
+    ViewData["Title"] = "Interview Details";
+
+    string whenLine = $"{Model.StartLocal:ddd, dd MMM yyyy HH:mm} – {Model.EndLocal:HH:mm}";
+    string statusCss = Model.Status switch
+    {
+        InterviewStatus.Planned => "secondary",
+        InterviewStatus.Confirmed => "info",
+        InterviewStatus.Completed => "success",
+        InterviewStatus.Canceled => "danger",
+        _ => "secondary"
+    };
+
+    (string ocss, string otext) OutcomeBadge() => Model.Outcome switch
+    {
+        InterviewOutcome.None => ("secondary", "—"),
+        InterviewOutcome.CandidateAttended => ("success", "Candidate Attended"),
+        InterviewOutcome.CandidateNotAttended => ("danger", "Candidate Not Attended"),
+        InterviewOutcome.CandidatePostponed => ("warning", "Candidate Postponed"),
+        InterviewOutcome.CandidateNotResponding => ("danger", "Candidate Not Responding"),
+        InterviewOutcome.PanelNotAttended => ("danger", "Panel Not Attended"),
+        InterviewOutcome.PanelPostponed => ("warning", "Panel Postponed"),
+        _ => ("secondary", Model.Outcome.ToString())
+    };
+
+    // Convenience flags for button enabling
+    bool canConfirm = Model.Status == InterviewStatus.Planned;
+    bool canCancel = Model.Status == InterviewStatus.Planned || Model.Status == InterviewStatus.Confirmed;
+    bool canComplete = Model.Status == InterviewStatus.Confirmed;
+}
+
+<style>
+    .card-soft {
+        border-radius: 14px;
+    }
+
+    .btn-soft {
+        border-radius: 10px;
+    }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h3 class="mb-1">Interview Details</h3>
+        <div class="text-muted small">
+            JD: <strong>@Model.JobTitle</strong> (ID @Model.RequirementId)
+        </div>
+    </div>
+    <div class="d-flex gap-2">
+        <a class="btn btn-light btn-soft" href="@Url.Action("Index", "Interviews")">
+            ← Back to Interviews
+        </a>
+        <a class="btn btn-outline-primary btn-soft"
+           href="@Url.Action("SharedProfiles", "ClientRequirements", new { id = Model.RequirementId })">
+            View JD Profiles
+        </a>
+    </div>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="row g-3">
+    <!-- LEFT COLUMN -->
+    <div class="col-12 col-lg-8">
+
+        <!-- Overview -->
+        <div class="card card-soft shadow-sm">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge rounded-pill bg-dark">Round @Model.Round</span>
+                        <span class="badge rounded-pill bg-@statusCss">@Model.Status</span>
+                        @{
+                            var (oc, ot) = OutcomeBadge();
+                        }
+                        <span class="badge rounded-pill bg-@oc" title="Outcome">@ot</span>
+                    </div>
+
+                    <!-- Action toolbar (wired forms) -->
+                    <div class="d-flex gap-2">
+                        <form asp-action="SetStatus" asp-controller="Interviews" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <input type="hidden" name="status" value="@InterviewStatus.Confirmed" />
+                            <button class="btn btn-outline-secondary btn-sm btn-soft" @(canConfirm ? null : "disabled")
+                                    title="Mark as confirmed">
+                                Confirm
+                            </button>
+                        </form>
+
+                        <form asp-action="SetStatus" asp-controller="Interviews" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <input type="hidden" name="status" value="@InterviewStatus.Canceled" />
+                            <button class="btn btn-outline-danger btn-sm btn-soft" @(canCancel ? null : "disabled")
+                                    title="Cancel this interview">
+                                Cancel
+                            </button>
+                        </form>
+
+                        <form asp-action="SetStatus" asp-controller="Interviews" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <input type="hidden" name="status" value="@InterviewStatus.Completed" />
+                            <button class="btn btn-outline-success btn-sm btn-soft" @(canComplete ? null : "disabled")
+                                    title="Mark as completed">
+                                Mark Completed
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <h5 class="mb-1">@Model.CandidateName</h5>
+                    @if (!string.IsNullOrWhiteSpace(Model.CandidateEmail))
+                    {
+                        <div class="small text-muted">
+                            <i class="bi bi-envelope me-1"></i> @Model.CandidateEmail
+                        </div>
+                    }
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <div class="p-3 border rounded-3 h-100">
+                            <div class="text-muted small mb-1">When</div>
+                            <div class="fw-semibold">@whenLine</div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="p-3 border rounded-3 h-100">
+                            <div class="text-muted small mb-1">Mode</div>
+                            <div class="fw-semibold">@(!string.IsNullOrWhiteSpace(Model.Mode) ? Model.Mode : "—")</div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="p-3 border rounded-3">
+                            <div class="text-muted small mb-1">Location / Link</div>
+                            @if (!string.IsNullOrWhiteSpace(Model.LocationOrLink))
+                            {
+                                if (Model.LocationOrLink.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <a href="@Model.LocationOrLink" class="fw-semibold" target="_blank" rel="noopener">
+                                        @Model.LocationOrLink
+                                    </a>
+                                }
+                                else
+                                {
+                                    <div class="fw-semibold">@Model.LocationOrLink</div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="text-muted">—</div>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="p-3 border rounded-3">
+                            <div class="text-muted small mb-1">Notes</div>
+                            @if (!string.IsNullOrWhiteSpace(Model.Notes))
+                            {
+                                <div style="white-space:pre-wrap">@Model.Notes</div>
+                            }
+                            else
+                            {
+                                <div class="text-muted">—</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Outcome (separate card) -->
+        <div class="card card-soft shadow-sm mt-3">
+            <div class="card-body">
+                <h6 class="card-title">Interview Outcome</h6>
+
+                @{
+                    var (ocss, otext) = OutcomeBadge();
+                }
+
+                <div class="mb-3">
+                    <span class="text-muted small me-2">Current:</span>
+                    <span class="badge bg-@ocss">@otext</span>
+                    @if (!string.IsNullOrWhiteSpace(Model.OutcomeNote))
+                    {
+                        <div class="small text-muted mt-1">Note: <em>@Model.OutcomeNote</em></div>
+                    }
+                    @if (Model.ActualStartLocal.HasValue || Model.ActualEndLocal.HasValue)
+                    {
+                        <div class="small text-muted mt-1">
+                            Actual:
+                            @if (Model.ActualStartLocal.HasValue)
+                            {
+                                @Model.ActualStartLocal.Value.ToString("dd MMM yyyy HH:mm")
+                            }
+                            @if (Model.ActualEndLocal.HasValue)
+                            {
+                                @Model.ActualEndLocal.Value.ToString(" - HH:mm")
+                            }
+                        </div>
+                    }
+                </div>
+
+                <form asp-action="SetOutcome" asp-controller="Interviews" method="post" class="row g-3">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label">Outcome</label>
+                        <select name="outcome" class="form-select" required>
+                            <option value="0" selected="@(Model.Outcome == InterviewOutcome.None)">— Select —</option>
+                            <option value="1" selected="@(Model.Outcome == InterviewOutcome.CandidateAttended)">Candidate Attended</option>
+                            <option value="2" selected="@(Model.Outcome == InterviewOutcome.CandidateNotAttended)">Candidate Not Attended</option>
+                            <option value="3" selected="@(Model.Outcome == InterviewOutcome.CandidatePostponed)">Candidate Postponed</option>
+                            <option value="4" selected="@(Model.Outcome == InterviewOutcome.CandidateNotResponding)">Candidate Not Responding</option>
+                            <option value="5" selected="@(Model.Outcome == InterviewOutcome.PanelNotAttended)">Panel Not Attended</option>
+                            <option value="6" selected="@(Model.Outcome == InterviewOutcome.PanelPostponed)">Panel Postponed</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label">Outcome Note (optional)</label>
+                        <input name="note" class="form-control" value="@Model.OutcomeNote" />
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label">Actual Start (local, optional)</label>
+                        <input name="actualStartLocal" type="datetime-local" class="form-control"
+                               value="@(Model.ActualStartLocal.HasValue? Model.ActualStartLocal.Value.ToString("yyyy-MM-ddTHH:mm") : "")" />
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label">Actual End (local, optional)</label>
+                        <input name="actualEndLocal" type="datetime-local" class="form-control"
+                               value="@(Model.ActualEndLocal.HasValue? Model.ActualEndLocal.Value.ToString("yyyy-MM-ddTHH:mm") : "")" />
+                    </div>
+
+                    <div class="col-12">
+                        <button class="btn btn-primary btn-soft">Save Outcome</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="col-12 col-lg-4">
+        <!-- Panel -->
+        <div class="card card-soft shadow-sm">
+            <div class="card-body">
+                <h6 class="card-title mb-3">Panel</h6>
+                @if (Model.Panelists != null && Model.Panelists.Any())
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var p in Model.Panelists)
+                        {
+                            <li class="list-group-item d-flex align-items-center gap-2 px-0">
+                                <i class="bi bi-person-circle"></i> @p.Display
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <div class="text-muted">No panel members set.</div>
+                }
+                <hr />
+                <div class="small text-muted">
+                    JD: <strong>@Model.JobTitle</strong> (ID @Model.RequirementId)
+                </div>
+            </div>
+        </div>
+
+        <!-- Round Feedback (moved here) -->
+        <div class="card card-soft shadow-sm mt-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="card-title mb-0">Round Feedback</h6>
+                    <a class="btn btn-sm btn-outline-primary btn-soft"
+                       href="@Url.Action("Feedback", "Interviews", new { id = Model.Id })">
+                        <i class="bi bi-pencil-square me-1"></i> Give / Edit My Feedback
+                    </a>
+                </div>
+
+                @if (Model.Feedback != null && Model.Feedback.Any())
+                {
+                    <div class="list-group list-group-flush">
+                        @foreach (var fb in Model.Feedback)
+                        {
+                            var (dc, dt) = fb.Decision switch
+                            {
+                                InterviewFeedbackDecision.L1Select => ("success", "L1-Select"),
+                                InterviewFeedbackDecision.L1Reject => ("danger", "L1-Reject"),
+                                InterviewFeedbackDecision.L1Hold => ("warning", "L1-Hold"),
+                                InterviewFeedbackDecision.FinalSelect => ("primary", "Final Select"),
+                                _ => ("secondary", fb.Decision.ToString())
+                            };
+
+                            <div class="list-group-item px-0">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="fw-semibold">@fb.PanelDisplay</div>
+                                    <span class="badge bg-@dc">@dt</span>
+                                </div>
+                                <div class="small text-muted mt-1">
+                                    <span class="me-2">Tech: @(fb.Tech?.ToString() ?? "-")</span>
+                                    <span class="me-2">Comm: @(fb.Comm?.ToString() ?? "-")</span>
+                                    <span>Culture: @(fb.Culture?.ToString() ?? "-")</span>
+                                </div>
+                                @if (!string.IsNullOrWhiteSpace(fb.Comments))
+                                {
+                                    <div class="small mt-1" style="white-space:pre-wrap">@fb.Comments</div>
+                                }
+                                <div class="small text-muted mt-1">@fb.When.ToLocalTime()</div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-muted">No feedback yet.</div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

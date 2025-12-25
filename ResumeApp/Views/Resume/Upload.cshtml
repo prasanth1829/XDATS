@@ -1,18 +1,35 @@
 ﻿@{
     ViewData["Title"] = "Upload Resume";
+    var requirementId = ViewBag.RequirementId ?? Context.Request.Query["requirementId"].ToString();
+    bool isForJD = !string.IsNullOrWhiteSpace(requirementId?.ToString());
+
 }
 
 <div class="container py-5">
-
-    <!-- Header -->
     <div class="text-center mb-5">
         <h2 class="fw-bold text-primary">
-            <i class="bi bi-cloud-upload-fill me-2"></i> Upload Resumes
+            <i class="bi bi-cloud-upload-fill me-2"></i>
+            @(isForJD ? "Upload Resume for JD" : "Upload Resumes")
         </h2>
-        <p class="text-muted">Upload single or multiple resumes in supported formats.</p>
+        <p class="text-muted">
+            @(isForJD
+                        ? "This page will link the uploaded resume to the selected JD."
+                        : "Upload single or multiple resumes in supported formats.")
+        </p>
+
+        @if (isForJD)
+        {
+            <div class="alert alert-info shadow-sm d-inline-block">
+                <strong>JD Mode:</strong> Resumes will be linked to Requirement #@requirementId.
+                <a class="btn btn-sm btn-outline-primary ms-2"
+                   href="@Url.Action("SharedProfiles", "ClientRequirements", new { id = requirementId })">
+                    Back to Shared Profiles
+                </a>
+            </div>
+        }
     </div>
 
-    <!-- Alerts -->
+
     @if (TempData["UploadSuccess"] != null)
     {
         <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
@@ -27,51 +44,56 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
+    @if (!isForJD)
+    {
+        <div class="card shadow-lg border-0 mb-5">
+            <div class="card-body text-center p-5">
+                <form id="multiUploadForm" asp-action="UploadMultiple" asp-controller="Resume" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="requirementId" value="@requirementId" />
 
-    <!-- Upload Card -->
-    <div class="card shadow-lg border-0 mb-5">
-        <div class="card-body text-center p-5">
+                    <label for="multiUploadInput" class="w-100" style="cursor:pointer;">
+                        <div class="border border-2 border-dashed rounded-3 p-5 bg-light">
+                            <i class="bi bi-cloud-arrow-up fs-1 text-primary"></i>
+                            <h5 class="mt-3">Click to browse or drag & drop files here</h5>
+                            <p class="text-muted small mb-0">Supported formats: PDF, DOCX, TXT</p>
+                        </div>
+                    </label>
+                    <input id="multiUploadInput" type="file" name="files" multiple accept=".pdf,.docx,.txt" style="display:none;" />
 
-            <form id="multiUploadForm" asp-action="UploadMultiple" method="post" enctype="multipart/form-data">
-                <label for="multiUploadInput" class="w-100" style="cursor:pointer;">
-                    <div class="border border-2 border-dashed rounded-3 p-5 bg-light">
-                        <i class="bi bi-cloud-arrow-up fs-1 text-primary"></i>
-                        <h5 class="mt-3">Click to browse or drag & drop files here</h5>
-                        <p class="text-muted small mb-0">Supported formats: PDF, DOCX, TXT</p>
+                    <!-- compact counters, no names -->
+                    <div id="selectedSummary" class="mt-3" style="display:none;">
+                        <span class="badge bg-primary">Selected: <span id="selectedCount">0</span></span>
                     </div>
-                </label>
-                <input id="multiUploadInput" type="file" name="files" multiple accept=".pdf,.docx,.txt" style="display:none;" />
-                <button type="submit" class="btn btn-primary mt-4 px-5">
-                    <i class="bi bi-upload me-2"></i> Upload Selected Files
-                </button>
-            </form>
 
-            <!-- Progress bar -->
-            <div id="multiProgressWrapper" class="progress mt-4" style="height: 25px; display: none;">
-                <div id="multiProgressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="width: 0%">0%</div>
+                    <button id="multiSubmitBtn" type="submit" class="btn btn-primary mt-4 px-5" disabled>
+                        <i class="bi bi-upload me-2"></i> Upload Selected Files
+                    </button>
+
+                    <!-- Progress bar (kept) -->
+                    <div id="multiProgressWrapper" class="progress mt-4" style="height:25px; display:none;">
+                        <div id="multiProgressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="width:0%">0%</div>
+                    </div>
+                </form>
+
+                <div id="multiUploadNote" class="mt-3 text-muted small" style="display:none;">
+                    Uploading… please wait. You’ll be redirected when done.
+                </div>
             </div>
-
-            <!-- Result -->
-            <div id="multiUploadResult" class="mt-3"></div>
         </div>
-    </div>
+    }
 
-    <!-- Options Row -->
     <div class="row text-center g-4 mb-5">
-
-        <!-- Parse Single Resume -->
         <div class="col-md-6">
             <form asp-controller="Resume" asp-action="Upload" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
                 <div class="card h-100 shadow-sm border-0 hover-card">
                     <div class="card-body d-flex flex-column justify-content-center p-5">
                         <i class="bi bi-file-earmark-arrow-up fs-1 text-primary"></i>
                         <h5 class="mt-3">Parse Single Resume</h5>
                         <p class="text-muted small">Upload one resume and extract details instantly.</p>
-
-                        <!-- Hidden File Input -->
                         <input id="singleResumeInput" type="file" name="file" accept=".pdf,.docx,.txt" style="display:none" onchange="this.form.submit()" />
-
-                        <!-- Trigger Button -->
+                        <input type="hidden" name="requirementId" value="@requirementId" />
                         <button type="button" class="btn btn-outline-primary mt-3 px-4" onclick="document.getElementById('singleResumeInput').click()">
                             Select File
                         </button>
@@ -80,78 +102,84 @@
             </form>
         </div>
 
-        <!-- Create Resume Manually -->
-        <div class="col-md-6">
-            <form asp-action="Create" method="post">
-                <div class="card h-100 shadow-sm border-0 hover-card">
-                    <div class="card-body d-flex flex-column justify-content-center p-5">
-                        <i class="bi bi-person-plus fs-1 text-success"></i>
-                        <h5 class="mt-3">Create Manually</h5>
-                        <p class="text-muted small">Enter resume details manually instead of uploading a file.</p>
-                        <button type="submit" class="btn btn-outline-success mt-3 px-4">Start</button>
+        @if (!isForJD)
+        {
+            <div class="col-md-6">
+                <form asp-action="Create" method="post">
+                    <div class="card h-100 shadow-sm border-0 hover-card">
+                        <div class="card-body d-flex flex-column justify-content-center p-5">
+                            <i class="bi bi-person-plus fs-1 text-success"></i>
+                            <h5 class="mt-3">Create Manually</h5>
+                            <p class="text-muted small">Enter resume details manually instead of uploading a file.</p>
+                            <button type="submit" class="btn btn-outline-success mt-3 px-4">Start</button>
+                        </div>
                     </div>
-                </div>
-            </form>
-        </div>
+                </form>
+            </div>
+        }
 
     </div>
 
-    <!-- Footer Note -->
     <div class="text-center text-muted small">
         <i class="bi bi-info-circle me-2"></i>
         Supported formats: <strong>PDF, DOCX, TXT</strong>
     </div>
-
 </div>
 
-<!-- Script -->
-<script>
-    document.getElementById('multiUploadForm').addEventListener('submit', function (e) {
-        e.preventDefault();
+@* Include the multi-upload JS only when the multi-upload UI is visible *@
+@if (!isForJD)
+{
+    <script>
+        (function () {
+            const input = document.getElementById('multiUploadInput');
+            const summary = document.getElementById('selectedSummary');
+            const countEl = document.getElementById('selectedCount');
+            const submitBtn = document.getElementById('multiSubmitBtn');
+            const form = document.getElementById('multiUploadForm');
+            const barWrap = document.getElementById('multiProgressWrapper');
+            const bar = document.getElementById('multiProgressBar');
+            const note = document.getElementById('multiUploadNote');
 
-        var form = e.target;
-        var formData = new FormData();
-        var files = document.getElementById('multiUploadInput').files;
+            input.addEventListener('change', function () {
+                const n = input.files ? input.files.length : 0;
+                if (n > 0) {
+                    summary.style.display = 'block';
+                    countEl.textContent = n.toString();
+                    submitBtn.disabled = false;
+                } else {
+                    summary.style.display = 'none';
+                    countEl.textContent = '0';
+                    submitBtn.disabled = true;
+                }
+            });
 
-        for (var i = 0; i < files.length; i++) {
-            formData.append("files", files[i]);
-        }
+            form.addEventListener('submit', function () {
+                const n = input.files ? input.files.length : 0;
+                if (n === 0) return;
 
-        var progressWrapper = document.getElementById('multiProgressWrapper');
-        var progressBar = document.getElementById('multiProgressBar');
+                barWrap.style.display = 'block';
+                note.style.display = 'block';
+                bar.style.width = '0%';
+                bar.textContent = '0%';
 
-        progressWrapper.style.display = 'block';
-        progressBar.style.width = '0%';
-        progressBar.innerText = '0%';
+                let pct = 0;
+                const tick = setInterval(() => {
+                    if (pct < 90) {
+                        pct += 2;
+                        bar.style.width = pct + '%';
+                        bar.textContent = pct + '%';
+                    }
+                }, 80);
 
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', '/Resume/UploadMultiple', true);
-
-        xhr.upload.onprogress = function (e) {
-            if (e.lengthComputable) {
-                var percent = Math.round((e.loaded / e.total) * 100);
-                progressBar.style.width = percent + '%';
-                progressBar.innerText = percent + '%';
-            }
-        };
-
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                document.getElementById('multiUploadResult').innerHTML =
-                    `<div class="alert alert-success shadow-sm"> Upload complete!</div>`;
-            } else {
-                document.getElementById('multiUploadResult').innerHTML =
-                    `<div class="alert alert-danger shadow-sm"> Upload failed.</div>`;
-            }
-            form.reset();
-            progressWrapper.style.display = 'none';
-            progressBar.style.width = '0%';
-            progressBar.innerText = '0%';
-        };
-
-        xhr.send(formData);
-    });
-</script>
+                window.addEventListener('beforeunload', function () {
+                    clearInterval(tick);
+                    bar.style.width = '100%';
+                    bar.textContent = '100%';
+                });
+            });
+        })();
+    </script>
+}
 
 <style>
     .hover-card {
@@ -160,7 +188,7 @@
 
         .hover-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 20px rgba(0,0,0,.1);
         }
 
     .border-dashed {

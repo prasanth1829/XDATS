@@ -1,168 +1,363 @@
 ﻿@model ResumeApp.Models.ClientRequirement
+@using Microsoft.AspNetCore.Identity
 
 @{
     ViewData["Title"] = "Requirement Details";
+
+    bool isAdmin = User.IsInRole("Admin");
+    bool isReviewer = User.IsInRole("Reviewer");
+    bool isVendor = User.IsInRole("Vendor");
+    bool isManager = User.IsInRole("Manager");
+    bool isTeamLead = User.IsInRole("Team Lead");
+
+    // Current user
+    var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+    // Check if this user is assigned to this requirement
+    bool isAssigned = Model.RequirementAssignments.Any(a => a.UserId == currentUserId);
 }
 
 <div class="container py-4">
-    <h2 class="mb-4">Requirement Details</h2>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary">📋 @Model.JobTitle</h2>
+        <span class="badge bg-@(Model.RequirementPriority == "High" ? "danger" :
+                                              Model.RequirementPriority == "Medium" ? "warning text-dark" : "success") fs-6">
+            @Model.RequirementPriority
+        </span>
+    </div>
 
-    <div class="card mb-4">
-        <div class="card-header bg-primary text-white">
-            Client Information
+    <!-- Client Information -->
+    <div class="card shadow-sm mb-4 border-0">
+        <div class="card-header bg-gradient bg-primary text-white fw-semibold">
+            🏢 Client Information
         </div>
         <div class="card-body">
-            <dl class="row">
-                <dt class="col-sm-3">Company</dt>
-                <dd class="col-sm-9">@Model.Client?.CompanyName</dd>
-
-                <dt class="col-sm-3">Primary Contact</dt>
-                <dd class="col-sm-9">@Model.Client?.ContactName</dd>
-
-                <dt class="col-sm-3">Email</dt>
-                <dd class="col-sm-9">@Model.Client?.Email</dd>
-
-                <dt class="col-sm-3">Phone</dt>
-                <dd class="col-sm-9">@Model.Client?.Phone</dd>
-            </dl>
+            <div class="row g-3">
+                <div class="col-md-6"><strong>Company:</strong> @Model.Client?.CompanyName</div>
+                <div class="col-md-6"><strong>Contact:</strong> @Model.Client?.ContactName</div>
+                <div class="col-md-6"><strong>Email:</strong> @Model.Client?.Email</div>
+                <div class="col-md-6"><strong>Phone:</strong> @Model.Client?.Phone</div>
+            </div>
 
             @if (Model.Client?.Spokespersons != null && Model.Client.Spokespersons.Any())
             {
-                <h5 class="mt-3">Spokespersons</h5>
-                <table class="table table-sm table-bordered">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Name</th>
-                            <th>Designation</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Preferred Communication</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var sp in Model.Client.Spokespersons)
-                        {
-                            <tr>
-                                <td>@sp.Name</td>
-                                <td>@sp.Designation</td>
-                                <td>@sp.Email</td>
-                                <td>@sp.Phone</td>
-                                <td>@sp.PreferredCommunication</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                <div class="mt-3">
+                    <h6 class="fw-bold text-secondary">Spokespersons</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Designation</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Preferred Communication</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var sp in Model.Client.Spokespersons)
+                                {
+                                    <tr>
+                                        <td>@sp.Name</td>
+                                        <td>@sp.Designation</td>
+                                        <td>@sp.Email</td>
+                                        <td>@sp.Phone</td>
+                                        <td>@sp.PreferredCommunication</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             }
             else
             {
-                <p class="text-muted">No spokespersons available.</p>
+                <p class="text-muted mt-2">No spokespersons available.</p>
             }
         </div>
     </div>
 
+    <!-- Requirement Summary -->
+    <div class="card shadow-sm mb-4 border-0">
+        <div class="card-header bg-gradient bg-success text-white fw-semibold d-flex justify-content-between align-items-center">
+            📄 Requirement Information
+            <div>
+                <a asp-action="FullDetails"
+                   asp-route-id="@Model.Id"
+                   target="_blank"
+                   class="btn btn-light btn-sm">
+                    View Full Details
+                </a>
 
-    <div class="card mb-4">
-        <div class="card-header bg-success text-white">
-            Requirement Information
+
+                @if (isAdmin)
+                {
+                    <a asp-action="AssignRecruiters" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-light ms-1">
+                        ➕ Assign Recruiters / Vendors
+                    </a>
+                }
+            </div>
         </div>
-        <div class="card-body text-center">
-            <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#requirementModal">
-                📄 View Job Description
-            </button>
-        </div>
-    </div>
-    <!-- Requirement Info Modal -->
-    <div class="modal fade" id="requirementModal" tabindex="-1" aria-labelledby="requirementModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title" id="requirementModalLabel">Requirement Details</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <dl class="row">
-                        <dt class="col-sm-4">Job Title</dt>
-                        <dd class="col-sm-8">@Model.JobTitle</dd>
 
-                        <dt class="col-sm-4">Positions</dt>
-                        <dd class="col-sm-8">@Model.Positions</dd>
-
-                        <dt class="col-sm-4">Job Location</dt>
-                        <dd class="col-sm-8">@Model.JobLocation</dd>
-
-                        <dt class="col-sm-4">Employment Type</dt>
-                        <dd class="col-sm-8">@Model.EmploymentType</dd>
-
-                        <dt class="col-sm-4">Work Shift</dt>
-                        <dd class="col-sm-8">@Model.WorkShift</dd>
-
-                        <dt class="col-sm-4">Primary Skills</dt>
-                        <dd class="col-sm-8"><span class="badge bg-primary">@Model.SkillsPrimary</span></dd>
-
-                        <dt class="col-sm-4">Secondary Skills</dt>
-                        <dd class="col-sm-8"><span class="badge bg-secondary">@Model.SkillsSecondary</span></dd>
-
-                        <dt class="col-sm-4">Required Skills</dt>
-                        <dd class="col-sm-8"><span class="badge bg-info">@Model.SkillsRequired</span></dd>
-
-                        <dt class="col-sm-4">Responsibilities</dt>
-                        <dd class="col-sm-8">@Model.Responsibilities</dd>
-
-                        <dt class="col-sm-4">Experience</dt>
-                        <dd class="col-sm-8">@Model.ExperienceMin – @Model.ExperienceMax years</dd>
-
-                        <dt class="col-sm-4">Education</dt>
-                        <dd class="col-sm-8">@Model.Education</dd>
-
-                        <dt class="col-sm-4">Certifications</dt>
-                        <dd class="col-sm-8">@Model.Certifications</dd>
-
-                        <dt class="col-sm-4">Salary Range</dt>
-                        <dd class="col-sm-8">@Model.SalaryRange</dd>
-
-                        <dt class="col-sm-4">Billing Type</dt>
-                        <dd class="col-sm-8">@Model.BillingType</dd>
-
-                        <dt class="col-sm-4">Notice Period</dt>
-                        <dd class="col-sm-8">@Model.NoticePeriod</dd>
-
-                        <dt class="col-sm-4">Priority</dt>
-                        <dd class="col-sm-8">
-                            <span class="badge @(Model.RequirementPriority == "High" ? "bg-danger" : Model.RequirementPriority == "Medium" ? "bg-warning text-dark" : "bg-success")">
-                                @Model.RequirementPriority
-                            </span>
-                        </dd>
-
-                        <dt class="col-sm-4">Deadline</dt>
-                        <dd class="col-sm-8">@Model.Deadline?.ToString("yyyy-MM-dd")</dd>
-
-                        <dt class="col-sm-4">Expected Joining</dt>
-                        <dd class="col-sm-8">@Model.ExpectedJoiningDate?.ToString("yyyy-MM-dd")</dd>
-
-                        <dt class="col-sm-4">Screening Questions</dt>
-                        <dd class="col-sm-8">@Model.ScreeningQuestions</dd>
-
-                        <dt class="col-sm-4">Special Instructions</dt>
-                        <dd class="col-sm-8">@Model.SpecialInstructions</dd>
-                    </dl>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4"><strong>Location:</strong> @Model.JobLocation</div>
+                <div class="col-md-4"><strong>Experience:</strong> @Model.ExperienceMin - @Model.ExperienceMax yrs</div>
+                <div class="col-md-4"><strong>Deadline:</strong> @Model.Deadline?.ToString("yyyy-MM-dd")</div>
+                <div class="col-md-4"><strong>Positions:</strong> @Model.Positions</div>
+                <div class="col-md-4"><strong>Employment Type:</strong> @Model.EmploymentType</div>
+                <div class="col-md-4"><strong>Shift:</strong> @Model.WorkShift</div>
             </div>
         </div>
     </div>
 
-
-    <div class="text-center mt-3">
-        <a asp-action="MatchProfiles" asp-route-id="@Model.Id" class="btn btn-success">
-            🔍 Match Profiles
-        </a>
+    <!-- Assigned Recruiters/Vendors -->
+    <div class="card shadow-sm mb-4 border-0">
+        <div class="card-header bg-gradient bg-info text-white fw-semibold">
+            👥 Assigned Recruiters / Vendors
+        </div>
+        <div class="card-body">
+            @if (Model.RequirementAssignments.Any())
+            {
+                <ul class="list-group list-group-flush">
+                    @foreach (var assignment in Model.RequirementAssignments)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>
+                                <strong>@assignment.User?.FullName</strong>
+                                <span class="text-muted small">(@assignment.User?.Email)</span>
+                            </span>
+                            <span class="badge bg-light text-dark">Assigned on @assignment.AssignedDate.ToShortDateString()</span>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p class="text-muted">No recruiters or vendors assigned yet.</p>
+            }
+        </div>
     </div>
 
-    <hr />
-    <div class="text-center">
-        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+    <!-- Actions -->
+    <div class="text-center mb-4">
+        <a asp-action="MatchProfiles" asp-route-id="@Model.Id" class="btn btn-outline-success me-2">
+            🔍 Match Profiles
+        </a>
+
+        @if (isAssigned || isAdmin || isManager || isTeamLead)
+        {
+            <a asp-controller="Resume"
+               asp-action="Upload"
+               asp-route-requirementId="@Model.Id"
+               class="btn btn-primary me-2">
+                📤 Upload Resume for this JD
+            </a>
+        }
+
+        <a asp-action="SharedProfiles" asp-route-id="@Model.Id" class="btn btn-outline-primary">
+            👥 View Internally Shared Profiles
+        </a>
+    </div>
+    <!-- Meeting Minutes (MOM) -->
+    <div class="card shadow-sm mb-4 border-0">
+        <div class="card-header bg-gradient bg-warning text-dark fw-semibold d-flex justify-content-between align-items-center">
+            📝 Meeting Minutes (MOM)
+            <a asp-controller="RequirementMoms"
+               asp-action="Create"
+               asp-route-requirementId="@Model.Id"
+               class="btn btn-sm btn-dark">
+                + Add MOM
+            </a>
+        </div>
+        <div class="card-body">
+            @if (Model.MeetingNotes != null && Model.MeetingNotes.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-sm table-striped align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Title</th>
+                                <th>Date</th>
+                                <th>Created By</th>
+                                <th>Created At</th>
+                                <th>Last Edited</th>
+                                <th>Attachments</th>
+                                <th style="width: 150px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var mom in Model.MeetingNotes.OrderByDescending(m => m.MeetingDate ?? m.CreatedAt))
+                            {
+                                var files = (mom.AttachmentsPath ?? string.Empty)
+                                .Split(';', StringSplitOptions.RemoveEmptyEntries)
+                                .ToList();
+
+                                <tr>
+                                    <td>@mom.Title</td>
+                                    <td>@(mom.MeetingDate?.ToString("dd-MMM-yyyy") ?? "-")</td>
+                                    <td>@mom.CreatedByUser?.FullName</td>
+                                    <td>@mom.CreatedAt.ToString("dd-MMM-yyyy HH:mm")</td>
+                                    <td>
+                                        @if (mom.LastEditedAt.HasValue)
+                                        {
+                                            @mom.LastEditedAt.Value.ToString("dd-MMM-yyyy HH:mm")
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (files.Any())
+                                        {
+                                            <ul class="list-unstyled mb-0">
+                                                @foreach (var f in files)
+                                                {
+                                                    <li>
+                                                        <a asp-controller="RequirementMoms"
+                                                           asp-action="DownloadAttachment"
+                                                           asp-route-id="@mom.Id"
+                                                           asp-route-fileName="@f">
+                                                            @f
+                                                        </a>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">No files</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <a asp-controller="RequirementMoms"
+                                           asp-action="Edit"
+                                           asp-route-id="@mom.Id"
+                                           class="btn btn-sm btn-outline-primary me-1">
+                                            Edit
+                                        </a>
+                                        <a asp-controller="RequirementMoms"
+                                           asp-action="History"
+                                           asp-route-id="@mom.Id"
+                                           class="btn btn-sm btn-outline-secondary">
+                                            History
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted mb-0">
+                    No MOMs recorded yet for this requirement. Use <strong>+ Add MOM</strong> to create one.
+                </p>
+            }
+        </div>
+    </div>
+
+    <!-- Linked Resumes -->
+    @if ((ViewBag.LinkedResumes as List<ResumeApp.Models.ResumeRequirementLink>)?.Any() ?? false)
+    {
+        <div class="card shadow-sm border-0 mb-5">
+            <div class="card-header bg-gradient bg-secondary text-white fw-semibold">
+                📄 Linked Resumes
+            </div>
+            <div class="card-body table-responsive">
+                <table class="table table-hover table-striped align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Candidate</th>
+                            <th>Email</th>
+                            <th>Experience</th>
+                            <th>Uploaded By</th>
+                            <th>Linked By</th>
+                            <th>Linked At</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var link in ViewBag.LinkedResumes)
+                        {
+                            <tr>
+                                <td>@link.Resume.Name</td>
+                                <td>@link.Resume.Email</td>
+                                <td>@link.Resume.YearsOfExperience</td>
+                                <td>@link.Resume.User?.FullName</td>
+                                <td>@link.LinkedByUser?.FullName</td>
+                                <td>@link.LinkedAt.ToString("dd-MMM-yyyy")</td>
+                                <td>
+                                    <a asp-controller="Resume" asp-action="Details" asp-route-id="@link.ResumeId"
+                                       class="btn btn-sm btn-outline-primary">
+                                        View
+                                    </a>
+                                    <a href="@Url.Action("Download", "Resume", new { id = link.ResumeId })"
+                                       class="btn btn-sm btn-outline-secondary">
+                                        Download
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-light text-center shadow-sm">
+            <i class="bi bi-info-circle"></i> No resumes have been uploaded for this requirement yet.
+        </div>
+    }
+
+    <!-- Footer -->
+    <div class="text-center mt-4">
+        <a asp-action="Index" class="btn btn-outline-secondary me-2">⬅️ Back to List</a>
+        @if (isAdmin)
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">✏️ Edit</a>
+        }
+    </div>
+</div>
+
+<!-- Full Requirement Modal -->
+<div class="modal fade" id="requirementModal" tabindex="-1" aria-labelledby="requirementModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content shadow-lg border-0">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="requirementModalLabel">Full Job Description</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <dl class="row">
+                    <dt class="col-sm-4">Primary Skills</dt>
+                    <dd class="col-sm-8"><span class="badge bg-primary">@Model.SkillsPrimary</span></dd>
+
+                    <dt class="col-sm-4">Secondary Skills</dt>
+                    <dd class="col-sm-8"><span class="badge bg-secondary">@Model.SkillsSecondary</span></dd>
+
+                    <dt class="col-sm-4">Responsibilities</dt>
+                    <dd class="col-sm-8">@Model.Responsibilities</dd>
+
+                    <dt class="col-sm-4">Education</dt>
+                    <dd class="col-sm-8">@Model.Education</dd>
+
+                    <dt class="col-sm-4">Certifications</dt>
+                    <dd class="col-sm-8">@Model.Certifications</dd>
+
+                    <dt class="col-sm-4">Notice Period</dt>
+                    <dd class="col-sm-8">@Model.NoticePeriod</dd>
+
+                    <dt class="col-sm-4">Special Instructions</dt>
+                    <dd class="col-sm-8">@Model.SpecialInstructions</dd>
+                </dl>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
     </div>
 </div>

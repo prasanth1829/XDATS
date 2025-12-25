@@ -1,0 +1,121 @@
+﻿@model ResumeApp.Models.ClientRequirement
+
+<div class="row g-3">
+    <!-- Topline -->
+    <div class="col-md-4"><strong>Job Title:</strong> @Model.JobTitle</div>
+    <div class="col-md-4"><strong>Requirement ID:</strong> @Model.Id</div>
+    <div class="col-md-4">
+        <strong>Priority:</strong>
+        <span class="badge bg-@(Model.RequirementPriority == "High" ? "danger" : Model.RequirementPriority == "Medium" ? "warning text-dark" : "success")">
+            @Model.RequirementPriority
+        </span>
+    </div>
+
+    <!-- Basic info -->
+    <div class="col-md-4"><strong>Location:</strong> @(!string.IsNullOrWhiteSpace(Model.JobLocation) ? Model.JobLocation : "—")</div>
+    <div class="col-md-4">
+        <strong>Experience:</strong>
+        @(Model.ExperienceMin?.ToString() ?? "0") – @(Model.ExperienceMax?.ToString() ?? "0") yrs
+    </div>
+    <div class="col-md-4"><strong>Positions:</strong> @(Model.Positions.ToString() ?? "—")</div>
+
+    <div class="col-md-4"><strong>Employment Type:</strong> @(!string.IsNullOrWhiteSpace(Model.EmploymentType) ? Model.EmploymentType : "—")</div>
+    <div class="col-md-4"><strong>Work Shift:</strong> @(!string.IsNullOrWhiteSpace(Model.WorkShift) ? Model.WorkShift : "—")</div>
+    <div class="col-md-4"><strong>Billing Type:</strong> @(!string.IsNullOrWhiteSpace(Model.BillingType) ? Model.BillingType : "—")</div>
+
+    <div class="col-md-4"><strong>Salary Range:</strong> @(!string.IsNullOrWhiteSpace(Model.SalaryRange) ? Model.SalaryRange : "—")</div>
+    <div class="col-md-4"><strong>Notice Period:</strong> @(!string.IsNullOrWhiteSpace(Model.NoticePeriod) ? Model.NoticePeriod : "—")</div>
+    <div class="col-md-4"><strong>Deadline:</strong> @(Model.Deadline?.ToString("yyyy-MM-dd") ?? "—")</div>
+
+    <div class="col-md-4"><strong>Expected Joining:</strong> @(Model.ExpectedJoiningDate?.ToString("yyyy-MM-dd") ?? "—")</div>
+    <div class="col-md-4"><strong>Created At (UTC):</strong> @Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</div>
+    <div class="col-md-4"><strong>Client:</strong> @(Model.Client?.CompanyName ?? "—")</div>
+
+    <div class="col-12"><hr class="my-2" /></div>
+
+    <!-- Skills -->
+    <div class="col-md-6">
+        <strong>Primary Skills:</strong>
+        <div class="mt-1">
+            @if (!string.IsNullOrWhiteSpace(Model.SkillsPrimary))
+            {
+                foreach (var s in Model.SkillsPrimary.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+                {
+                    <span class="badge bg-primary me-1 mb-1">@s</span>
+                }
+            }
+            else
+            {
+
+                <span class="text-muted">—</span>
+            }
+        </div>
+    </div>
+    <div class="col-md-6">
+        <strong>Secondary Skills:</strong>
+        <div class="mt-1">
+            @if (!string.IsNullOrWhiteSpace(Model.SkillsSecondary))
+            {
+                foreach (var s in Model.SkillsSecondary.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+                {
+                    <span class="badge bg-secondary me-1 mb-1">@s</span>
+                }
+            }
+            else
+            {
+
+                <span class="text-muted">—</span>
+            }
+        </div>
+    </div>
+
+    <div class="col-12"><hr class="my-2" /></div>
+
+    <!-- Descriptions -->
+    <div class="col-md-6">
+        <strong>Responsibilities:</strong>
+        <div class="text-muted mt-1">@Html.Raw((Model.Responsibilities ?? "—").Replace("\n", "<br/>"))</div>
+    </div>
+    <div class="col-md-6">
+        <div class="mb-2"><strong>Education:</strong> @(string.IsNullOrWhiteSpace(Model.Education) ? "—" : Model.Education)</div>
+        <div class="mb-2"><strong>Certifications:</strong> @(string.IsNullOrWhiteSpace(Model.Certifications) ? "—" : Model.Certifications)</div>
+        <div class="mb-2">
+            <strong>Screening Questions:</strong>
+            <div class="text-muted mt-1">@Html.Raw((Model.ScreeningQuestions ?? "—").Replace("\n", "<br/>"))</div>
+        </div>
+        <div class="mb-2">
+            <strong>Special Instructions:</strong>
+            <div class="text-muted mt-1">@Html.Raw((Model.SpecialInstructions ?? "—").Replace("\n", "<br/>"))</div>
+        </div>
+    </div>
+
+    <div class="col-12"><hr class="my-2" /></div>
+
+    <!-- Attachments -->
+    <div class="col-12">
+        <strong>Attachments:</strong>
+        @{
+            var items = (Model.AttachmentsPath ?? string.Empty)
+            .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .ToList();
+        }
+        @if (items.Any())
+        {
+            <ul class="list-unstyled mt-2">
+                @foreach (var rel in items)
+                {
+                    var fileName = System.IO.Path.GetFileName(rel);
+                    <li class="mb-1">
+                        <a class="link-primary" href="@Url.Action("DownloadAttachment", "ClientRequirements", new { requirementId = Model.Id, fileName = fileName })">
+                            @fileName
+                        </a>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <span class="text-muted">No attachments.</span>
+        }
+    </div>
+</div>

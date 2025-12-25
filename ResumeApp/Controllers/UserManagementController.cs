@@ -12,22 +12,25 @@ using System.Drawing;
 namespace ResumeApp.Controllers
 {
     [Authorize(Roles = "Reviewer,Admin")]
+
     public class UserManagementController : Controller
     {
         private readonly UserManager<Users> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _env;
 
         public UserManagementController(
-            UserManager<Users> userManager,
-            RoleManager<IdentityRole> roleManager,
-            ApplicationDbContext context)
+        UserManager<Users> userManager,
+        RoleManager<IdentityRole> roleManager,
+        ApplicationDbContext context,
+        IWebHostEnvironment env)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _context = context;
+            _env = env;
         }
-
         public async Task<IActionResult> ActivityLogs(int page = 1, int pageSize = 100)
         {
             var query = _context.ActivityLogs
@@ -308,124 +311,311 @@ namespace ResumeApp.Controllers
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 $"UploadStats_{range}.xlsx");
         }
-        // Client Onboarding Form
-        [HttpGet]
-        public IActionResult ClientOnboarding()
+
+        private async Task LoadCountryLocationListsAsync()
         {
-            return View(new ClientOnboardingViewModel());
+            ViewBag.HeadquarterCountries = await _context.Countries
+                .Where(c => c.IsActive)
+                .OrderBy(c => c.SortOrder).ThenBy(c => c.Name)
+                .Select(c => new { c.Id, c.Name })
+                .ToListAsync();
+
+            ViewBag.HeadquarterLocations = new List<object>();
         }
+        [HttpGet]
+        public async Task<IActionResult> ClientOnboarding()
+        {
+            await LoadCountryLocationDesignationListsAsync();
+            var vm = new ClientOnboardingViewModel
+            {
+                DocumentItems = await BuildDocumentItemsAsync()
+            };
+            return View(vm);
+        }
+
+        private async Task LoadCountryLocationDesignationListsAsync()
+        {
+            // Countries (active only)
+            ViewBag.HeadquarterCountries = await _context.Countries
+                .Where(c => c.IsActive)
+                .OrderBy(c => c.SortOrder).ThenBy(c => c.Name)
+                .Select(c => new { c.Id, c.Name })
+                .ToListAsync();
+
+            // Locations are country dependent (keep empty for now)
+            ViewBag.HeadquarterLocations = new List<object>();
+
+            // Designations master (active only)
+            ViewBag.Designations = await _context.Designations
+                .Where(d => d.IsActive)
+                .OrderBy(d => d.SortOrder).ThenBy(d => d.Name)
+                .Select(d => new { d.Id, d.Name })
+                .ToListAsync();
+        }
+        private async Task<List<DocumentUploadItemVM>> BuildDocumentItemsAsync()
+        {
+            return await _context.DocumentTypes
+                .Where(x => x.IsActive)
+                .OrderBy(x => x.SortOrder).ThenBy(x => x.Name)
+                .Select(x => new DocumentUploadItemVM
+                {
+                    DocumentTypeId = x.Id,
+                    DocumentTypeName = x.Name,
+                    IsMandatory = x.IsMandatory
+                })
+                .ToListAsync();
+        }
+
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ClientOnboarding(ClientOnboardingViewModel model)
         {
             if (!ModelState.IsValid)
             {
+                await LoadCountryLocationDesignationListsAsync();
+                model.DocumentItems = await BuildDocumentItemsAsync();
                 return View(model);
             }
 
+            // Join checkbox collections
+            var engagement = (model.EngagementTypes != null && model.EngagementTypes.Any())
+                ? string.Join(", ", model.EngagementTypes)
+                : string.Empty;
+
+            var preferredComms = (model.PreferredCommunication != null && model.PreferredCommunication.Any())
+                ? string.Join(", ", model.PreferredCommunication)
+                : string.Empty;
+
+            // Resolve primary contact designation
+            string? primaryDesignation = null;
+            if (model.DesignationId.HasValue)
+            {
+                primaryDesignation = await _context.Designations
+                    .Where(d => d.Id == model.DesignationId.Value)
+                    .Select(d => d.Name)
+                    .FirstOrDefaultAsync();
+            }
+
+            // Resolve all spokesperson designation IDs in one query
+            var spIds = model.Spokespersons?
+                .Where(s => s.DesignationId.HasValue)
+                .Select(s => s.DesignationId!.Value)
+                .Distinct()
+                .ToList() ?? new List<int>();
+
+            var desigMap = spIds.Count == 0
+                ? new Dictionary<int, string>()
+                : await _context.Designations
+                    .Where(d => spIds.Contains(d.Id))
+                    .ToDictionaryAsync(d => d.Id, d => d.Name);
+
+            // Build Client
             var client = new Client
             {
-                CompanyName = model.CompanyName,
-                WebsiteUrl = model.WebsiteUrl,
+                CompanyName = model.CompanyName?.Trim(),
+                WebsiteUrl = model.WebsiteUrl?.Trim(),
                 CompanyType = model.CompanyType,
                 CompanySize = model.CompanySize,
-                HeadquarterLocation = model.HeadquarterLocation,
-                OtherOfficeLocations = model.OtherOfficeLocations,
+
                 ContactName = model.ContactName,
-                Designation = model.Designation,
+                Designation = primaryDesignation, // store resolved name
                 Phone = model.Phone,
                 Email = model.Email,
-                PreferredCommunication = model.PreferredCommunication,
+                PreferredCommunication = preferredComms,
 
-                EngagementTypes = (model.EngagementTypes != null && model.EngagementTypes.Any())
-        ? string.Join(", ", model.EngagementTypes)
-        : string.Empty,   // or "None"
+                EngagementTypes = engagement,
+                AcceptTerms = model.AcceptTerms,
+                IsActive = true,
+
+                HeadquarterCountryId = model.HeadquarterCountryId,
+                HeadquarterLocationId = model.HeadquarterLocationId,
 
                 Spokespersons = new List<Spokesperson>(),
                 Documents = new List<ClientDocument>()
             };
 
-            // Add Primary Contact as first Spokesperson 
+            // Primary contact also as first spokesperson (optional)
             client.Spokespersons.Add(new Spokesperson
             {
                 Name = model.ContactName,
-                Designation = model.Designation,
+                Designation = primaryDesignation,
                 Phone = model.Phone,
                 Email = model.Email,
-                PreferredCommunication = string.Join(", ", new[] { model.PreferredCommunication })
+                PreferredCommunication = preferredComms
             });
 
-            // Add extra Spokespersons (dynamic)
+            // Extra Spokespersons
             if (model.Spokespersons != null && model.Spokespersons.Any())
             {
                 foreach (var sp in model.Spokespersons)
                 {
+                    string? spDesig = null;
+                    if (sp.DesignationId.HasValue && desigMap.TryGetValue(sp.DesignationId.Value, out var name))
+                        spDesig = name;
+
                     client.Spokespersons.Add(new Spokesperson
                     {
                         Name = sp.Name,
-                        Designation = sp.Designation,
+                        Designation = spDesig,
                         Phone = sp.Phone,
                         Email = sp.Email,
-                        PreferredCommunication = string.Join(", ", sp.PreferredCommunication)
+                        PreferredCommunication =
+                            (sp.PreferredCommunication != null && sp.PreferredCommunication.Any())
+                                ? string.Join(", ", sp.PreferredCommunication)
+                                : string.Empty
                     });
                 }
             }
 
-            // Handle documents
+            // Save client to get Id
+            _context.Clients.Add(client);
+            await _context.SaveChangesAsync();
+
+            // Other locations
+            if (model.OtherLocationIds != null && model.OtherLocationIds.Count > 0)
+            {
+                var rows = model.OtherLocationIds
+                    .Distinct()
+                    .Select(locId => new ClientOtherLocation
+                    {
+                        ClientId = client.Id,
+                        LocationId = locId
+                    });
+
+                await _context.ClientOtherLocations.AddRangeAsync(rows);
+                await _context.SaveChangesAsync();
+            }
+
+            // =========================
+            // Master-driven multiple document uploads + mandatory validation
+            // =========================
+            var activeTypes = await _context.DocumentTypes
+                .Where(x => x.IsActive)
+                .Select(x => new { x.Id, x.IsMandatory })
+                .ToListAsync();
+
+            var mandatoryIds = activeTypes
+                .Where(t => t.IsMandatory)
+                .Select(t => t.Id)
+                .ToHashSet();
+
+            var missingMandatory = new List<int>();
+            foreach (var reqId in mandatoryIds)
+            {
+                var row = model.DocumentItems?.FirstOrDefault(d => d.DocumentTypeId == reqId);
+                if (row == null || row.File == null || row.File.Length == 0)
+                    missingMandatory.Add(reqId);
+            }
+            if (missingMandatory.Count > 0)
+            {
+                ModelState.AddModelError("", "Please upload all mandatory documents.");
+                await LoadCountryLocationDesignationListsAsync();
+                model.DocumentItems = await BuildDocumentItemsAsync();
+                return View(model);
+            }
+
+            // Declare 'root' ONCE and reuse it everywhere
+            var root = Path.Combine(_env.WebRootPath, "uploads", "clients", client.Id.ToString());
+            Directory.CreateDirectory(root);
+
+            // Save master-driven document items
+            if (model.DocumentItems != null && model.DocumentItems.Count > 0)
+            {
+                foreach (var item in model.DocumentItems)
+                {
+                    if (item.File == null || item.File.Length == 0) continue;
+
+                    var safeName = Path.GetFileName(item.File.FileName);
+                    var destPath = Path.Combine(root, safeName);
+                    using (var fs = new FileStream(destPath, FileMode.Create))
+                        await item.File.CopyToAsync(fs);
+
+                    _context.ClientDocumentItems.Add(new ClientDocumentItem
+                    {
+                        ClientId = client.Id,
+                        DocumentTypeId = item.DocumentTypeId,
+                        FilePath = $"/uploads/clients/{client.Id}/{safeName}".Replace("\\", "/"),
+                        UploadedOn = DateTime.UtcNow
+                    });
+                }
+                await _context.SaveChangesAsync();
+            }
+
+            // =========================
+            // Legacy single-file fields (NDA/MSA/Presentation) - optional
+            // Reuse the SAME 'root' variable; DO NOT redeclare it.
+            // =========================
             var docs = new ClientDocument();
+            var hasDocs = false;
 
-            if (model.NDAFile != null)
+            async Task<string?> SaveFileAsync(IFormFile? file)
             {
-                var ndaPath = Path.Combine("wwwroot/uploads", model.NDAFile.FileName);
-                using (var stream = new FileStream(ndaPath, FileMode.Create))
-                {
-                    await model.NDAFile.CopyToAsync(stream);
-                }
-                docs.NDAPath = "/uploads/" + model.NDAFile.FileName;
+                if (file == null || file.Length == 0) return null;
+                var safeName = Path.GetFileName(file.FileName);
+                var destPath = Path.Combine(root, safeName);
+                using (var fs = new FileStream(destPath, FileMode.Create))
+                    await file.CopyToAsync(fs);
+                return $"/uploads/clients/{client.Id}/{safeName}".Replace("\\", "/");
             }
 
-            if (model.MSAFile != null)
-            {
-                var msaPath = Path.Combine("wwwroot/uploads", model.MSAFile.FileName);
-                using (var stream = new FileStream(msaPath, FileMode.Create))
-                {
-                    await model.MSAFile.CopyToAsync(stream);
-                }
-                docs.MSAPath = "/uploads/" + model.MSAFile.FileName;
-            }
+            var nda = await SaveFileAsync(model.NDAFile);
+            if (nda != null) { docs.NDAPath = nda; hasDocs = true; }
 
-            if (model.CorporatePresentationFile != null)
-            {
-                var corpPath = Path.Combine("wwwroot/uploads", model.CorporatePresentationFile.FileName);
-                using (var stream = new FileStream(corpPath, FileMode.Create))
-                {
-                    await model.CorporatePresentationFile.CopyToAsync(stream);
-                }
-                docs.CorporatePresentationPath = "/uploads/" + model.CorporatePresentationFile.FileName;
-            }
+            var msa = await SaveFileAsync(model.MSAFile);
+            if (msa != null) { docs.MSAPath = msa; hasDocs = true; }
+
+            var corp = await SaveFileAsync(model.CorporatePresentationFile);
+            if (corp != null) { docs.CorporatePresentationPath = corp; hasDocs = true; }
 
             if (!string.IsNullOrWhiteSpace(model.CorporatePresentationText))
             {
                 docs.CorporatePresentationText = model.CorporatePresentationText;
+                hasDocs = true;
             }
 
-            client.Documents.Add(docs);
+            if (hasDocs)
+            {
+                docs.ClientId = client.Id;
+                _context.ClientDocuments.Add(docs);
+                await _context.SaveChangesAsync();
+            }
 
-            _context.Clients.Add(client);
-            await _context.SaveChangesAsync();
-
+            TempData["OnboardSuccess"] = "1";
             TempData["Success"] = "Client onboarded successfully!";
-            return RedirectToAction("ClientOnboarding");
+            return RedirectToAction(nameof(ClientList));
         }
+
+
+        // put this helper inside the same controller (private)
+        private static string SanitizeFolder(string name)
+        {
+            foreach (var ch in Path.GetInvalidFileNameChars())
+                name = name.Replace(ch, '-');
+            return name.Trim();
+        }
+
+
         public async Task<IActionResult> ClientList()
         {
+            // Fetch clients with existing includes 
             var clients = await _context.Clients
                 .Include(c => c.Spokespersons)
                 .Include(c => c.Documents)
                 .OrderByDescending(c => c.CreatedAt)
                 .ToListAsync();
 
+            // Fetch requirement counts grouped by ClientId
+            var reqCounts = await _context.ClientRequirements
+                .GroupBy(r => r.ClientId)
+                .Select(g => new { ClientId = g.Key, Count = g.Count() })
+                .ToDictionaryAsync(x => x.ClientId, x => x.Count);
+
+            // Pass the count dictionary to the view
+            ViewBag.RequirementCounts = reqCounts;
+
             return View(clients);
         }
+
 
 
     }

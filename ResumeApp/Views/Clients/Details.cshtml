@@ -1,0 +1,294 @@
+﻿@model ResumeApp.Models.Client
+@using ResumeApp.Models
+@{
+    ViewData["Title"] = "Client Details";
+
+    // Comes from controller
+    var recentJds = ViewBag.RecentJds as List<ClientRequirement> ?? new List<ClientRequirement>();
+    var doc = (Model.Documents != null && Model.Documents.Any()) ? Model.Documents.FirstOrDefault() : null;
+
+    string Safe(string? s) => string.IsNullOrWhiteSpace(s) ? "—" : s.Trim();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h3 class="mb-0">@Safe(Model.CompanyName)</h3>
+        <div class="small text-muted">Created @Model.CreatedAt.ToLocalTime()</div>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Index" class="btn btn-light btn-sm">← Back</a>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary btn-sm">Edit</a>
+        <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-inline">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-outline-danger btn-sm"
+                    onclick="return confirm('Delete this client? (Blocked if it has any job requirements)');">
+                Delete
+            </button>
+        </form>
+    </div>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="row g-3">
+
+    <!-- Company Information -->
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-light fw-semibold">Company Information</div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Company</dt>
+                    <dd class="col-sm-8">@Safe(Model.CompanyName)</dd>
+
+                    <dt class="col-sm-4">Website</dt>
+                    <dd class="col-sm-8">
+                        @if (!string.IsNullOrWhiteSpace(Model.WebsiteUrl))
+                        {
+                            <a href="@Model.WebsiteUrl" target="_blank" rel="noopener">@Model.WebsiteUrl</a>
+                        }
+                        else
+                        {
+                            <span>—</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-4">Company Type</dt>
+                    <dd class="col-sm-8">@Safe(Model.CompanyType)</dd>
+
+                    <dt class="col-sm-4">Company Size</dt>
+                    <dd class="col-sm-8">@Safe(Model.CompanySize)</dd>
+
+                    
+
+                    <dt class="col-sm-4">Engagement Types</dt>
+                    <dd class="col-sm-8">@Safe(Model.EngagementTypes)</dd>
+                </dl>
+                <dt class="col-sm-4">Headquarter Country</dt>
+                <dd class="col-sm-8">@Safe(Model.HeadquarterCountry?.Name)</dd>
+
+                <dt class="col-sm-4">Headquarter Location</dt>
+                <dd class="col-sm-8">@Safe(Model.HeadquarterLocation?.Name)</dd>
+
+                <dt class="col-sm-4">Other Office Locations</dt>
+                <dd class="col-sm-8">
+                    @if (Model.OtherLocationsMap != null && Model.OtherLocationsMap.Any())
+                    {
+                        foreach (var ol in Model.OtherLocationsMap)
+                        {
+                            <span class="badge bg-secondary me-1">@ol.Location?.Name</span>
+                        }
+                    }
+                    else
+                    {
+                        <span>—</span>
+                    }
+                </dd>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Primary Contact -->
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-light fw-semibold">Primary Contact</div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Name</dt>
+                    <dd class="col-sm-8">@Safe(Model.ContactName)</dd>
+
+                    <dt class="col-sm-4">Designation</dt>
+                    <dd class="col-sm-8">@Safe(Model.Designation)</dd>
+
+                    <dt class="col-sm-4">Email</dt>
+                    <dd class="col-sm-8">@Safe(Model.Email)</dd>
+
+                    <dt class="col-sm-4">Phone</dt>
+                    <dd class="col-sm-8">@Safe(Model.Phone)</dd>
+
+                    <dt class="col-sm-4">Preferred Communication</dt>
+                    <dd class="col-sm-8">@Safe(Model.PreferredCommunication)</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <!-- Spokespersons -->
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-light fw-semibold d-flex justify-content-between align-items-center">
+                <span>Spokespersons</span>
+                <span class="badge bg-secondary">@((Model.Spokespersons != null) ? Model.Spokespersons.Count : 0)</span>
+            </div>
+            <div class="card-body">
+                @if (Model.Spokespersons != null && Model.Spokespersons.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Designation</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Preferred Communication</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var sp in Model.Spokespersons)
+                                {
+                                    <tr>
+                                        <td>@Safe(sp.Name)</td>
+                                        <td>@Safe(sp.Designation)</td>
+                                        <td>@Safe(sp.Email)</td>
+                                        <td>@Safe(sp.Phone)</td>
+                                        <td>@Safe(sp.PreferredCommunication)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-muted">No spokespersons available.</div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Company Documents (master-driven) -->
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-light fw-semibold">Documents</div>
+            <div class="card-body">
+                @if (Model.ClientDocumentItems != null && Model.ClientDocumentItems.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width:44px;">#</th>
+                                    <th>Type</th>
+                                    <th>Preview</th>
+                                    <th>Uploaded On</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    var idx = 0;
+                                    foreach (var d in Model.ClientDocumentItems.OrderBy(x => x.DocumentType.SortOrder).ThenBy(x => x.DocumentType.Name))
+                                    {
+                                        idx++;
+                                        <tr>
+                                            <td class="text-muted">@idx</td>
+                                            <td>@(d.DocumentType?.Name ?? "—")</td>
+                                            <td>
+                                                @if (!string.IsNullOrWhiteSpace(d.FilePath))
+                                                {
+                                                    <a href="@d.FilePath" class="btn btn-sm btn-outline-primary" target="_blank" rel="noopener">
+                                                        Preview
+                                                    </a>
+                                                }
+                                                else
+                                                {
+
+                                                    <span class="text-muted">—</span>
+                                                }
+                                            </td>
+                                            <td>@d.UploadedOn.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-muted">No documents uploaded.</div>
+                }
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- Recent Job Requirements -->
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-light fw-semibold d-flex justify-content-between align-items-center">
+                <span>Recent Job Requirements</span>
+                <a asp-controller="ClientRequirements" asp-action="Create" asp-route-clientId="@Model.Id"
+                   class="btn btn-sm btn-outline-primary">Add Requirement</a>
+            </div>
+            <div class="card-body">
+                @if (recentJds.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Job Title</th>
+                                    <th>Location</th>
+                                    <th>Experience</th>
+                                    <th>Deadline</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var r in recentJds)
+                                {
+                                    <tr>
+                                        <td>#@r.Id</td>
+                                        <td>@(string.IsNullOrWhiteSpace(r.JobTitle) ? "—" : r.JobTitle)</td>
+                                        <td>@(string.IsNullOrWhiteSpace(r.JobLocation) ? "—" : r.JobLocation)</td>
+                                        <td>
+                                            @if (r.ExperienceMin.HasValue || r.ExperienceMax.HasValue)
+                                            {
+                                                <span>@(r.ExperienceMin ?? 0) - @(r.ExperienceMax ?? 0) yrs</span>
+                                            }
+                                            else
+                                            {
+                                                <span>—</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (r.Deadline.HasValue)
+                                            {
+                                                <span>@r.Deadline.Value.ToString("yyyy-MM-dd")</span>
+                                            }
+                                            else
+                                            {
+                                                <span>—</span>
+                                            }
+                                        </td>
+                                        <td class="text-end">
+                                            <a asp-controller="ClientRequirements" asp-action="Details" asp-route-id="@r.Id"
+                                               class="btn btn-sm btn-outline-secondary">Open</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-muted small">No requirements found for this client.</div>
+                }
+            </div>
+        </div>
+    </div>
+
+</div>

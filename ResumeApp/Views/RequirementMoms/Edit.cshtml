@@ -1,0 +1,100 @@
+﻿@model ResumeApp.Models.RequirementMom
+
+@{
+    ViewData["Title"] = "Edit Meeting Minutes";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">📝 Edit MOM for Requirement #@Model.RequirementId</h3>
+
+        <a asp-controller="ClientRequirements"
+           asp-action="Details"
+           asp-route-id="@Model.RequirementId"
+           class="btn btn-outline-secondary btn-sm">
+            ⬅️ Back to Requirement
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <form asp-action="Edit" method="post" enctype="multipart/form-data" asp-route-id="@Model.Id">
+                @Html.AntiForgeryToken()
+
+                @* keys *@
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="RequirementId" />
+
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label fw-semibold">Title</label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="MeetingDate" class="form-label fw-semibold">Meeting Date</label>
+                    <input asp-for="MeetingDate" type="date" class="form-control" />
+                    <span asp-validation-for="MeetingDate" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Minutes" class="form-label fw-semibold">Minutes / Discussion Points</label>
+                    <textarea asp-for="Minutes" class="form-control" rows="10"></textarea>
+                    <span asp-validation-for="Minutes" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Existing Attachments</label>
+                    @{
+                        var files = (Model.AttachmentsPath ?? string.Empty)
+                        .Split(';', StringSplitOptions.RemoveEmptyEntries)
+                        .ToList();
+                    }
+
+                    @if (files.Any())
+                    {
+                        <ul class="list-unstyled mb-2">
+                            @foreach (var f in files)
+                            {
+                                <li>
+                                    <a asp-controller="RequirementMoms"
+                                       asp-action="DownloadAttachment"
+                                       asp-route-id="@Model.Id"
+                                       asp-route-fileName="@f">
+                                        @f
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-1">No attachments uploaded yet.</p>
+                    }
+                    <div class="form-text">
+                        You can upload new attachments below; they will be added to existing ones.
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Add More Attachments (optional)</label>
+                    <input type="file" name="Attachments" multiple class="form-control" />
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    💾 Save Changes
+                </button>
+                <a asp-controller="ClientRequirements"
+                   asp-action="Details"
+                   asp-route-id="@Model.RequirementId"
+                   class="btn btn-outline-secondary ms-2">
+                    Cancel
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

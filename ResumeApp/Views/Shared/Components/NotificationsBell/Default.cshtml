@@ -1,0 +1,55 @@
+﻿@model List<ResumeApp.Models.Notification>
+@{
+    var unread = (int?)ViewBag.Unread ?? 0;
+}
+
+<li class="nav-item dropdown">
+    <a class="nav-link position-relative" href="#" id="notifDropdown" role="button" data-bs-toggle="dropdown">
+        <i class="bi bi-bell"></i>
+        @if (unread > 0)
+        {
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                @unread
+            </span>
+        }
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notifDropdown" style="min-width:360px;">
+        <li class="dropdown-header d-flex justify-content-between align-items-center">
+            <span>Notifications</span>
+            <form method="post" asp-controller="Notifications" asp-action="MarkAllRead">
+                <button class="btn btn-link btn-sm" type="submit">Mark all as read</button>
+            </form>
+        </li>
+        <li><hr class="dropdown-divider" /></li>
+
+        @if (Model.Count == 0)
+        {
+            <li class="px-3 py-2 text-muted">No notifications</li>
+        }
+        else
+        {
+            foreach (var n in Model)
+            {
+                <li class="px-3 py-2">
+                    <div class="fw-semibold">@n.Title</div>
+                    @if (!string.IsNullOrWhiteSpace(n.Body))
+                    {
+                        <div class="small text-muted">@n.Body</div>
+                    }
+                    <div class="small text-muted">@n.CreatedAt.ToLocalTime()</div>
+                    <div class="d-flex align-items-center mt-1 gap-2">
+                        @if (!string.IsNullOrEmpty(n.Url))
+                        {
+                            <a class="small" href="@n.Url">Open</a>
+                        }
+                        <form method="post" asp-controller="Notifications" asp-action="MarkRead">
+                            <input type="hidden" name="id" value="@n.Id" />
+                            <button type="submit" class="btn btn-outline-secondary btn-sm">Done</button>
+                        </form>
+                    </div>
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+            }
+        }
+    </ul>
+</li>

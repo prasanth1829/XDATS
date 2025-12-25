@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
 using ResumeApp.Data;
 using ResumeApp.Models;
-using OfficeOpenXml;
-using Microsoft.AspNetCore.Http.Features;
-
-
+using ResumeApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 //license context to non-commercial
@@ -18,6 +17,7 @@ builder.Services.Configure<FormOptions>(options =>
 //  DbContext with connection string
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 // Identity services with custom user model
 builder.Services.AddIdentity<Users, IdentityRole>(options =>
@@ -41,8 +41,9 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ActivityLogger>();
-
-
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IMatchScoringService, MatchScoringService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 var app = builder.Build();
 //  Role Seeding
@@ -51,7 +52,7 @@ using (var scope = app.Services.CreateScope())
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Users>>();
 
-    string[] roles = { "Admin", "Reviewer", "User" };
+    string[] roles = { "Admin", "Reviewer", "User", "Team Lead", "Manager", "Vendor", "Panel" };
 
     foreach (var role in roles)
     {
@@ -60,6 +61,46 @@ using (var scope = app.Services.CreateScope())
         {
             await roleManager.CreateAsync(new IdentityRole(role));
         }
+    }
+    // Only for test environment - creating some test users
+    var env = scope.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
+    if (env.IsDevelopment())
+    {
+        async Task CreateUserIfMissing(string email, string displayName, string password, string role)
+        {
+            var user = await userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                var newUser = new Users
+                {
+                    UserName = email,
+                    Email = email,
+                    FullName = displayName,
+                    EmailConfirmed = true
+                };
+                var res = await userManager.CreateAsync(newUser, password);
+                if (res.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(newUser, role);
+                }
+                else
+                {
+                    // optional: log creation errors
+                }
+            }
+            else
+            {
+                // ensure role assigned
+                if (!await userManager.IsInRoleAsync(user, role))
+                    await userManager.AddToRoleAsync(user, role);
+            }
+        }
+
+        // Example test accounts
+        await CreateUserIfMissing("teamlead@xeedo.in", "Team Lead", "Xeedo@123", "Team Lead");
+        await CreateUserIfMissing("manager@xeedo.in", "Manager", "Xeedo@123", "Manager");
+        await CreateUserIfMissing("vendor@xeedo.in", "Vendor", "Xeedo@123", "Vendor");
+        await CreateUserIfMissing("panel@xeedo.in", "Panel", "Xeedo@123", "Panel");
     }
 
     //  Create a default admin user

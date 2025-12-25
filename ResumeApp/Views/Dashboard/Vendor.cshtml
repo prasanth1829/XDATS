@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "Vendor Dashboard";
+}
+
+<div class="container py-4">
+    <h2 class="mb-4 text-primary">Vendor Dashboard</h2>
+
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title">Manage Users</h5>
+                    <p class="text-muted">Create, edit, and assign roles.</p>
+                    <a asp-controller="UserManagement" asp-action="Index" class="btn btn-primary">Go</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title">Requirements</h5>
+                    <p class="text-muted">Assign recruiters & monitor progress.</p>
+                    <a asp-controller="ClientRequirements" asp-action="Index" class="btn btn-primary">View</a>
+                </div>
+            </div>
+        </div>
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="card-title">📌 My Assigned JDs</h5>
+                <p class="card-text">View all job descriptions assigned to you by Admin.</p>
+                <a asp-controller="ClientRequirements" asp-action="MyAssignments" class="btn btn-primary">
+                    View Assignments
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>

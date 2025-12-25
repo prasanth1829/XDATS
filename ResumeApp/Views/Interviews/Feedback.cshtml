@@ -1,0 +1,46 @@
+﻿@using ResumeApp.Models
+@model dynamic
+
+@{
+    ViewData["Title"] = "Give Feedback";
+}
+
+<h4 class="mb-3">Give Feedback — Round @Model.Round</h4>
+
+<form asp-action="FeedbackSave" asp-controller="Interviews" method="post" class="row g-3">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="interviewScheduleId" value="@Model.InterviewScheduleId" />
+
+    <div class="col-12 col-md-6">
+        <label class="form-label">Decision</label>
+        <select name="decision" class="form-select" required>
+            <option value="@((int)InterviewFeedbackDecision.L1Select)" selected="@(Model.Decision == InterviewFeedbackDecision.L1Select)">L1-Select</option>
+            <option value="@((int)InterviewFeedbackDecision.L1Reject)" selected="@(Model.Decision == InterviewFeedbackDecision.L1Reject)">L1-Reject</option>
+            <option value="@((int)InterviewFeedbackDecision.L1Hold)" selected="@(Model.Decision == InterviewFeedbackDecision.L1Hold)">L1-Hold</option>
+            <option value="@((int)InterviewFeedbackDecision.FinalSelect)" selected="@(Model.Decision == InterviewFeedbackDecision.FinalSelect)">Final Select (final round)</option>
+        </select>
+    </div>
+
+    <div class="col-12 col-md-6">
+        <label class="form-label">Comments (optional)</label>
+        <input name="comments" class="form-control" value="@(Model.Comments ?? "")" />
+    </div>
+
+    <div class="col-12 col-md-4">
+        <label class="form-label">Tech (1–10)</label>
+        <input name="techScore" type="number" min="1" max="10" class="form-control" value="@(Model.TechScore ?? "")" />
+    </div>
+    <div class="col-12 col-md-4">
+        <label class="form-label">Comm (1–10)</label>
+        <input name="commScore" type="number" min="1" max="10" class="form-control" value="@(Model.CommScore ?? "")" />
+    </div>
+    <div class="col-12 col-md-4">
+        <label class="form-label">Culture (1–10)</label>
+        <input name="cultureScore" type="number" min="1" max="10" class="form-control" value="@(Model.CultureScore ?? "")" />
+    </div>
+
+    <div class="col-12">
+        <button class="btn btn-primary">Save Feedback</button>
+        <a class="btn btn-light" href="@Url.Action("Details", "Interviews", new { id = (int)Model.InterviewScheduleId })">Cancel</a>
+    </div>
+</form>

@@ -13,6 +13,6 @@ namespace ResumeApp.Controllers
             _context = context;
         }
 
-     
+    
     }
 }

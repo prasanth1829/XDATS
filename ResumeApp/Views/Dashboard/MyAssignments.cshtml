@@ -1,0 +1,62 @@
+﻿@model IEnumerable<ResumeApp.Models.ClientRequirement>
+
+@{
+    ViewData["Title"] = "My Assigned Requirements";
+}
+
+<h2 class="mb-4 text-primary fw-bold">📌 My Assigned Requirements</h2>
+
+<div class="card shadow-sm rounded-3">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle table-bordered">
+            <thead class="table-light text-center">
+                <tr>
+                    <th>Job Title</th>
+                    <th>Client</th>
+                    <th>Location</th>
+                    <th>Experience</th>
+                    <th>Deadline</th>
+                    <th style="width: 120px;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-muted">No requirements assigned yet.</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var req in Model)
+                    {
+                        <tr>
+                            <td>@req.JobTitle</td>
+                            <td>@req.Client?.CompanyName</td>
+                            <td>@req.JobLocation</td>
+                            <td>
+                                @if (req.ExperienceMin.HasValue || req.ExperienceMax.HasValue)
+                                {
+                                    @($"{req.ExperienceMin ?? 0} – {req.ExperienceMax ?? 0} years")
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Not specified</span>
+                                }
+                            </td>
+                            <td>@req.Deadline?.ToString("dd MMM yyyy")</td>
+                            <td class="text-center">
+                                <a asp-controller="ClientRequirements"
+                                   asp-action="Details"
+                                   asp-route-id="@req.Id"
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,145 @@
+﻿@using ResumeApp.Models
+@model List<ResumeRequirementLink>
+
+@{
+    Layout = "_Layout"; // or null if you want a super-clean print view
+    var requirement = ViewBag.Requirement as ClientRequirement;
+    bool branded = (bool)(ViewBag.Branded ?? false);
+    var warning = ViewBag.Warning as string;
+    var today = (DateTime)(ViewBag.Today ?? DateTime.Today);
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Share Preview @if(requirement != null){
+    <span class="text-muted">— @requirement.JobTitle (JD #@requirement.Id)</span>
+        }
+</h4>
+    <div class="d-flex gap-2">
+        <button id="btnCopyHtml" class="btn btn-sm btn-outline-primary">Copy table (HTML)</button>
+        <button id="btnCopyText" class="btn btn-sm btn-outline-secondary">Copy table (Text)</button>
+    </div>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(warning))
+{
+    <div class="alert alert-warning">@warning</div>
+}
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info">No candidates to preview.</div>
+}
+else
+{
+    if (branded)
+    {
+        @Html.Partial("_ClientShareTableBranded", Model)
+    }
+    else
+    {
+        @Html.Partial("_ClientShareTablePlain", Model)
+    }
+}
+
+@section Scripts {
+    <script>
+        (function () {
+          function getTable() {
+            return document.querySelector('.client-share-table');
+          }
+
+          async function copyHtml() {
+            const tbl = getTable();
+            if (!tbl) { alert('Table not found.'); return; }
+
+            // Build minimal, clean HTML snippet (keeps table styles if inline)
+            const html = tbl.outerHTML;
+
+            // Prefer modern async clipboard with HTML + plain text
+            try {
+              if (navigator.clipboard && window.ClipboardItem) {
+                const items = [
+                  new ClipboardItem({
+                    'text/html': new Blob([html], { type: 'text/html' }),
+                    'text/plain': new Blob([tableToTSV(tbl)], { type: 'text/plain' })
+                  })
+                ];
+                await navigator.clipboard.write(items);
+                alert('Table (HTML) copied. Paste into your email.');
+                return;
+              }
+            } catch (err) {
+              // fall through to next fallback
+              console.warn('HTML clipboard write failed:', err);
+            }
+
+            // Fallback: try plain text only (works on http and older browsers)
+            try {
+              await navigator.clipboard.writeText(tableToTSV(tbl));
+              alert('Table text copied (TSV). Paste into your email.');
+              return;
+            } catch (err) {
+              console.warn('Plain text clipboard failed:', err);
+            }
+
+            // Last resort: open a new window with the HTML so user can copy manually
+            try {
+              const w = window.open('', '_blank', 'noopener,noreferrer,width=1100,height=800');
+              if (w && w.document) {
+                w.document.open();
+                w.document.write(`<!doctype html><meta charset="utf-8"><title>Copy Table</title>${html}`);
+                w.document.close();
+                w.focus();
+                alert('Could not access clipboard. A new window was opened—press Ctrl+A then Ctrl+C to copy.');
+              } else {
+                alert('Clipboard not available and popup blocked. Allow popups or use HTTPS/localhost.');
+              }
+            } catch {
+              alert('Copy failed. Use HTTPS/localhost or allow clipboard permissions.');
+            }
+          }
+
+          async function copyText() {
+            const tbl = getTable();
+            if (!tbl) { alert('Table not found.'); return; }
+            const text = tableToTSV(tbl);
+            try {
+              await navigator.clipboard.writeText(text);
+              alert('Table text copied (TSV). Paste into your email.');
+            } catch (err) {
+              console.warn('Plain text clipboard failed:', err);
+              // Fallback: textarea select/copy
+              const ta = document.createElement('textarea');
+              ta.value = text;
+              document.body.appendChild(ta);
+              ta.select();
+              try {
+                document.execCommand('copy');
+                alert('Table text copied (legacy).');
+              } finally {
+                document.body.removeChild(ta);
+              }
+            }
+          }
+
+          function tableToTSV(tbl) {
+            return Array.from(tbl.querySelectorAll('tr'))
+              .map(tr => Array.from(tr.querySelectorAll('th,td'))
+                .map(td => td.innerText.replace(/\s+/g, ' ').trim())
+                .join('\t'))
+              .join('\n');
+          }
+
+          function bind() {
+            document.getElementById('btnCopyHtml')?.addEventListener('click', copyHtml);
+            document.getElementById('btnCopyText')?.addEventListener('click', copyText);
+          }
+
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', bind);
+          } else {
+            bind();
+          }
+        })();
+    </script>
+}

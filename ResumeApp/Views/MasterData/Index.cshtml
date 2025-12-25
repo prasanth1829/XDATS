@@ -1,0 +1,235 @@
+﻿@{
+    ViewData["Title"] = "Master Settings";
+
+    var countryCount = ViewBag.CountryCount ?? 0;
+    var locationCount = ViewBag.LocationCount ?? 0;
+    var designationCount = ViewBag.DesignationCount ?? 0;
+    var documentTypeCount = ViewBag.DocumentTypeCount ?? 0;
+    var skillsCount = ViewBag.SkillsCount ?? 0;
+    var qualificationCount = ViewBag.QualificationCount ?? 0;
+}
+
+<div class="container py-4">
+    <!-- Page header -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h3 class="mb-0">
+                <i class="bi bi-gear-wide-connected me-2"></i>Master Settings
+            </h3>
+            <small class="text-muted">
+                Configure core masters used across client onboarding and JD creation.
+            </small>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <!-- Countries -->
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="rounded-circle bg-light p-2 me-2">
+                            <i class="bi bi-flag fs-4 text-primary"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title mb-0">Countries</h5>
+                            <small class="text-muted">Country list, code, active status & sort order.</small>
+                        </div>
+                    </div>
+
+                    <div class="mt-auto d-flex align-items-center gap-2">
+                        <a class="btn btn-sm btn-primary" asp-controller="MasterData" asp-action="Countries">
+                            <i class="bi bi-list-ul me-1"></i> Manage
+                        </a>
+                        <a class="btn btn-sm btn-outline-primary" asp-controller="MasterData" asp-action="CreateCountry">
+                            <i class="bi bi-plus-circle me-1"></i> Add New
+                        </a>
+                        <span class="ms-auto text-muted small">
+                            @countryCount item@(countryCount == 1 ? "" : "s")
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Locations -->
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="rounded-circle bg-light p-2 me-2">
+                            <i class="bi bi-geo-alt fs-4 text-success"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title mb-0">Locations</h5>
+                            <small class="text-muted">Cities / locations mapped to countries for clients.</small>
+                        </div>
+                    </div>
+
+                    <div class="mt-auto d-flex align-items-center gap-2">
+                        <a class="btn btn-sm btn-primary" asp-controller="MasterData" asp-action="Locations">
+                            <i class="bi bi-list-ul me-1"></i> Manage
+                        </a>
+                        <a class="btn btn-sm btn-outline-primary" asp-controller="MasterData" asp-action="CreateLocation">
+                            <i class="bi bi-plus-circle me-1"></i> Add New
+                        </a>
+                        <span class="ms-auto text-muted small">
+                            @locationCount item@(locationCount == 1 ? "" : "s")
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Designations -->
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="rounded-circle bg-light p-2 me-2">
+                            <i class="bi bi-person-badge fs-4 text-info"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title mb-0">Designations</h5>
+                            <small class="text-muted">
+                                Roles like HR Manager, Recruiter, Team Lead, etc.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="mt-auto d-flex align-items-center gap-2">
+                        <a class="btn btn-sm btn-primary" asp-controller="MasterData" asp-action="Designations">
+                            <i class="bi bi-list-ul me-1"></i> Manage
+                        </a>
+                        <a class="btn btn-sm btn-outline-primary" asp-controller="MasterData" asp-action="CreateDesignation">
+                            <i class="bi bi-plus-circle me-1"></i> Add New
+                        </a>
+                        <span class="ms-auto text-muted small">
+                            @designationCount item@(designationCount == 1 ? "" : "s")
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Company Documents -->
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="rounded-circle bg-light p-2 me-2">
+                            <i class="bi bi-folder2-open fs-4 text-warning"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title mb-0">Company Documents</h5>
+                            <small class="text-muted">
+                                Types of documents required during client onboarding.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="mt-auto d-flex align-items-center gap-2">
+                        <a class="btn btn-sm btn-primary" asp-controller="MasterData" asp-action="DocumentTypes">
+                            <i class="bi bi-list-ul me-1"></i> Manage
+                        </a>
+                        <a class="btn btn-sm btn-outline-primary" asp-controller="MasterData" asp-action="CreateDocumentType">
+                            <i class="bi bi-plus-circle me-1"></i> Add New
+                        </a>
+                        <span class="ms-auto text-muted small">
+                            @documentTypeCount item@(documentTypeCount == 1 ? "" : "s")
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Skills Master -->
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="rounded-circle bg-light p-2 me-2">
+                            <i class="bi bi-stars fs-4 text-danger"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title mb-0">Skills</h5>
+                            <small class="text-muted">
+                                Central skills library used across resumes & JDs.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="mt-auto d-flex align-items-center gap-2">
+                        <a class="btn btn-sm btn-primary" asp-controller="MasterData" asp-action="Skills">
+                            <i class="bi bi-list-ul me-1"></i> Manage
+                        </a>
+                        <a class="btn btn-sm btn-outline-primary" asp-controller="MasterData" asp-action="CreateSkill">
+                            <i class="bi bi-plus-circle me-1"></i> Add New
+                        </a>
+                        <span class="ms-auto text-muted small">
+                            @skillsCount item@(skillsCount == 1 ? "" : "s")
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Qualifications -->
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="rounded-circle bg-light p-2 me-2">
+                            <i class="bi bi-mortarboard fs-4 text-primary"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title mb-0">Qualifications</h5>
+                            <small class="text-muted">
+                                Educational qualifications (BE, B.Tech, BSc, MCA, MBA, etc.) for JDs.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="mt-auto d-flex align-items-center gap-2">
+                        <a class="btn btn-sm btn-primary" asp-controller="MasterData" asp-action="Qualifications">
+                            <i class="bi bi-list-ul me-1"></i> Manage
+                        </a>
+                        <a class="btn btn-sm btn-outline-primary" asp-controller="MasterData" asp-action="CreateQualification">
+                            <i class="bi bi-plus-circle me-1"></i> Add New
+                        </a>
+                        <span class="ms-auto text-muted small">
+                            @qualificationCount item@(qualificationCount == 1 ? "" : "s")
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Notice Periods -->
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi bi-clock-history fs-3 text-secondary me-2"></i>
+                        <div class="d-flex w-100 justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">Notice Periods</h5>
+                            <span class="badge bg-light text-muted">
+                                @((ViewBag.NoticePeriodCount ?? 0)) items
+                            </span>
+                        </div>
+                    </div>
+                    <p class="text-muted mb-4">
+                        Master list of notice period options (0–15 days, 1 month, 2 months, etc.) used in JD creation.
+                    </p>
+                    <div class="mt-auto d-flex gap-2">
+                        <a class="btn btn-primary" asp-controller="MasterData" asp-action="NoticePeriods">
+                            <i class="bi bi-list-ul me-1"></i> Manage
+                        </a>
+                        <a class="btn btn-outline-primary" asp-controller="MasterData" asp-action="CreateNoticePeriod">
+                            <i class="bi bi-plus-circle me-1"></i> Add New
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

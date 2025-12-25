@@ -1,0 +1,30 @@
+﻿@model ResumeApp.Models.ClientRequirement
+@{
+    ViewData["Title"] = "Assign Recruiters/Vendors";
+    var users = ViewBag.Users as List<ResumeApp.Models.Users>;
+    var requirement = ViewBag.Requirement as ResumeApp.Models.ClientRequirement;
+}
+
+<h2>Assign Recruiters/Vendors to Requirement</h2>
+<hr />
+
+<div class="card p-3 shadow-sm">
+    <h5>@requirement.JobTitle (@requirement.Client.CompanyName)</h5>
+    <form asp-action="AssignRecruiters" method="post">
+        <input type="hidden" name="requirementId" value="@requirement.Id" />
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Select Recruiters / Vendors</label>
+            <select name="userIds" class="form-select" multiple size="8">
+                @foreach (var user in users)
+                {
+                    <option value="@user.Id">@user.FullName (@user.Email)</option>
+                }
+            </select>
+            <small class="text-muted">Hold Ctrl (Windows) or Cmd (Mac) to select multiple.</small>
+        </div>
+
+        <button type="submit" class="btn btn-success">✅ Save Assignment</button>
+        <a asp-action="Details" asp-route-id="@requirement.Id" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>

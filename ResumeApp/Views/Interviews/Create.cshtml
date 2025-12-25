@@ -1,0 +1,216 @@
+﻿@model ResumeApp.ViewModels.InterviewCreateVm
+@using ResumeApp.Models
+@{
+    ViewData["Title"] = "Schedule Interview";
+    var panelUsers = ViewBag.PossiblePanelists as List<Users> ?? new();
+}
+
+<div class="d-flex align-items-start justify-content-between flex-wrap gap-2 mb-3">
+    <div>
+        <h3 class="mb-0">Schedule Interview</h3>
+        <div class="text-muted small">
+            Round <strong>@Model.Round</strong> • JD/Resume mapped
+        </div>
+    </div>
+    <div>
+        <a class="btn btn-light"
+           href="@Url.Action("SharedProfiles", "ClientRequirements", new { id = Model.RequirementId })">
+            ← Back to JD
+        </a>
+    </div>
+</div>
+
+@* Show model-level validation errors clearly *@
+<div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="RequirementId" />
+    <input type="hidden" asp-for="ResumeId" />
+
+    <div class="row g-3">
+        <!-- Left column: core scheduling form -->
+        <div class="col-12 col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-2">
+                            <label class="form-label">Round</label>
+                            <input asp-for="Round" class="form-control" type="number" min="1" />
+                            <span asp-validation-for="Round" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-5">
+                            <label class="form-label">Date & Start time</label>
+                            <input asp-for="StartLocal" id="startLocal" class="form-control" type="datetime-local"
+                                   value="@(Model.StartLocal.ToString("yyyy-MM-ddTHH:mm"))" />
+                            <span asp-validation-for="StartLocal" class="text-danger"></span>
+                            <div class="form-text">Times are saved in UTC internally.</div>
+                        </div>
+
+                        <div class="col-md-5">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <label class="form-label mb-0">Duration (minutes)</label>
+                                <div class="btn-group btn-group-sm" role="group" aria-label="Quick durations">
+                                    <button class="btn btn-outline-secondary quickDur" type="button" data-min="30">30</button>
+                                    <button class="btn btn-outline-secondary quickDur" type="button" data-min="45">45</button>
+                                    <button class="btn btn-outline-secondary quickDur" type="button" data-min="60">60</button>
+                                </div>
+                            </div>
+                            <input asp-for="DurationMinutes" id="duration" class="form-control mt-2" type="number" min="15" max="480" />
+                            <span asp-validation-for="DurationMinutes" class="text-danger"></span>
+                            <div class="small text-muted mt-1">Ends: <span id="endPreview" class="fw-semibold">—</span></div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Mode</label>
+                            <select asp-for="Mode" id="mode" class="form-select">
+                                <option>Video</option>
+                                <option>Phone</option>
+                                <option>In-Person</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-8">
+                            <label class="form-label">Location / Meeting link</label>
+                            <div class="input-group">
+                                <input asp-for="LocationOrLink"
+                                       id="loc"
+                                       class="form-control"
+                                       placeholder="Paste Google Meet link (or Teams/Zoom/address)" />
+                                <button type="button" id="btnMeet" class="btn btn-outline-success">
+                                    Generate Meet
+                                </button>
+                            </div>
+                            <span asp-validation-for="LocationOrLink" class="text-danger"></span>
+                            <div class="form-text">Click “Generate Meet”, copy the URL, and paste it here.</div>
+                        </div>
+
+
+                        <div class="col-12">
+                            <label class="form-label">Panelist(s)</label>
+                            <select asp-for="PanelUserIds" class="form-select" multiple size="8">
+                                @foreach (var u in panelUsers.OrderBy(x => x.FullName ?? x.Email))
+                                {
+                                    var label = string.IsNullOrWhiteSpace(u.FullName) ? u.Email : $"{u.FullName} ({u.Email})";
+                                    <option value="@u.Id">@label</option>
+                                }
+                            </select>
+                            <div class="form-text">Hold Ctrl/Cmd to select multiple.</div>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Notes (optional)</label>
+                            <textarea asp-for="Notes" class="form-control" rows="3"
+                                      placeholder="Agenda, evaluation focus, any logistics for candidate/panel"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer bg-white d-flex gap-2">
+                    <a class="btn btn-light"
+                       href="@Url.Action("SharedProfiles", "ClientRequirements", new { id = Model.RequirementId })">Cancel</a>
+                    <button class="btn btn-primary" type="submit">Save</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right column: helpers & best practices -->
+        <div class="col-12 col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-title mb-2">Best Practices</h6>
+                    <ul class="small text-muted mb-0">
+                        <li>Pick a slot that avoids lunchtime or end-of-day fatigue.</li>
+                        <li>Add a clear agenda in <em>Notes</em> to guide the panel.</li>
+                        <li>For Video, verify the link opens without auth issues.</li>
+                        <li>Keep 15 minutes buffer between back-to-back interviews.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mt-3">
+                <div class="card-body">
+                    <h6 class="card-title mb-2">Tips</h6>
+                    <ul class="small text-muted mb-0">
+                        <li>Use multiple panelists for senior roles.</li>
+                        <li>Prefer 45–60 minutes for L1 tech rounds.</li>
+                        <li>Set <strong>Round</strong> to the next value (auto-suggested by controller).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        (function () {
+            const btn = document.getElementById('btnMeet');
+            const input = document.getElementById('loc');
+            if (!btn || !input) return;
+
+            btn.addEventListener('click', () => {
+              // Opens a fresh Google Meet in a new tab.
+              window.open('https://meet.google.com/new', '_blank', 'noopener');
+              // Give the new tab a moment to open, then focus the input for quick paste.
+              setTimeout(() => input.focus(), 400);
+            });
+          })();
+        (function () {
+            const start = document.getElementById('startLocal');
+            const dur = document.getElementById('duration');
+            const endPreview = document.getElementById('endPreview');
+            const mode = document.getElementById('mode');
+            const loc = document.getElementById('loc');
+            const locHint = document.getElementById('locHint');
+
+            function fmt(dt) {
+                // Show like "Mon, 28 Oct 2025 11:30"
+                const opts = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+                return dt.toLocaleString(undefined, opts).replace(',', '');
+            }
+
+            function recalcEnd() {
+                if (!start.value || !dur.value) { endPreview.textContent = '—'; return; }
+                const s = new Date(start.value);
+                if (isNaN(s.getTime())) { endPreview.textContent = '—'; return; }
+                const minutes = parseInt(dur.value, 10) || 0;
+                const e = new Date(s.getTime() + minutes * 60000);
+                endPreview.textContent = fmt(e);
+            }
+
+            function updateLocHint() {
+                const m = mode.value;
+                if (m === 'Video') {
+                    loc.placeholder = 'Teams/Zoom/Meet link';
+                    locHint.textContent = 'Paste a video meeting link.';
+                } else if (m === 'Phone') {
+                    loc.placeholder = 'Candidate phone or bridge number';
+                    locHint.textContent = 'Add the phone number or dial-in details.';
+                } else {
+                    loc.placeholder = 'Office address / meeting room';
+                    locHint.textContent = 'Enter the in-person venue.';
+                }
+            }
+
+            // Quick duration buttons
+            document.querySelectorAll('.quickDur').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    dur.value = btn.getAttribute('data-min');
+                    recalcEnd();
+                });
+            });
+
+            start.addEventListener('change', recalcEnd);
+            dur.addEventListener('input', recalcEnd);
+            mode.addEventListener('change', updateLocHint);
+
+            // Initial setup
+            recalcEnd();
+            updateLocHint();
+        })();
+    </script>
+}

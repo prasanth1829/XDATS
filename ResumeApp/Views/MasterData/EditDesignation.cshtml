@@ -1,0 +1,52 @@
+﻿@model ResumeApp.Models.Designation
+@{
+    ViewData["Title"] = "Edit Designation";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0"><i class="bi bi-pencil-square me-2"></i> Edit Designation</h3>
+        <a asp-action="Designations" class="btn btn-light">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <form asp-action="EditDesignation" method="post" class="row g-3">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
+
+                <div class="col-md-8">
+                    <label asp-for="Name" class="form-label">Designation Name</label>
+                    <input asp-for="Name" class="form-control" placeholder="e.g., Project Manager" required />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-2">
+                    <label asp-for="SortOrder" class="form-label">Sort</label>
+                    <input asp-for="SortOrder" type="number" class="form-control" />
+                    <span asp-validation-for="SortOrder" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-2 d-flex align-items-end">
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="IsActive" id="chkActive" />
+                        <label class="form-check-label" for="chkActive">Active</label>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save me-1"></i> Save Changes
+                    </button>
+                    <a asp-action="Designations" class="btn btn-light">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
