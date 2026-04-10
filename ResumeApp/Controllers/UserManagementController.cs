@@ -332,7 +332,45 @@ namespace ResumeApp.Controllers
             };
             return View(vm);
         }
+        [HttpGet]
+        public async Task<IActionResult> EditClient(int id)
+        {
+            var client = await _context.Clients
+                .Include(c => c.Spokespersons)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
+            if (client == null)
+                return NotFound();
+
+            var vm = new ClientOnboardingViewModel
+            {
+                ClientId = client.Id,
+                CompanyName = client.CompanyName,
+                WebsiteUrl = client.WebsiteUrl,
+                CompanyType = client.CompanyType,
+                CompanySize = client.CompanySize,
+                ContactName = client.ContactName,
+                Phone = client.Phone,
+                Email = client.Email,
+                HeadquarterCountryId = client.HeadquarterCountryId,
+                HeadquarterLocationId = client.HeadquarterLocationId,
+                EngagementTypes = client.EngagementTypes?.Split(", "),
+                PreferredCommunication = client.PreferredCommunication?.Split(", ").ToList(),
+
+                Spokespersons = client.Spokespersons.Select(s => new SpokespersonItem
+                {
+                    Name = s.Name,
+                    Phone = s.Phone,
+                    Email = s.Email,
+                    PreferredCommunication = s.PreferredCommunication?.Split(", ").ToList()
+                }).ToList()
+            };
+
+            await LoadCountryLocationDesignationListsAsync();
+            vm.DocumentItems = await BuildDocumentItemsAsync();
+
+            return View("ClientOnboarding", vm);
+        }
         private async Task LoadCountryLocationDesignationListsAsync()
         {
             // Countries (active only)
@@ -438,10 +476,10 @@ namespace ResumeApp.Controllers
             client.Spokespersons.Add(new Spokesperson
             {
                 Name = model.ContactName,
-                Designation = primaryDesignation,
+                Designation = primaryDesignation ?? "N/A",
                 Phone = model.Phone,
                 Email = model.Email,
-                PreferredCommunication = preferredComms
+                PreferredCommunication = client.PreferredCommunication
             });
 
             // Extra Spokespersons
@@ -486,9 +524,7 @@ namespace ResumeApp.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            // =========================
-            // Master-driven multiple document uploads + mandatory validation
-            // =========================
+
             var activeTypes = await _context.DocumentTypes
                 .Where(x => x.IsActive)
                 .Select(x => new { x.Id, x.IsMandatory })
@@ -514,11 +550,9 @@ namespace ResumeApp.Controllers
                 return View(model);
             }
 
-            // Declare 'root' ONCE and reuse it everywhere
             var root = Path.Combine(_env.WebRootPath, "uploads", "clients", client.Id.ToString());
             Directory.CreateDirectory(root);
 
-            // Save master-driven document items
             if (model.DocumentItems != null && model.DocumentItems.Count > 0)
             {
                 foreach (var item in model.DocumentItems)
@@ -541,10 +575,7 @@ namespace ResumeApp.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            // =========================
-            // Legacy single-file fields (NDA/MSA/Presentation) - optional
-            // Reuse the SAME 'root' variable; DO NOT redeclare it.
-            // =========================
+
             var docs = new ClientDocument();
             var hasDocs = false;
 
@@ -584,9 +615,9 @@ namespace ResumeApp.Controllers
             TempData["Success"] = "Client onboarded successfully!";
             return RedirectToAction(nameof(ClientList));
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
 
-
-        // put this helper inside the same controller (private)
         private static string SanitizeFolder(string name)
         {
             foreach (var ch in Path.GetInvalidFileNameChars())
@@ -615,8 +646,123 @@ namespace ResumeApp.Controllers
 
             return View(clients);
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateClient(ClientOnboardingViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                await LoadCountryLocationDesignationListsAsync();
+                model.DocumentItems = await BuildDocumentItemsAsync();
+                return View("ClientOnboarding", model);
+            }
 
+            var client = await _context.Clients
+                .Include(c => c.Spokespersons)
+                .FirstOrDefaultAsync(c => c.Id == model.ClientId);
 
+            if (client == null)
+                return NotFound();
 
+            // Update company info
+            client.CompanyName = model.CompanyName?.Trim();
+            client.WebsiteUrl = model.WebsiteUrl?.Trim();
+            client.CompanyType = model.CompanyType;
+            client.CompanySize = model.CompanySize;
+
+            client.ContactName = model.ContactName;
+            client.Phone = model.Phone;
+            client.Email = model.Email;
+
+            client.HeadquarterCountryId = model.HeadquarterCountryId;
+            client.HeadquarterLocationId = model.HeadquarterLocationId;
+
+            client.PreferredCommunication = model.PreferredCommunication != null
+                ? string.Join(", ", model.PreferredCommunication)
+                : "";
+
+            client.EngagementTypes = model.EngagementTypes != null
+                ? string.Join(", ", model.EngagementTypes)
+                : "";
+
+            // Resolve designation
+            string? primaryDesignation = null;
+
+            if (model.DesignationId.HasValue)
+            {
+                primaryDesignation = await _context.Designations
+                    .Where(d => d.Id == model.DesignationId.Value)
+                    .Select(d => d.Name)
+                    .FirstOrDefaultAsync();
+            }
+
+            client.Designation = primaryDesignation;
+
+            // Update spokespersons
+            _context.Spokespersons.RemoveRange(client.Spokespersons);
+            client.Spokespersons = new List<Spokesperson>();
+
+            client.Spokespersons.Add(new Spokesperson
+            {
+                Name = model.ContactName,
+                Designation = primaryDesignation,
+                Phone = model.Phone,
+                Email = model.Email,
+                PreferredCommunication = client.PreferredCommunication
+            });
+
+            if (model.Spokespersons != null && model.Spokespersons.Any())
+            {
+                foreach (var sp in model.Spokespersons)
+                {
+                    string? spDesignation = null;
+
+                    if (sp.DesignationId.HasValue)
+                    {
+                        spDesignation = await _context.Designations
+                            .Where(d => d.Id == sp.DesignationId.Value)
+                            .Select(d => d.Name)
+                            .FirstOrDefaultAsync();
+                    }
+
+                    client.Spokespersons.Add(new Spokesperson
+                    {
+                        Name = sp.Name,
+                        Designation = spDesignation ?? primaryDesignation ?? "N/A",
+                        Phone = sp.Phone,
+                        Email = sp.Email,
+                        PreferredCommunication =
+                        sp.PreferredCommunication != null
+                         ? string.Join(", ", sp.PreferredCommunication)
+                         : ""
+                    });
+                }
+            }
+
+            // Update locations
+            var oldLocations = _context.ClientOtherLocations
+                .Where(x => x.ClientId == client.Id);
+
+            _context.ClientOtherLocations.RemoveRange(oldLocations);
+
+            if (model.OtherLocationIds != null && model.OtherLocationIds.Any())
+            {
+                var newLocations = model.OtherLocationIds
+                    .Distinct()
+                    .Select(loc => new ClientOtherLocation
+                    {
+                        ClientId = client.Id,
+                        LocationId = loc
+                    });
+
+                await _context.ClientOtherLocations.AddRangeAsync(newLocations);
+            }
+
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "Client updated successfully";
+
+            return RedirectToAction("Details", "Clients", new { id = client.Id });
+        }
     }
 }

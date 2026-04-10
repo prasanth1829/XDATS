@@ -1,29 +1,407 @@
-﻿@{
+﻿@using ResumeApp.Models
+@model ResumeApp.ViewModels.ManagerDashboardViewModel
+@{
     ViewData["Title"] = "Manager Dashboard";
+    var today = DateTime.Now.ToString("dddd, dd MMM yyyy");
 }
 
-<div class="container py-4">
-    <h2 class="mb-4 text-primary">Manager Dashboard</h2>
+<div class="container-fluid px-4 py-4 dashboard-bg">
 
-    <div class="row g-3">
-        <div class="col-md-4">
-            <div class="card shadow-sm border-0">
-                <div class="card-body">
-                    <h5 class="card-title">Manage Users</h5>
-                    <p class="text-muted">Create, edit, and assign roles.</p>
-                    <a asp-controller="UserManagement" asp-action="Index" class="btn btn-primary">Go</a>
-                </div>
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Manager Dashboard</h2>
+            <div class="text-muted">
+                Recruitment Performance Overview · @today
             </div>
         </div>
-
-        <div class="col-md-4">
-            <div class="card shadow-sm border-0">
-                <div class="card-body">
-                    <h5 class="card-title">Requirements</h5>
-                    <p class="text-muted">Assign recruiters & monitor progress.</p>
-                    <a asp-controller="ClientRequirements" asp-action="Index" class="btn btn-primary">View</a>
-                </div>
-            </div>
+        <div>
+            <a asp-controller="ClientRequirements" asp-action="Index"
+               class="btn btn-primary me-2">
+                + New Requirement
+            </a>
+            <a asp-controller="UserManagement" asp-action="ClientList"
+               class="btn btn-outline-primary">
+                + Client
+            </a>
         </div>
     </div>
+
+    <!-- KPI GRID  -->
+    <div class="kpi-2row-grid mb-4">
+
+        <a class="kpi-box submitted" href="/Resume/List">
+            <span class="label">Total Resumes</span>
+            <span class="value">@Model.Kpis.TotalResumes</span>
+        </a>
+
+        <a class="kpi-box pipeline"
+           href="@Url.Action("InProgressProfiles", "ClientRequirements")">
+            <span class="label">Profiles In Progress</span>
+            <span class="value">@Model.Kpis.ProfilesInProgress</span>
+        </a>
+
+        <a class="kpi-box interview"
+           href="@Url.Action("SharedProfilesByStatus","ClientRequirements",
+                  new { status = CandidateStatus.InterviewScheduled })">
+            <span class="label">Interview Scheduled</span>
+            <span class="value">@Model.Kpis.InterviewsScheduled</span>
+        </a>
+
+        <a class="kpi-box success"
+           href="@Url.Action("SharedProfilesByStatus","ClientRequirements",
+                  new { status = CandidateStatus.Selected })">
+            <span class="label">Final Selected</span>
+            <span class="value">@Model.Summary.TotalSelected</span>
+        </a>
+
+        <a class="kpi-box offer"
+           href="@Url.Action("SharedProfilesByStatus","ClientRequirements",
+                  new { status = CandidateStatus.OfferReleased })">
+            <span class="label">Offers Released</span>
+            <span class="value">@Model.Summary.TotalOfferReleased</span>
+        </a>
+
+        <a class="kpi-box joined"
+           href="@Url.Action("SharedProfilesByStatus","ClientRequirements",
+                  new { status = CandidateStatus.Joined })">
+            <span class="label">Joined</span>
+            <span class="value">@Model.Summary.TotalJoined</span>
+        </a>
+
+    </div>
+
+
+    <!-- CLIENT OVERVIEW -->
+    <div class="card shadow-sm border-0 mb-4">
+
+        <!-- CARD HEADER -->
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+
+            <h5 class="mb-0 fw-semibold">
+                Clients (@Model.Summary.TotalClients)
+            </h5>
+            <small class="text-muted">
+                @Model.Summary.ActiveClients Active · @Model.Summary.InactiveClients Inactive
+            </small>
+
+            <div class="btn-group">
+                <a asp-action="Manager" asp-route-filter="active"
+                   class="btn btn-primary btn-sm">Active</a>
+
+                <a asp-action="Manager" asp-route-filter="inactive"
+                   class="btn btn-outline-secondary btn-sm">Inactive</a>
+            </div>
+
+        </div>
+
+
+        <!-- TABLE -->
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="client-table-head">
+                    <tr>
+                        <th>Client</th>
+                    
+                        <th>
+                            <a class="head-link" href="/ClientRequirements">
+                                Openings <span class="badge badge-open">@Model.Summary.TotalOpenings</span>
+                                <span class="badge badge-active">@Model.Summary.ActiveRequirements</span>
+                            </a>
+                        </th>
+                    
+                        <th>
+                            <a class="head-link" href="@Url.Action("InProgressProfiles","ClientRequirements",
+                            new { statuses = new [] { CandidateStatus.New, CandidateStatus.Shortlisted, CandidateStatus.PanelShortlisted } })">
+                                Submission <span class="badge badge-blue">@Model.Summary.TotalSubmissions</span>
+                            </a>
+                        </th>
+                    
+                        <th>
+                            <a class="head-link" href="@Url.Action("InProgressProfiles","ClientRequirements",
+                            new { statuses = new [] { CandidateStatus.InterviewScheduled } })">
+                                Interview <span class="badge badge-purple">@Model.Summary.TotalInterviewScheduled</span>
+                            </a>
+                        </th>
+                    
+                        <th>
+                            <a class="head-link" href="@Url.Action("InProgressProfiles","ClientRequirements",
+                            new { statuses = new [] { CandidateStatus.Rejected, CandidateStatus.PanelScreenRejected } })">
+                                Reject <span class="badge badge-red">@Model.Summary.TotalRejected</span>
+                            </a>
+                        </th>
+                    
+                        <th>
+                            <a class="head-link" href="@Url.Action("InProgressProfiles","ClientRequirements",
+                            new { statuses = new [] { CandidateStatus.Selected, CandidateStatus.PanelScreenSelected } })">
+                                Select <span class="badge badge-green">@Model.Summary.TotalSelected</span>
+                            </a>
+                        </th>
+                    
+                        <th>
+                            <a class="head-link" href="@Url.Action("InProgressProfiles","ClientRequirements",
+                            new { statuses = new [] { CandidateStatus.OfferReleased } })">
+                                Offer <span class="badge badge-orange">@Model.Summary.TotalOfferReleased</span>
+                            </a>
+                        </th>
+                    
+                        <th>
+                            <a class="head-link" href="@Url.Action("InProgressProfiles","ClientRequirements",
+                            new { statuses = new [] { CandidateStatus.Joined } })">
+                                Joined <span class="badge badge-success">@Model.Summary.TotalJoined</span>
+                            </a>
+                        </th>
+                    
+                        <th>Declined</th>
+                    </tr>
+                   </thead>
+                <tbody>
+
+                    @foreach (var client in Model.Clients)
+                    {
+                        <tr>
+                            <td class="fw-semibold">
+                                <a asp-controller="ClientRequirements"
+                                   asp-action="Index"
+                                   asp-route-clientId="@client.ClientId"
+                                   class="text-decoration-none">
+                                    @client.ClientName
+                                </a>
+                            </td>
+                            <td>
+                                <a asp-controller="ClientRequirements"
+                                   asp-action="Index"
+                                   asp-route-clientId="@client.ClientId"
+                                   class="text-decoration-none">
+                                    @client.Openings
+                                </a>
+                            </td>
+                            <td>
+                                <a href="@Url.Action(
+                                        "InProgressProfiles",
+                                        "ClientRequirements",
+                                        new {
+                                            clientIds = new[] { client.ClientId },
+                                            statuses = new[] {
+                                                CandidateStatus.New,
+                                                CandidateStatus.Shortlisted,
+                                                CandidateStatus.PanelShortlisted,
+                                                CandidateStatus.InterviewScheduled,
+                                                CandidateStatus.Hold
+                                            }
+                                        })">
+                                    <span class="count-link">@client.Submissions</span>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="@Url.Action(
+                                        "InProgressProfiles",
+                                        "ClientRequirements",
+                                        new {
+                                            clientIds = new[] { client.ClientId },
+                                            statuses = new[] { CandidateStatus.InterviewScheduled }
+                                        })">
+                                    @client.InterviewScheduled
+                                </a>
+                            </td>
+                            <td>
+                                <a href="@Url.Action(
+                                        "InProgressProfiles",
+                                        "ClientRequirements",
+                                        new {
+                                            clientIds = new[] { client.ClientId },
+                                            statuses = new[] {
+                                    CandidateStatus.Rejected,
+                                    CandidateStatus.PanelScreenRejected
+                                }
+                                        })">
+                                    @client.Rejected
+                                </a>
+                            </td>
+                            <td>
+                                <a href="@Url.Action(
+                                        "InProgressProfiles",
+                                        "ClientRequirements",
+                                        new {
+                                            clientIds = new[] { client.ClientId },
+                                            statuses = new[] {
+                                    CandidateStatus.Selected,
+                                    CandidateStatus.PanelScreenSelected
+                                }
+                                        })">
+                                    @client.Selected
+                                </a>
+                            </td>
+                            <td>
+                                <a href="@Url.Action(
+                                        "InProgressProfiles",
+                                        "ClientRequirements",
+                                        new {
+                                            clientIds = new[] { client.ClientId },
+                                            statuses = new[] { CandidateStatus.OfferReleased }
+                                        })">
+                                    @client.OfferReleased
+                                </a>
+                                </td>
+                            <td>
+                                <a href="@Url.Action(
+                                        "InProgressProfiles",
+                                        "ClientRequirements",
+                                        new {
+                                            clientIds = new[] { client.ClientId },
+                                            statuses = new[] { CandidateStatus.Joined }
+                                        })">
+                                    @client.Joined
+                                </a>
+                            </td>
+                            <td>@client.Declined</td>
+                        </tr>
+                    }
+
+                    @if (!Model.Clients.Any())
+                    {
+                        <tr>
+                            <td colspan="9" class="text-center text-muted py-4">
+                                No data available.
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+
 </div>
+
+
+
+<!-- STYLES -->
+<style>
+
+    .card-header h5 {
+        font-size: 18px;
+    }
+
+    .table thead th {
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        color: #6c757d;
+        white-space: nowrap;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    .table td {
+        font-size: 14px;
+    }
+    .table a{
+    font-weight:600;
+    color:#2563eb;
+    }
+
+    .table a:hover{
+        text-decoration:underline;
+    }
+
+    .client-table-head th{
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:.4px;
+    color:#64748b;
+    background:#f8fafc;
+    border-bottom:2px solid #e2e8f0;
+    }
+    
+    /* Header links */
+    
+    .head-link{
+        color:#1e293b;
+        text-decoration:none;
+        font-weight:600;
+    }
+    
+    .head-link:hover{
+        color:#2563eb;
+    }
+    
+    /* Badge style */
+    
+    .badge{
+        padding:3px 8px;
+        border-radius:6px;
+        font-size:11px;
+        margin-left:4px;
+    }
+    
+    /* Badge colors */
+    
+    .badge-blue{
+        background:#e0f2fe;
+        color:#0369a1;
+    }
+    
+    .badge-purple{
+        background:#f3e8ff;
+        color:#6b21a8;
+    }
+    
+    .badge-red{
+        background:#fee2e2;
+        color:#b91c1c;
+    }
+    
+    .badge-green{
+        background:#dcfce7;
+        color:#15803d;
+    }
+    
+    .badge-orange{
+        background:#ffedd5;
+        color:#c2410c;
+    }
+    
+    .badge-success{
+        background:#dcfce7;
+        color:#166534;
+    }
+    
+    .badge-open{
+        background:#e0f2fe;
+        color:#075985;
+    }
+    
+    .badge-active{
+        background:#dcfce7;
+        color:#166534;
+    }
+    
+    /* Numbers */
+    
+    .count-link{
+        font-weight:600;
+        font-size:15px;
+        color:#2563eb;
+    }
+    
+    /* Table hover */
+    
+    .table tbody tr{
+        transition:.15s;
+    }
+    
+    .table tbody tr:hover{
+        background:#f8fafc;
+    }
+    
+    /* Client name */
+    
+    .table td:first-child{
+        font-weight:600;
+        color:#0f172a;
+    }
+</style>

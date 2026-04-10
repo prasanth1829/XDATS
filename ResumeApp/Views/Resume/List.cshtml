@@ -25,37 +25,49 @@
 }
 <h2 class="mb-4 fw-bold text-primary">Uploaded Resumes</h2>
 <!-- Search -->
-<form asp-action="List" method="get" class="card card-body mb-3 shadow-sm">
+<form asp-action="List" method="get" class="search-card shadow-sm">
 
-    <div class="row g-2">
-        <div class="col-md-2">
+    <div class="row g-3 align-items-center">
+
+        <!-- Experience -->
+        <div class="col-md-2 position-relative">
+            <i class="bi bi-briefcase search-icon"></i>
             <input type="number" name="minExperience"
                    value="@ViewBag.MinExperience"
-                   class="form-control"
-                   placeholder="Min Exp (yrs)" />
+                   class="form-control search-input ps-4"
+                   placeholder="Experience" />
         </div>
 
-        <div class="col-md-4">
-            <input type="text" name="mandatorySkills"
-                   value="@ViewBag.MandatorySkills"
-                   class="form-control"
-                   placeholder="Mandatory skills (e.g. C#)" />
+        <!-- Mandatory Skills -->
+        <div class="col-md-4 position-relative">
+            <i class="bi bi-stars search-icon"></i>
+            <textarea id="MandatorySkills"
+                      name="mandatorySkills"
+                      class="form-control search-input ps-4"
+                      placeholder="Must-have skills">@ViewBag.MandatorySkills</textarea>
         </div>
 
-        <div class="col-md-4">
-            <input type="text" name="optionalSkills"
-                   value="@ViewBag.OptionalSkills"
-                   class="form-control"
-                   placeholder="Optional skills (C++, HTML, SQL)" />
+        <!-- Optional Skills -->
+        <div class="col-md-4 position-relative">
+            <i class="bi bi-lightning search-icon"></i>
+            <textarea id="OptionalSkills"
+                      name="optionalSkills"
+                      class="form-control search-input ps-4"
+                      placeholder="Good-to-have skills">@ViewBag.OptionalSkills</textarea>
         </div>
 
-        <div class="col-md-2 d-grid">
-            <button type="submit" class="btn btn-primary">
+        <!-- Buttons -->
+        <div class="col-md-2 d-flex gap-2">
+            <button type="submit" class="btn btn-primary w-100">
                 🔍 Search
             </button>
-        </div>
-    </div>
 
+            <a href="/Resume/List" class="btn btn-outline-secondary">
+                ✖
+            </a>
+        </div>
+
+    </div>
 </form>
 
 <!-- Counter + Export -->
@@ -70,11 +82,14 @@
 
     <div class="d-flex gap-2">
         <form asp-action="ExportToExcel" method="get" class="d-inline">
-            <input type="hidden" name="search" value="@Context.Request.Query["search"]" />
+            <input type="hidden" name="minExperience" value="@ViewBag.MinExperience" />
+            <input type="hidden" name="mandatorySkills" value="@ViewBag.MandatorySkills" />
+            <input type="hidden" name="optionalSkills" value="@ViewBag.OptionalSkills" />
             <button type="submit" class="btn btn-success btn-sm shadow-sm">
-                <i class="bi bi-file-earmark-excel"></i> Excel
+            <i class="bi bi-file-earmark-excel"></i> Excel
             </button>
         </form>
+
         <form asp-action="DownloadZip" method="get" class="d-inline">
             <input type="hidden" name="search" value="@Context.Request.Query["search"]" />
             <button type="submit" class="btn btn-primary btn-sm shadow-sm">
@@ -223,7 +238,12 @@
                 else
                 {
                     <li class="page-item">
-                        <a class="page-link" href="@Url.Action("List", new { page = p, search = Context.Request.Query["search"] })">@p</a>
+                        <a class="page-link" href="@Url.Action("List", new { 
+                            page = p,
+                            minExperience = ViewBag.MinExperience,
+                            mandatorySkills = ViewBag.MandatorySkills,
+                            optionalSkills = ViewBag.OptionalSkills
+                        })">@p</a>
                     </li>
                 }
             }
@@ -249,4 +269,60 @@
             </li>
         </ul>
     </nav>
+}
+@section Scripts {
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@yaireo/tagify/dist/tagify.css" />
+<script src="https://cdn.jsdelivr.net/npm/@@yaireo/tagify"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // Skills from DB
+    const SKILLS = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.SkillNamesJson ?? new List<string>()));
+
+    function attachTagify(selector, placeholderText) {
+        const el = document.querySelector(selector);
+        if (!el) return;
+
+        const tagify = new Tagify(el, {
+            whitelist: SKILLS,
+            enforceWhitelist: false,
+            delimiters: ",",
+            maxTags: 50,
+            dropdown: {
+                enabled: 1,
+                maxItems: 20,
+                closeOnSelect: true,
+                highlightFirst: true
+            },
+            placeholder: placeholderText,
+            originalInputValueFormat: valuesArr =>
+                valuesArr.map(v => v.value).join(", ")
+        });
+
+        el.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+            }
+        });
+
+        return tagify;
+    }
+
+    // ✅ UX improvements
+    document.querySelector('input[name="minExperience"]')?.focus();
+
+    document.querySelector("form").addEventListener("submit", function () {
+        const btn = document.querySelector("button[type='submit']");
+        if (btn) btn.innerText = "Searching...";
+    });
+
+    // attach tagify
+    attachTagify("#MandatorySkills", "Mandatory skills...");
+    attachTagify("#OptionalSkills", "Optional skills...");
+
+});
+</script>
+
 }

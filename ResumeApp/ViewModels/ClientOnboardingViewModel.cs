@@ -7,6 +7,7 @@ namespace ResumeApp.ViewModels
     public class ClientOnboardingViewModel
     {
         // existing fields you already use:
+        public int? ClientId { get; set; }
         public string CompanyName { get; set; } = default!;
         public string WebsiteUrl { get; set; } = default!;
         public string CompanyType { get; set; } = default!;
@@ -38,6 +39,7 @@ namespace ResumeApp.ViewModels
         public List<DocumentUploadItemVM> DocumentItems { get; set; } = new();
 
         public bool AcceptTerms { get; set; }
+        public bool IsActive { get; set; } = true;
 
     }
     public class DocumentUploadItemVM

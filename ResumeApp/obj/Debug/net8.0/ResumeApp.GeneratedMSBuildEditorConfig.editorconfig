@@ -11,353 +11,369 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = ResumeApp
 build_property.RootNamespace = ResumeApp
-build_property.ProjectDir = C:\Users\xeedo\source\repos\ResumeApp\ResumeApp\
+build_property.ProjectDir = C:\Users\HP\source\repos\ResumeApp\ResumeApp\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\xeedo\source\repos\ResumeApp\ResumeApp
+build_property.MSBuildProjectDirectory = C:\Users\HP\source\repos\ResumeApp\ResumeApp
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 8.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Account/AccessDenied.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Account/AccessDenied.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxBY2Nlc3NEZW5pZWQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Account/ChangePassword.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Account/ChangePassword.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxDaGFuZ2VQYXNzd29yZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Account/Login.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Account/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Account/Register.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Account/Register.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Account/VerifyEmail.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Account/VerifyEmail.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxWZXJpZnlFbWFpbC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/ClientRequirements/AssignRecruiters.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/CandidateDetails/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FuZGlkYXRlRGV0YWlsc1xFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/ClientRequirements/AssignRecruiters.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50UmVxdWlyZW1lbnRzXEFzc2lnblJlY3J1aXRlcnMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/ClientRequirements/Create.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/ClientRequirements/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50UmVxdWlyZW1lbnRzXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/ClientRequirements/Details.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/ClientRequirements/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50UmVxdWlyZW1lbnRzXERldGFpbHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/ClientRequirements/FullDetails.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/ClientRequirements/FullDetails.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50UmVxdWlyZW1lbnRzXEZ1bGxEZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/ClientRequirements/Index.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/ClientRequirements/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50UmVxdWlyZW1lbnRzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/ClientRequirements/MatchedProfiles.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/ClientRequirements/InProgressProfiles.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50UmVxdWlyZW1lbnRzXEluUHJvZ3Jlc3NQcm9maWxlcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/ClientRequirements/MatchedProfiles.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50UmVxdWlyZW1lbnRzXE1hdGNoZWRQcm9maWxlcy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/ClientRequirements/SharedProfiles.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/ClientRequirements/SharedProfiles.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50UmVxdWlyZW1lbnRzXFNoYXJlZFByb2ZpbGVzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/ClientRequirements/SharePreview.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/ClientRequirements/SharePreview.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50UmVxdWlyZW1lbnRzXFNoYXJlUHJldmlldy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/ClientRequirements/_RequirementInfo.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/ClientRequirements/_RequirementInfo.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50UmVxdWlyZW1lbnRzXF9SZXF1aXJlbWVudEluZm8uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Clients/Details.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Clients/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50c1xEZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Clients/Edit.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Clients/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50c1xFZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Dashboard/Manager.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Dashboard/Admin.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXEFkbWluLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Dashboard/Manager.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXE1hbmFnZXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Dashboard/MyAssignments.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Dashboard/MyAssignments.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXE15QXNzaWdubWVudHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Dashboard/Panel.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Dashboard/Panel.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXFBhbmVsLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Dashboard/Reviewer.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Dashboard/Reviewer.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXFJldmlld2VyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Dashboard/TeamLead.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Dashboard/TeamLead.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXFRlYW1MZWFkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Dashboard/Vendor.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Dashboard/Vendor.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXFZlbmRvci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Home/AdminDashboard.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Dashboard/WorkReport.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXFdvcmtSZXBvcnQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Home/AdminDashboard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBZG1pbkRhc2hib2FyZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Home/Index.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Home/Privacy.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Home/ReviewerDashboard.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Home/ReviewerDashboard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxSZXZpZXdlckRhc2hib2FyZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Home/ReviewerTerms.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Home/ReviewerTerms.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxSZXZpZXdlclRlcm1zLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Interviews/Create.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Interviews/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW50ZXJ2aWV3c1xDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Interviews/Details.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Interviews/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW50ZXJ2aWV3c1xEZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Interviews/Feedback.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Interviews/Feedback.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW50ZXJ2aWV3c1xGZWVkYmFjay5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Interviews/Index.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Interviews/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW50ZXJ2aWV3c1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/MasterData/Countries.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/MasterData/Countries.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyRGF0YVxDb3VudHJpZXMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/MasterData/CreateCountry.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/MasterData/CreateCountry.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyRGF0YVxDcmVhdGVDb3VudHJ5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/MasterData/CreateDesignation.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/MasterData/CreateDesignation.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyRGF0YVxDcmVhdGVEZXNpZ25hdGlvbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/MasterData/CreateDocumentType.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/MasterData/CreateDocumentType.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyRGF0YVxDcmVhdGVEb2N1bWVudFR5cGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/MasterData/CreateLocation.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/MasterData/CreateLocation.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyRGF0YVxDcmVhdGVMb2NhdGlvbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/MasterData/CreateNoticePeriod.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/MasterData/CreateNoticePeriod.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyRGF0YVxDcmVhdGVOb3RpY2VQZXJpb2QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/MasterData/CreateQualification.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/MasterData/CreateQualification.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyRGF0YVxDcmVhdGVRdWFsaWZpY2F0aW9uLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/MasterData/CreateSkill.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/MasterData/CreateSkill.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyRGF0YVxDcmVhdGVTa2lsbC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/MasterData/Designations.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/MasterData/Designations.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyRGF0YVxEZXNpZ25hdGlvbnMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/MasterData/DocumentTypes.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/MasterData/DocumentTypes.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyRGF0YVxEb2N1bWVudFR5cGVzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/MasterData/EditCountry.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/MasterData/EditCountry.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyRGF0YVxFZGl0Q291bnRyeS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/MasterData/EditDesignation.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/MasterData/EditDesignation.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyRGF0YVxFZGl0RGVzaWduYXRpb24uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/MasterData/EditDocumentType.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/MasterData/EditDocumentType.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyRGF0YVxFZGl0RG9jdW1lbnRUeXBlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/MasterData/EditLocation.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/MasterData/EditLocation.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyRGF0YVxFZGl0TG9jYXRpb24uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/MasterData/EditNoticePeriod.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/MasterData/EditNoticePeriod.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyRGF0YVxFZGl0Tm90aWNlUGVyaW9kLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/MasterData/EditQualification.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/MasterData/EditQualification.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyRGF0YVxFZGl0UXVhbGlmaWNhdGlvbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/MasterData/EditSkill.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/MasterData/EditSkill.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyRGF0YVxFZGl0U2tpbGwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/MasterData/Index.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/MasterData/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyRGF0YVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/MasterData/Locations.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/MasterData/Locations.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyRGF0YVxMb2NhdGlvbnMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/MasterData/NoticePeriods.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/MasterData/NoticePeriods.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyRGF0YVxOb3RpY2VQZXJpb2RzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/MasterData/Qualifications.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/MasterData/Qualifications.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyRGF0YVxRdWFsaWZpY2F0aW9ucy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/MasterData/Skills.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/MasterData/Skills.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyRGF0YVxTa2lsbHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Notifications/Compose.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Notifications/Compose.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTm90aWZpY2F0aW9uc1xDb21wb3NlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Notifications/Index.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Notifications/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTm90aWZpY2F0aW9uc1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Notifications/send.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Notifications/send.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTm90aWZpY2F0aW9uc1xzZW5kLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Panel/Index.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Panel/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFuZWxcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Panel/Review.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Panel/Review.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFuZWxcUmV2aWV3LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/RequirementMoms/Create.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/RequirementMoms/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVxdWlyZW1lbnRNb21zXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/RequirementMoms/Edit.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/RequirementMoms/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVxdWlyZW1lbnRNb21zXEVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/RequirementMoms/History.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/RequirementMoms/History.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVxdWlyZW1lbnRNb21zXEhpc3RvcnkuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Resume/Create.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Resume/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVzdW1lXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Resume/Details.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Resume/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVzdW1lXERldGFpbHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Resume/Edit.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Resume/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVzdW1lXEVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Resume/List.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Resume/List.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVzdW1lXExpc3QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Resume/ReviewParsed.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Resume/ReviewParsed.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVzdW1lXFJldmlld1BhcnNlZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Resume/Test.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Resume/Test.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVzdW1lXFRlc3QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Resume/Upload.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Resume/Upload.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVzdW1lXFVwbG9hZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Shared/Components/NotificationsBell/Default.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Shared/Components/NotificationsBell/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcTm90aWZpY2F0aW9uc0JlbGxcRGVmYXVsdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Shared/Error.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Shared/_AccountLayout.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Shared/_AccountLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9BY2NvdW50TGF5b3V0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Shared/_ClientAlerts.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Shared/_ClientAlerts.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9DbGllbnRBbGVydHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Shared/_ClientShareTableBranded.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Shared/_ClientShareTableBranded.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9DbGllbnRTaGFyZVRhYmxlQnJhbmRlZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Shared/_ToastTempData.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Shared/_ToastTempData.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Ub2FzdFRlbXBEYXRhLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/UserManagement/ActivityLogs.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/UserManagement/ActivityLogs.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlck1hbmFnZW1lbnRcQWN0aXZpdHlMb2dzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/UserManagement/ClientList.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/UserManagement/ClientList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlck1hbmFnZW1lbnRcQ2xpZW50TGlzdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/UserManagement/ClientOnboarding.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/UserManagement/ClientOnboarding.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlck1hbmFnZW1lbnRcQ2xpZW50T25ib2FyZGluZy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/UserManagement/Edit.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/UserManagement/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlck1hbmFnZW1lbnRcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/UserManagement/Index.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/UserManagement/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlck1hbmFnZW1lbnRcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/UserManagement/ManageUsers.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/UserManagement/ManageUsers.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlck1hbmFnZW1lbnRcTWFuYWdlVXNlcnMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/UserManagement/UploadStats.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/UserManagement/UploadStats.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlck1hbmFnZW1lbnRcVXBsb2FkU3RhdHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/_ViewImports.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/_ViewStart.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/xeedo/source/repos/ResumeApp/ResumeApp/Views/Shared/_Layout.cshtml]
+[C:/Users/HP/source/repos/ResumeApp/ResumeApp/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-jx5fddukf7

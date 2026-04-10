@@ -410,8 +410,6 @@ namespace ResumeApp.Controllers
             var item = await _ctx.Designations.FindAsync(id);
             if (item == null) return NotFound();
 
-            // Guard: if in use—your app stores Client/Spokesperson designation as string.
-            // Soft policy: prevent delete if a client/spokesperson uses the same name.
             var inUse = await _ctx.Clients.AnyAsync(c => c.Designation == item.Name)
                      || await _ctx.Spokespersons.AnyAsync(s => s.Designation == item.Name);
 

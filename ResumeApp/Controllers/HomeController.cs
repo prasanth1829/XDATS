@@ -16,11 +16,11 @@ public class HomeController : Controller
     [Authorize]
     public IActionResult Index()
     {
+        if (User.IsInRole("Admin"))
+            return RedirectToAction("Admin", "Dashboard");
+
         if (User.IsInRole("Reviewer"))
             return RedirectToAction("Reviewer", "Dashboard");
-
-        if (User.IsInRole("Admin"))
-            return View("AdminDashboard");
 
         if (User.IsInRole("Team Lead"))
             return RedirectToAction("TeamLead", "Dashboard");
@@ -86,8 +86,9 @@ public class HomeController : Controller
     [Authorize(Roles = "Admin")]
     public IActionResult AdminDashboard()
     {
-        return View();
+        return RedirectToAction("Admin", "Dashboard");
     }
+
 
     [Authorize(Roles = "Reviewer")]
     public IActionResult ReviewerDashboard()

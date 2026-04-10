@@ -2,7 +2,11 @@
 @{
     ViewData["Title"] = "Recruiter Dashboard";
     var today = DateTime.Now.ToString("dddd, dd MMM yyyy");
+    var firstRequirementId = Model?.MyRecruitments?.FirstOrDefault()?.RequirementId;
+    var myWork = ViewBag.MyTodayWork as ResumeApp.ViewModels.UserDailyWorkDto;
+
 }
+
 @{
     string StatusBadge(string s) =>
         s == "Active" ? "success" :
@@ -12,7 +16,7 @@
 }
 
 
-<div class="container-fluid px-4 py-4 dashboard-bg">
+<div class="container px-4 py-4 dashboard-bg">
 
     <!-- HEADER -->
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -27,93 +31,160 @@
 
     <div class="kpi-2row-grid mb-4">
 
-        <!-- ROW 1 -->
-        <a class="kpi-box submitted"
-           href="@Url.Action(
-                       "SharedProfiles",
-                       "ClientRequirements",
-                       new { id = Model.MyRecruitments.First().RequirementId, statusFilter = CandidateStatus.New }
-                  )">
-            <span class="label">Profile Submitted</span>
-            <span class="value">@Model.ProfileSubmittedCount</span>
-        </a>
+        @if (firstRequirementId != null)
+        {
+            <div class="kpi-2row-grid mb-4">
 
-        <a class="kpi-box pipeline"
-           href="@Url.Action(
-                       "SharedProfiles",
-                       "ClientRequirements",
-                       new { id = Model.MyRecruitments.First().RequirementId, statusFilter = CandidateStatus.Shortlisted }
-                  )">
-            <span class="label">Pipeline</span>
-            <span class="value">@Model.PipelineCount</span>
-        </a>
+                <a class="kpi-box submitted"
+                   href="@Url.Action(
+                                   "SharedProfiles",
+                                   "ClientRequirements",
+                                   new { id = firstRequirementId, statusFilter = CandidateStatus.New }
+                              )">
+                <span class="label">Profile Submitted</span>
+                <span class="value">@Model.ProfileSubmittedCount</span>
+            </a>
 
-        <a class="kpi-box screening"
-           href="@Url.Action(
-                       "SharedProfiles",
-                       "ClientRequirements",
-                       new { id = Model.MyRecruitments.First().RequirementId, statusFilter = CandidateStatus.PanelShortlisted }
-                  )">
-            <span class="label">Screening Pending</span>
-            <span class="value">@Model.ScreeningPendingCount</span>
-        </a>
+                <a class="kpi-box pipeline"
+                   href="@Url.Action(
+                               "SharedProfiles",
+                               "ClientRequirements",
+                               new { id = firstRequirementId, statusFilter = CandidateStatus.Shortlisted }
+                          )">
+                <span class="label">Pipeline</span>
+                <span class="value">@Model.PipelineCount</span>
+            </a>
 
-        <a class="kpi-box interview"
-           href="@Url.Action(
-                       "SharedProfiles",
-                       "ClientRequirements",
-                       new { id = Model.MyRecruitments.First().RequirementId, statusFilter = CandidateStatus.InterviewScheduled }
-                  )">
-            <span class="label">IV Scheduled</span>
-            <span class="value">@Model.InterviewScheduledCount</span>
-        </a>
+                <a class="kpi-box screening"
+                   href="@Url.Action(
+                               "SharedProfiles",
+                               "ClientRequirements",
+                               new { id = firstRequirementId, statusFilter = CandidateStatus.PanelShortlisted }
+                          )">
+                <span class="label">Screening Pending</span>
+                <span class="value">@Model.ScreeningPendingCount</span>
+            </a>
 
-        <!-- ROW 2 -->
-        <a class="kpi-box success"
-             href="@Url.Action(
-                    "SharedProfiles",
-                    "ClientRequirements",
-        new {
-            id = Model.MyRecruitments.First().RequirementId,
-            statusFilter = CandidateStatus.Selected
+                <a class="kpi-box interview"
+                   href="@Url.Action(
+                               "SharedProfiles",
+                               "ClientRequirements",
+                               new { id = firstRequirementId, statusFilter = CandidateStatus.InterviewScheduled }
+                          )">
+                <span class="label">IV Scheduled</span>
+                <span class="value">@Model.InterviewScheduledCount</span>
+            </a>
+
+                <a class="kpi-box success"
+                   href="@Url.Action(
+                               "SharedProfiles",
+                               "ClientRequirements",
+                               new { id = firstRequirementId, statusFilter = CandidateStatus.Selected }
+                          )">
+                <span class="label">Final Select</span>
+                <span class="value">@Model.FinalSelectCount</span>
+            </a>
+
+                <a class="kpi-box offer"
+                   href="@Url.Action(
+                               "SharedProfiles",
+                               "ClientRequirements",
+                               new { id = firstRequirementId, statusFilter = CandidateStatus.OfferReleased }
+                          )">
+                <span class="label">Offer Released</span>
+                <span class="value">@Model.OfferReleasedCount</span>
+            </a>
+
+                <a class="kpi-box joined"
+                   href="@Url.Action(
+                               "SharedProfiles",
+                               "ClientRequirements",
+                               new { id = firstRequirementId, statusFilter = CandidateStatus.Joined }
+                          )">
+                <span class="label">Joined</span>
+                <span class="value">@Model.JoinedCount</span>
+            </a>
+
+                <a class="kpi-box followup"
+                   href="@Url.Action(
+                               "SharedProfiles",
+                               "ClientRequirements",
+                               new { id = firstRequirementId, statusFilter = CandidateStatus.Hold }
+                          )">
+                <span class="label">Follow-up</span>
+                <span class="value">@Model.FollowUpCount</span>
+            </a>
+
+            </div>
+                }
+        else
+        {
+            <div class="alert alert-info mb-4">
+                No requirements assigned yet. KPIs will appear once assignments are added.
+            </div>
         }
-           )">
-    <span class="label">Final Select</span>
-    <span class="value">@Model.FinalSelectCount</span>
-</a>
 
-
-        <a class="kpi-box offer"
-           href="@Url.Action(
-                       "SharedProfiles",
-                       "ClientRequirements",
-                       new { id = Model.MyRecruitments.First().RequirementId, statusFilter = CandidateStatus.OfferReleased }
-                  )">
-            <span class="label">Offer Released</span>
-            <span class="value">@Model.OfferReleasedCount</span>
-        </a>
-
-        <a class="kpi-box joined"
-           href="@Url.Action(
-                       "SharedProfiles",
-                       "ClientRequirements",
-                       new { id = Model.MyRecruitments.First().RequirementId, statusFilter = CandidateStatus.Joined }
-                  )">
-            <span class="label">Joined</span>
-            <span class="value">@Model.JoinedCount</span>
-        </a>
-
-        <a class="kpi-box followup"
-           href="@Url.Action(
-                       "SharedProfiles",
-                       "ClientRequirements",
-                       new { id = Model.MyRecruitments.First().RequirementId, statusFilter = CandidateStatus.Hold }
-                  )">
-            <span class="label">Follow-up</span>
-            <span class="value">@Model.FollowUpCount</span>
-        </a>
 
     </div>
+   @if (myWork != null)
+{
+    <div class="card shadow-sm border-0 mb-4 my-work-card">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <div class="fw-semibold">
+                ⏱️ My Work Today
+            </div>
+
+            <span id="onlineBadge"
+                  class="badge rounded-pill @(myWork.IsOnline ? "bg-success" : "bg-secondary")">
+                ● @(myWork.IsOnline ? "Online" : "Offline")
+            </span>
+        </div>
+
+        <div class="card-body">
+            <div class="row text-center">
+
+                <div class="col">
+                    <div class="metric-label">Worked Time</div>
+                    <div class="metric-value" id="workedTime">
+                        @(myWork.TotalWorkedMinutes / 60)h @(myWork.TotalWorkedMinutes % 60)m
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="metric-label">Uploads</div>
+                    <div class="metric-value" id="uploadCount">
+                        @myWork.UploadCount
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="metric-label">Downloads</div>
+                    <div class="metric-value" id="downloadCount">
+                        @myWork.DownloadCount
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="metric-label">First Login</div>
+                        <div class="metric-value" id="firstLogin">
+                            @(myWork.FirstLoginTime == null
+                            ? "-"
+                            : myWork.FirstLoginTime.Value.ToLocalTime().ToString("hh:mm tt"))
+                        </div>
+
+                </div>
+
+                <div class="col">
+                    <div class="metric-label">Last Activity</div>
+                    <div class="metric-value" id="lastActivity">
+                            @myWork.LastActivityTime?.ToLocalTime().ToString("hh:mm tt") ?? "-"
+                        </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}
 
 
     <!-- MAIN GRID -->
@@ -520,10 +591,13 @@
     }
 
     .kpi-2row-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 16px;
-    }
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
 
     .kpi-box {
         background: #ffffff;
@@ -816,6 +890,20 @@
     color: #1d4ed8;
 }
 
+    .my-work-card .metric-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: .05em;
+        color: #6b7280;
+        margin-bottom: 4px;
+    }
+
+    .my-work-card .metric-value {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #111827;
+    }
+
 </style>
 @section Scripts {
     <script>
@@ -945,4 +1033,38 @@ document.addEventListener("DOMContentLoaded", () => {
                 .classList.toggle("d-none");
         }
     </script>
+<script>
+async function refreshMyWork() {
+    const res = await fetch("/Dashboard/MyWorkLive");
+    if (!res.ok) return;
+
+    const d = await res.json();
+    if (!d) return;
+
+    const h = Math.floor(d.totalWorkedMinutes / 60);
+    const m = d.totalWorkedMinutes % 60;
+
+    document.getElementById("workedTime").innerText = `${h}h ${m}m`;
+    document.getElementById("uploadCount").innerText = d.uploadCount;
+    document.getElementById("downloadCount").innerText = d.downloadCount;
+
+    document.getElementById("firstLogin").innerText =
+        d.firstLoginTime
+            ? new Date(d.firstLoginTime).toLocaleTimeString()
+            : "-";
+
+    document.getElementById("lastActivity").innerText =
+        d.lastLogoutTime
+            ? new Date(d.lastLogoutTime).toLocaleTimeString()
+            : "-";
+
+    const badge = document.getElementById("onlineBadge");
+    badge.className = "badge " + (d.isOnline ? "bg-success" : "bg-secondary");
+    badge.innerText = d.isOnline ? "● Online" : "Offline";
 }
+
+refreshMyWork();
+setInterval(refreshMyWork, 60000);
+</script>
+}
+

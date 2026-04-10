@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using ResumeApp.Data;
+using ResumeApp.Middleware;
 using ResumeApp.Models;
 using ResumeApp.Services;
 
@@ -12,8 +13,9 @@ ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
 builder.Services.Configure<FormOptions>(options =>
 {
-    options.MultipartBodyLengthLimit = 500 * 1024 * 1024; // 500 MB
+    options.MultipartBodyLengthLimit = 1024L * 1024L * 1024L; // 1 GB
 });
+
 //  DbContext with connection string
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -38,12 +40,22 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Account/AccessDenied";
 });
 
+builder.Services.AddScoped<IResumeSearchService, ResumeSearchService>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ActivityLogger>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IMatchScoringService, MatchScoringService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<UserDailyWorkService>();
+builder.Services.AddScoped<SkillMatcher>();
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.MaxRequestBodySize = 1024L * 1024L * 1024L;
+    options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(15);
+    options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(15);
+});
 
 var app = builder.Build();
 //  Role Seeding
@@ -137,6 +149,7 @@ app.UseRouting();
 
 //authentication and authorization
 app.UseAuthentication();
+app.UseMiddleware<UserActivityMiddleware>();
 app.UseAuthorization();
 
 //default route

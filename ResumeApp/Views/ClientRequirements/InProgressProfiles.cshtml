@@ -1,0 +1,290 @@
+﻿@using ResumeApp.ViewModels
+@using ResumeApp.Models
+@model List<AdminInProgressVm>
+
+@{
+    ViewData["Title"] = "Profiles In Progress";
+}
+@{
+    var selectedUploaders = ViewBag.SelectedUploaders as List<string> ?? new();
+    var selectedClients = ViewBag.SelectedClients as List<int> ?? new();
+    var selectedStatuses = ViewBag.SelectedStatuses as List<CandidateStatus> ?? new();
+
+    DateTime? fromDate = ViewBag.FromDate as DateTime?;
+    DateTime? toDate = ViewBag.ToDate as DateTime?;
+}
+    <div class="container-fluid px-4 py-4">
+    <!-- HEADER -->
+    <div class="mb-4">
+        <h2 class="fw-bold mb-1">Profiles In Progress</h2>
+        <div class="text-muted">
+            Active candidate profiles grouped by requirement
+        </div>
+    </div>
+
+    <!-- FILTER PANEL  -->
+    <div class="card border-0 shadow-sm mb-4 filter-card">
+        <div class="card-header bg-white fw-semibold d-flex align-items-center">
+            <i class="bi bi-funnel me-2 text-primary"></i>
+            Filters
+        </div>
+
+        <div class="card-body">
+            <form method="get" id="filterForm">
+                <div class="row g-3">
+
+                    <!-- Uploaded By -->
+                    <div class="col-lg-3 col-md-6">
+                        <label class="filter-label">Uploaded By</label>
+
+                        <div class="multi-filter" data-filter>
+                            <div class="multi-filter-toggle">
+                                <span data-label>
+                                    @(selectedUploaders.Any() ? $"{selectedUploaders.Count} selected" : "Select recruiters")
+                                </span>
+                                <i class="bi bi-chevron-down"></i>
+                            </div>
+
+                            <div class="multi-filter-menu">
+                                @foreach (var u in (IEnumerable<dynamic>)ViewBag.UploadedByList)
+                                {
+                                    <label class="multi-filter-item">
+                                        <input type="checkbox"
+                                               name="uploadedByUserIds"
+                                               value="@u.LinkedByUserId"
+                                               @(selectedUploaders.Contains(u.LinkedByUserId) ? "checked" : "") />
+                                        @u.Name
+                                    </label>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Client -->
+                    <div class="col-lg-3 col-md-6">
+                        <label class="filter-label">Client</label>
+
+                        <div class="multi-filter" data-filter>
+                            <div class="multi-filter-toggle">
+                                <span data-label>
+                                    @(selectedClients.Any() ? $"{selectedClients.Count} selected" : "Select clients")
+                                </span>
+                                <i class="bi bi-chevron-down"></i>
+                            </div>
+
+                            <div class="multi-filter-menu">
+                                @foreach (var c in (IEnumerable<dynamic>)ViewBag.ClientList)
+                                {
+                                    <label class="multi-filter-item">
+                                        <input type="checkbox"
+                                               name="clientIds"
+                                               value="@c.ClientId"
+                                               @(selectedClients.Contains(c.ClientId) ? "checked" : "") />
+                                        @c.ClientName
+                                    </label>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="col-lg-3 col-md-6">
+                        <label class="filter-label">Status</label>
+
+                        <div class="multi-filter" data-filter>
+                            <div class="multi-filter-toggle">
+                                <span data-label>
+                                    @(selectedStatuses.Any() ? $"{selectedStatuses.Count} selected" : "Select status")
+                                </span>
+                                <i class="bi bi-chevron-down"></i>
+                            </div>
+
+                            <div class="multi-filter-menu">
+                                @foreach (var s in (IEnumerable<dynamic>)ViewBag.StatusList)
+                                {
+                                    <label class="multi-filter-item">
+                                        <input type="checkbox"
+                                               name="statuses"
+                                               value="@s.Value"
+                                               @(selectedStatuses.Contains((CandidateStatus)s.Value) ? "checked" : "") />
+                                        @s.Text
+                                    </label>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dates -->
+                    <div class="col-lg-3 col-md-6">
+                        <label class="filter-label">Date Range</label>
+
+                        <div class="d-flex gap-2">
+                            <input type="date"
+                                   name="fromDate"
+                                   value="@(ViewBag.FromDate?.ToString("yyyy-MM-dd"))"
+                                   class="form-control" />
+
+                            <input type="date"
+                                   name="toDate"
+                                   value="@(ViewBag.ToDate?.ToString("yyyy-MM-dd"))"
+                                   class="form-control" />
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ACTIONS -->
+                <div class="d-flex justify-content-end align-items-center gap-2 mt-4">
+
+                    <button type="button"
+                            class="btn btn-primary"
+                            onclick="exportCsv(event)">
+                        <i class="bi bi-download me-1"></i>
+                        Export
+                    </button>
+
+
+
+                    @if (
+                                        selectedUploaders.Any() ||
+                                        selectedClients.Any() ||
+                                        selectedStatuses.Any() ||
+                                        fromDate.HasValue ||
+                                        toDate.HasValue
+                                        )
+                    {
+                        <a class="btn btn-outline-secondary"
+                           href="@Url.Action("InProgressProfiles")">
+                            Clear
+                        </a>
+                    }
+
+                    <button class="btn btn-primary px-4">
+                        Apply Filters
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+
+    <!-- EMPTY STATE  -->
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            No in-progress profiles found.
+        </div>
+    }
+    else
+    {
+        <!-- REQUIREMENT CARDS  -->
+        @foreach (var jd in Model)
+        {
+            <div class="card border-0 shadow-sm mb-4">
+
+                <!-- Card Header -->
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="fw-semibold fs-6">
+                            @jd.JobTitle
+                        </div>
+                        <div class="small text-muted">
+                            Client: <span class="fw-semibold">@jd.ClientName</span>
+                        </div>
+                    </div>
+
+
+                    <span class="badge rounded-pill bg-primary-subtle text-primary px-3 py-2">
+                        @jd.TotalProfiles Profiles
+                    </span>
+                </div>
+
+                <!-- Profiles Table -->
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead class="table-light">
+                            <tr class="small text-uppercase text-muted">
+                                <th>Candidate</th>
+                                <th>Status</th>
+                                <th>Uploaded By</th>
+                                <th>Last Updated</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var p in jd.Profiles)
+                            {
+                                <tr>
+                                    <td class="fw-semibold">
+                                        @p.CandidateName
+                                    </td>
+
+                                    <td>
+                                        <span class="badge bg-secondary-subtle text-secondary">
+                                            @p.Status
+                                        </span>
+                                    </td>
+
+                                    <td class="small fw-semibold">
+                                        @p.UploadedBy
+                                    </td>
+
+                                    <td class="small text-muted">
+                                        @p.UpdatedAt.ToLocalTime()
+                                    </td>
+
+                                    <td class="text-end">
+                                        <a class="btn btn-sm btn-outline-primary"
+                                           href="@Url.Action("SharedProfiles", "ClientRequirements", new { id = jd.RequirementId })">
+                                            View
+                                        </a>
+                                    </td>
+                                </tr>
+                             }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        }
+    }
+</div>
+<script>
+    document.addEventListener("click", function (e) {
+        document.querySelectorAll("[data-filter]").forEach(f => {
+            if (!f.contains(e.target)) f.classList.remove("open");
+        });
+
+        const toggle = e.target.closest(".multi-filter-toggle");
+        if (toggle) {
+            toggle.parentElement.classList.toggle("open");
+        }
+    });
+</script>
+@section Scripts {
+    <script>
+        function exportCsv(e) {
+            e.preventDefault();
+
+            const form = document.getElementById('filterForm');
+            if (!form) {
+                alert('Filter form not found');
+                return;
+            }
+
+            const formData = new FormData(form);
+            const params = new URLSearchParams();
+
+            for (const [key, value] of formData.entries()) {
+                if (value && value.trim() !== "") {
+                    params.append(key, value);
+                }
+            }
+
+            const url = '/ClientRequirements/InProgressProfilesExport?' + params.toString();
+            window.location.href = url;
+        }
+    </script>
+}

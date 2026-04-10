@@ -25,60 +25,113 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="~/css/dashboard.css" />
     <link rel="stylesheet" href="~/css/custom.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/ResumeApp.styles.css" asp-append-version="true" />
-
-
 </head>
+
 <body class="d-flex flex-column min-vh-100" style="padding-top:70px;">
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm fixed-top">
             <div class="container-fluid">
-                <a class="navbar-brand fw-bold text-primary" asp-area="" asp-controller="Home" asp-action="Index">
+
+                <a class="navbar-brand fw-bold text-primary"
+                   asp-controller="Home" asp-action="Index">
                     Xeedo ATS
                 </a>
 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+                <button class="navbar-toggler" type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#mainNavbar">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
                 <div class="collapse navbar-collapse" id="mainNavbar">
+
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                        @* NEW ADMIN MENU *@
+
+                        @if (role == "Admin")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-primary fw-semibold"
+                                   asp-controller="Home" asp-action="Index">
+                                    <i class="bi bi-house-door me-1"></i> Home
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link fw-semibold"
+                                   asp-controller="UserManagement" asp-action="ManageUsers">
+                                    Approve Users
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link fw-semibold"
+                                   asp-controller="UserManagement" asp-action="ActivityLogs">
+                                    Activity Logs
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link fw-semibold"
+                                   asp-controller="Resume" asp-action="Upload">
+                                    Upload Resume
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link fw-semibold"
+                                   asp-controller="UserManagement" asp-action="AddUser">
+                                    Add User
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link fw-semibold text-primary"
+                                   asp-controller="MasterData" asp-action="Index">
+                                    Master Settings
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+
+                            
                         <li class="nav-item">
                             <a class="nav-link text-primary fw-semibold" asp-controller="Home" asp-action="Index">
                                 <i class="bi bi-house-door me-1"></i> Home
                             </a>
                         </li>
+
                         <li class="nav-item">
                             <a class="nav-link text-primary fw-semibold" asp-controller="Resume" asp-action="Upload">
                                 <i class="bi bi-cloud-upload me-1"></i> Upload Resume
                             </a>
                         </li>
+
                         <li class="nav-item">
                             <a class="nav-link text-primary fw-semibold" asp-controller="Resume" asp-action="List">
                                 <i class="bi bi-file-earmark-text me-1"></i> View Resumes
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold text-primary" asp-controller="MasterData" asp-action="Index">
+                                Master Settings
+                            </a>
+                        </li>
+
                         @if (User.IsInRole("Panel") || User.IsInRole("Admin") || User.IsInRole("Manager"))
                         {
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle fw-semibold" href="#" id="screeningDropdown"
-                                   role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-people me-1"></i> Screening
+                                <a class="nav-link dropdown-toggle fw-semibold" href="#" data-bs-toggle="dropdown">
+                                    Screening
                                 </a>
-                                <ul class="dropdown-menu" aria-labelledby="screeningDropdown">
-                                    <li>
-                                        <a class="dropdown-item" asp-controller="Panel" asp-action="Index">
-                                            <i class="bi bi-person-lines-fill me-1"></i> Panel Screening
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" asp-controller="Interviews" asp-action="Index">
-                                            <i class="bi bi-calendar-check me-1"></i> Interviews
-                                        </a>
-                                    </li>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" asp-controller="Panel" asp-action="Index">Panel Screening</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Interviews" asp-action="Index">Interviews</a></li>
                                 </ul>
                             </li>
                         }
@@ -86,58 +139,30 @@
                         @if (role == "Admin")
                         {
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-danger fw-semibold" href="#" id="adminDropdown"
-                                   role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-speedometer2 me-1"></i> Admin Dashboard
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="adminDropdown">
-                                    <li>
-                                        <a class="dropdown-item" asp-controller="Home" asp-action="AdminDashboard">
-                                            <i class="bi bi-layout-text-sidebar-reverse me-1"></i> Admin Dashboard
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" asp-controller="UserManagement" asp-action="ManageUsers">
-                                            <i class="bi bi-person-check me-1"></i> Approve Users
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" asp-controller="UserManagement" asp-action="ActivityLogs">
-                                            <i class="bi bi-clipboard-data me-1"></i> Activity Logs
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" asp-controller="MasterData" asp-action="Index">
-                                            <i class="bi bi-gear-wide-connected me-1"></i> Master Settings
-                                        </a>
-                                    </li>
-
-                                </ul>
-                            </li>
-                        }
-                        else if (role == "Reviewer")
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-success fw-semibold" asp-controller="Home" asp-action="ReviewerDashboard">
-                                    <i class="bi bi-person-badge me-1"></i> Recruiter Panel
+                                <a class="nav-link dropdown-toggle text-danger fw-semibold" href="#" data-bs-toggle="dropdown">
+                                    Admin Dashboard
                                 </a>
                             </li>
                         }
-                      
+                        
+                        }
 
                     </ul>
+
                     <ul class="navbar-nav ms-auto">
+
                         @if (SignInManager.IsSignedIn(User))
                         {
                             @await Component.InvokeAsync("NotificationsBell")
+
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle text-primary fw-semibold d-flex align-items-center"
-                                   href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"
-                                   title="@email">
+                                   href="#" data-bs-toggle="dropdown">
                                     <i class="bi bi-person-circle me-1 fs-5"></i>
                                     <span>@fullName</span>
                                     <span class="badge bg-secondary ms-2 text-capitalize">@role</span>
                                 </a>
+
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li><h6 class="dropdown-header text-muted small">@email</h6></li>
                                     <li><a class="dropdown-item" asp-controller="Account" asp-action="ChangePassword">Change Password</a></li>
@@ -145,44 +170,12 @@
                                 </ul>
                             </li>
                         }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="btn btn-outline-primary fw-semibold px-3" asp-controller="Account" asp-action="Login">
-                                    <i class="bi bi-box-arrow-in-right me-1"></i> Login
-                                </a>
-                            </li>
-                        }
                     </ul>
+
                 </div>
             </div>
         </nav>
     </header>
-
-    <style>
-        body {
-            padding-top: 70px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        main {
-            flex: 1;
-        }
-
-        .navbar-nav .nav-link:hover {
-            color: #0b5ed7 !important;
-            opacity: 0.9;
-        }
-
-        .btn-outline-primary {
-            border-radius: 20px;
-        }
-
-            .btn-outline-primary:hover {
-                background-color: #0d6efd;
-                color: white;
-            }
-    </style>
 
     <div class="container">
         <main role="main" class="pb-3">
@@ -190,20 +183,24 @@
         </main>
     </div>
 
-    <footer class="bg-light text-center text-lg-start border-top shadow-sm mt-auto">
-        <div class="container py-3 d-flex flex-column flex-md-row justify-content-between align-items-center">
-            <div class="text-muted">
-                &copy; 2025 <strong class="text-primary">Xeedo ATS 1.1v</strong>
-            </div>
-            <div>
-                <a asp-controller="Home" asp-action="ReviewerTerms" class="text-decoration-none text-muted me-3">Privacy Policy</a>
-                <a href="#" class="text-decoration-none text-muted">Terms of Service</a>
-            </div>
+    <footer class="bg-light text-center text-lg-start border-top shadow-sm mt-auto"> 
+        <div class="container py-3 d-flex flex-column flex-md-row justify-content-between align-items-center"> 
+            <div class="text-muted"> &copy; 2025 
+                <strong class="text-primary">
+                    Xeedo ATS 1.2v
+                </strong> 
+                </div> 
+                <div> 
+                    <a asp-controller="Home" asp-action="ReviewerTerms" class="text-decoration-none text-muted me-3">Privacy Policy</a> 
+                    <a href="#" class="text-decoration-none text-muted">Terms of Service</a> 
+                </div> 
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>

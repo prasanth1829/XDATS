@@ -1,18 +1,12 @@
-﻿using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Wordprocessing;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using OfficeOpenXml;
 using ResumeApp.Data;
 using ResumeApp.Models;
-using System.IO;
+using ResumeApp.Services;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 using UglyToad.PdfPig;
-using UglyToad.PdfPig.Content;
-using System.Linq;
 
 
 
@@ -23,14 +17,18 @@ namespace ResumeApp.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _env;
-
+        private readonly IResumeSearchService _searchService;
         private static readonly string[] AllowedExtensions = { ".pdf", ".docx", ".txt" };
         private readonly ActivityLogger _logger;
-        public ResumeController(ApplicationDbContext context, IWebHostEnvironment env, ActivityLogger logger)
+        private readonly SkillMatcher _skillMatcher;
+
+        public ResumeController(ApplicationDbContext context, IWebHostEnvironment env, ActivityLogger logger, IResumeSearchService searchService, SkillMatcher skillMatcher)
         {
             _context = context;
             _env = env;
             _logger = logger;
+            _searchService = searchService;
+            _skillMatcher = skillMatcher;
         }
 
         private bool IsAllowedFileType(string fileName) =>
@@ -44,7 +42,6 @@ namespace ResumeApp.Controllers
                             .Where(l => !string.IsNullOrWhiteSpace(l))
                             .ToList();
 
-            // DEBUG: log first 20 lines
             for (int i = 0; i < Math.Min(20, lines.Count); i++)
                 Console.WriteLine($"Line {i}: {lines[i]}");
 
@@ -52,14 +49,14 @@ namespace ResumeApp.Controllers
             string email = Regex.Match(text, @"[\w\.-]+@[\w\.-]+\.\w+").Value;
             if (string.IsNullOrWhiteSpace(email)) email = "Not found";
 
-            // Match Indian mobile numbers first, otherwise fallback to generic formats
+            // Match mobile numbers
             string phone = Regex.Match(text, @"(\+91[-\s]?)?[6-9]\d{9}|\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}").Value;
             if (string.IsNullOrWhiteSpace(phone)) phone = "Not found";
 
 
-            // --- NAME DETECTION ---
+            // NAME DETECTION
             string name = lines
-                .Take(30) // check first 30 lines
+                .Take(30)
                 .FirstOrDefault(line =>
                     !line.Contains("@") &&
                     !Regex.IsMatch(line, @"\d") &&
@@ -68,19 +65,16 @@ namespace ResumeApp.Controllers
                     line.Length >= 2 && line.Length <= 60
                 ) ?? "Not found";
 
-            // Special case: extract a name from the first line even if merged with other text
             if (name == "Not found" && lines.Count > 0)
             {
                 var firstLine = lines[0].Trim();
 
-                // If the whole line is just letters/spaces, take it as the name
                 if (Regex.IsMatch(firstLine, @"^[A-Za-z\s]+$") && firstLine.Length <= 60)
                 {
                     name = firstLine;
                 }
                 else
                 {
-                    // Otherwise, just take the first two words as a possible name
                     var words = firstLine.Split(' ', StringSplitOptions.RemoveEmptyEntries);
                     if (words.Length >= 2)
                         name = string.Join(" ", words.Take(2));
@@ -91,7 +85,7 @@ namespace ResumeApp.Controllers
 
 
 
-            // Check for "Name:" labels
+            // Check for Name labels
             if (name == "Not found")
             {
                 var labelLine = lines.FirstOrDefault(l => l.ToLower().StartsWith("name:"));
@@ -99,7 +93,7 @@ namespace ResumeApp.Controllers
                     name = labelLine.Replace("Name:", "", StringComparison.OrdinalIgnoreCase).Trim();
             }
 
-            // Fallback: line before email/phone
+            // Fallback line before email/phone
             if (name == "Not found")
             {
                 int idx = lines.FindIndex(l => l.Contains(email) || l.Contains(phone));
@@ -285,7 +279,25 @@ namespace ResumeApp.Controllers
             _context.Resumes.Add(resume);
             await _context.SaveChangesAsync();
 
-            // ✅ LINK TO REQUIREMENT
+            // Insert structured skills from FULL RESUME TEXT
+            var skillTokens = await _skillMatcher.MatchSkillsAsync(extractedText);
+
+            foreach (var token in skillTokens)
+            {
+                _context.ResumeSkills.Add(new ResumeSkill
+                {
+                    ResumeId = resume.Id,
+                    SkillName = token
+                });
+            }
+
+            await _context.SaveChangesAsync();
+
+
+            await _logger.LogAsync(
+            "UPLOAD_RESUME",$"Uploaded resume: {resume.FileName}"
+            );
+            // LINK TO REQUIREMENT
             if (requirementId.HasValue)
             {
                 var link = new ResumeRequirementLink
@@ -299,9 +311,9 @@ namespace ResumeApp.Controllers
                 _context.ResumeRequirementLinks.Add(link);
                 await _context.SaveChangesAsync();
 
-                Console.WriteLine($"✅ Linked Resume ID {resume.Id} to Requirement {requirementId.Value}");
+                Console.WriteLine($" Linked Resume ID {resume.Id} to Requirement {requirementId.Value}");
 
-                // ✅ Redirect to Shared Profiles
+                // Redirect to Shared Profiles
                 return RedirectToAction("SharedProfiles", "ClientRequirements", new { id = requirementId.Value });
             }
 
@@ -311,55 +323,47 @@ namespace ResumeApp.Controllers
 
 
         [HttpPost]
+        [RequestSizeLimit(1024L * 1024L * 1024L)]
+        [RequestFormLimits(MultipartBodyLengthLimit = 1024L * 1024L * 1024L)]
         public async Task<IActionResult> UploadMultiple(List<IFormFile> files, int? requirementId = null)
         {
-            if (requirementId.HasValue)
-            {
-                TempData["UploadError"] = "Multi-upload is disabled when uploading against a JD. Use single upload.";
-                return RedirectToAction("Upload", new { requirementId });
-            }
             if (files == null || files.Count == 0)
             {
-                TempData["UploadError"] = "Please select at least one resume to upload.";
+                TempData["UploadError"] = "Please select at least one resume.";
                 return RedirectToAction("Upload");
             }
 
             var uploads = Path.Combine(_env.WebRootPath, "uploads");
             Directory.CreateDirectory(uploads);
 
-            int skipped = 0, uploaded = 0;
+            int uploaded = 0;
+            int skipped = 0;
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var resumesToInsert = new List<Resume>();
+            var locker = new object();
 
             foreach (var file in files)
             {
-                if (file.Length > 0)
+                try
                 {
                     var extension = Path.GetExtension(file.FileName).ToLower();
-
                     if (!AllowedExtensions.Contains(extension))
                     {
                         skipped++;
-                        continue; // Skip unsupported file type
+                        continue;
                     }
 
                     var fileHash = ComputeFileHash(file);
                     string extractedText = "";
 
+                    // Extract text
                     if (extension == ".pdf")
                     {
-                        using (var stream = file.OpenReadStream())
-                        {
-                            using (var pdf = PdfDocument.Open(stream))
-                            {
-                                foreach (var page in pdf.GetPages())
-                                {
-                                    extractedText += string.Join(" ", page.GetWords().Select(w => w.Text))
-                                                   + Environment.NewLine + Environment.NewLine;
-                                }
-
-                            }
-                        }
+                        using var stream = file.OpenReadStream();
+                        using var pdf = PdfDocument.Open(stream);
+                        foreach (var page in pdf.GetPages())
+                            extractedText += string.Join(" ", page.GetWords().Select(w => w.Text)) + "\n";
                     }
                     else if (extension == ".docx")
                     {
@@ -367,27 +371,26 @@ namespace ResumeApp.Controllers
                     }
                     else if (extension == ".txt")
                     {
-                        using (var reader = new StreamReader(file.OpenReadStream()))
-                        {
-                            extractedText = await reader.ReadToEndAsync();
-                        }
+                        using var reader = new StreamReader(file.OpenReadStream());
+                        extractedText = await reader.ReadToEndAsync();
                     }
 
                     var parsed = ParseResume(extractedText);
 
-                    var existing = await FindExistingResumeAsync(fileHash, parsed.Email);
-                    if (existing != null)
+                    bool exists = _context.Resumes.Any(r =>
+                        r.FileHash == fileHash ||
+                        (!string.IsNullOrWhiteSpace(parsed.Email) && r.Email == parsed.Email));
+
+                    if (exists)
                     {
                         skipped++;
                         continue;
                     }
 
-
+                    // Save file
                     var filePath = Path.Combine(uploads, file.FileName);
-                    using (var saveStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await file.CopyToAsync(saveStream);
-                    }
+                    using (var fs = new FileStream(filePath, FileMode.Create))
+                        await file.CopyToAsync(fs);
 
                     var resume = new Resume
                     {
@@ -403,18 +406,57 @@ namespace ResumeApp.Controllers
                         FileHash = fileHash,
                         YearsOfExperience = parsed.Years,
                         UserId = userId
-
                     };
 
-                    _context.Resumes.Add(resume);
+                    resumesToInsert.Add(resume);
                     uploaded++;
-                    await _logger.LogAsync("Upload", $"Uploaded resume: {file.FileName}");
+                }
+                catch
+                {
+                    skipped++;
                 }
             }
 
-            await _context.SaveChangesAsync();
+            if (resumesToInsert.Any())
+            {
+                _context.Resumes.AddRange(resumesToInsert);
+                await _context.SaveChangesAsync();
 
-            TempData["UploadSuccess"] = $"{uploaded} resume(s) uploaded. {skipped} duplicate(s) or unsupported file(s) skipped.";
+                // Insert structured skills for bulk
+                var resumeSkillsToInsert = new List<ResumeSkill>();
+
+                foreach (var resume in resumesToInsert)
+                {
+                    var tokens = await _skillMatcher.MatchSkillsAsync(resume.ExtractedText);
+
+                    foreach (var token in tokens)
+                    {
+                        resumeSkillsToInsert.Add(new ResumeSkill
+                        {
+                            ResumeId = resume.Id,
+                            SkillName = token
+                        });
+                    }
+                }
+
+                if (resumeSkillsToInsert.Any())
+                {
+                    _context.ResumeSkills.AddRange(resumeSkillsToInsert);
+                    await _context.SaveChangesAsync();
+                }
+
+            }
+            foreach (var resume in resumesToInsert)
+            {
+                await _logger.LogAsync(
+                    "UPLOAD_RESUME",
+                    $"Uploaded resume (bulk): {resume.FileName}"
+                );
+            }
+
+            TempData["UploadSuccess"] =
+                $"{uploaded} resume(s) uploaded successfully. {skipped} skipped.";
+
             return RedirectToAction("List");
         }
 
@@ -473,59 +515,15 @@ namespace ResumeApp.Controllers
             return RedirectToAction("List");
         }
 
-        public async Task<IActionResult> List(
-              string? search,
-              int? minExperience,
-              string? mandatorySkills,
-              string? optionalSkills,
-              int page = 1,
-              int pageSize = 100)
+        public async Task<IActionResult> List(string? search,int? minExperience,string? mandatorySkills,string? optionalSkills,int page = 1,int pageSize = 100)
         {
-            var resumes = _context.Resumes.AsQueryable();
+            var searchQuery = _searchService.BuildSearchQuery(
+                search,
+                minExperience,
+                mandatorySkills,
+                optionalSkills);
 
-            // 1️⃣ Experience filter (HARD)
-            if (minExperience.HasValue)
-            {
-                resumes = resumes.Where(r => r.YearsOfExperience >= minExperience.Value);
-            }
-
-            // 2️⃣ Mandatory skills (ALL must exist)
-            var mandatory = SplitSkills(mandatorySkills)
-                .Select(NormalizeSkill)
-                .ToList();
-
-            foreach (var skill in mandatory)
-            {
-                resumes = resumes.Where(r =>
-                    EF.Functions.Like(r.Skills.ToLower(), $"%{skill}%"));
-            }
-
-            // 3️⃣ Optional skills (score only)
-            var optional = SplitSkills(optionalSkills)
-                .Select(NormalizeSkill)
-                .ToList();
-
-            var scoredQuery = resumes.Select(r => new
-            {
-                Resume = r,
-                OptionalScore = optional.Count == 0 ? 0 :
-                    optional.Count(s => r.Skills.ToLower().Contains(s))
-            });
-
-            // 4️⃣ Old simple text search (fallback / optional)
-            if (!string.IsNullOrWhiteSpace(search))
-            {
-                search = search.ToLower();
-                scoredQuery = scoredQuery.Where(x =>
-                    EF.Functions.Like(x.Resume.Name.ToLower(), $"%{search}%") ||
-                    EF.Functions.Like(x.Resume.Email.ToLower(), $"%{search}%") ||
-                    EF.Functions.Like(x.Resume.Phone, $"%{search}%") ||
-                    EF.Functions.Like(x.Resume.Skills.ToLower(), $"%{search}%") ||
-                    EF.Functions.Like(x.Resume.Experience.ToLower(), $"%{search}%"));
-            }
-
-            // 5️⃣ Ordering (BEST ATS BEHAVIOR)
-            var ordered = scoredQuery
+            var ordered = searchQuery
                 .OrderByDescending(x => x.OptionalScore)
                 .ThenByDescending(x => x.Resume.YearsOfExperience)
                 .ThenByDescending(x => x.Resume.UploadedAt);
@@ -543,46 +541,51 @@ namespace ResumeApp.Controllers
             ViewBag.CurrentPage = page;
             ViewBag.PageSize = pageSize;
             ViewBag.TotalCount = totalCount;
-
-            // preserve filters in UI
             ViewBag.MinExperience = minExperience;
             ViewBag.MandatorySkills = mandatorySkills;
             ViewBag.OptionalSkills = optionalSkills;
-
+            ViewBag.SkillNamesJson = await _context.Skills
+                .Where(s => s.IsActive)
+                .Select(s => s.Name)
+                .ToListAsync();
             return View(result);
         }
+
+
 
 
         [Authorize(Roles = "Reviewer")]
         public async Task<IActionResult> MyUploads(string? search)
         {
-            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             var resumes = _context.Resumes
-                .Where(r => r.UserId == userId); //  Filter by logged-in reviewer
+                .Where(r => r.UserId == userId)
+                .AsNoTracking();
 
             if (!string.IsNullOrWhiteSpace(search))
             {
                 search = search.ToLower();
+
                 resumes = resumes.Where(r =>
-                  EF.Functions.Like(r.Name, $"%{search}%")  ||
-                  EF.Functions.Like(r.Email, $"%{search}%") ||
-                  EF.Functions.Like(r.Phone, $"%{search}%") ||
-                  EF.Functions.Like(r.Skills, $"%{search}%")||
-                  EF.Functions.Like(r.Experience, $"%{search}%"));
+                    r.Name.ToLower().Contains(search) ||
+                    r.Email.ToLower().Contains(search) ||
+                    r.Phone.Contains(search));
             }
 
-            resumes = resumes.Include(r => r.User).OrderByDescending(r => r.UploadedAt);
-            var result = await resumes.ToListAsync();
-            return View("List", result); //Reuse the same view
+            var result = await resumes
+                .Include(r => r.User)
+                .OrderByDescending(r => r.UploadedAt)
+                .ToListAsync();
+
+            return View("List", result);
         }
+
 
 
         [HttpPost]
         public IActionResult SubmitFinal(ResumeFormViewModel model)
         {
-            //  Here you can update Resume record or save to a new table
-            // Example:
             var resume = _context.Resumes.Find(model.ResumeId);
             if (resume != null)
             {
@@ -598,7 +601,7 @@ namespace ResumeApp.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")] // allow Admins
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var resume = await _context.Resumes.FindAsync(id);
@@ -634,6 +637,25 @@ namespace ResumeApp.Controllers
             resume.Email = updated.Email;
             resume.Phone = updated.Phone;
             resume.Skills = updated.Skills;
+
+          
+            var existingSkills = _context.ResumeSkills
+                .Where(s => s.ResumeId == resume.Id);
+
+            _context.ResumeSkills.RemoveRange(existingSkills);
+
+            var tokens = await _skillMatcher.MatchSkillsAsync(updated.Skills + " " + updated.Experience);
+
+
+            foreach (var token in tokens)
+            {
+                _context.ResumeSkills.Add(new ResumeSkill
+                {
+                    ResumeId = resume.Id,
+                    SkillName = token
+                });
+            }
+
             resume.Experience = updated.Experience;
             resume.YearsOfExperience = updated.YearsOfExperience;
 
@@ -691,8 +713,10 @@ namespace ResumeApp.Controllers
                 }
             }
             memoryStream.Seek(0, SeekOrigin.Begin);
-            await _logger.LogAsync("Download", $"Downloaded resumes as zip ({filtered.Count} files)");
-            return File(memoryStream.ToArray(), "application/zip", "FilteredResumes.zip");
+            await _logger.LogAsync(
+                "DOWNLOAD_RESUME",
+                $"Downloaded resumes as zip ({filtered.Count} files)"
+            ); return File(memoryStream.ToArray(), "application/zip", "FilteredResumes.zip");
         }
         [HttpPost]
         public async Task<IActionResult> UpdateRemark(int id, string remark)
@@ -763,7 +787,6 @@ namespace ResumeApp.Controllers
             dataRange.Style.Border.Left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
             dataRange.Style.Border.Right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
 
-            // Custom widths (no wrapping needed)
             worksheet.Column(1).Width = 20;
             worksheet.Column(2).Width = 25;
             worksheet.Column(3).Width = 15;
@@ -776,7 +799,7 @@ namespace ResumeApp.Controllers
             var excelData = package.GetAsByteArray();
             return File(excelData, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Resumes.xlsx");
         }
-
+        
 
         [HttpPost]
         [Authorize(Roles = "Admin,Reviewer,Vendor,Team Lead")]
@@ -808,31 +831,36 @@ namespace ResumeApp.Controllers
 
             return Json(new { success = true, message = "Linked successfully!" });
         }
-        private static List<string> SplitSkills(string? input)
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> BackfillSkills()
         {
-            if (string.IsNullOrWhiteSpace(input))
-                return new List<string>();
+            var resumes = await _context.Resumes.ToListAsync();
 
-            return input
-                .ToLower()
-                .Split(new[] { ',', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(s => s.Trim())
-                .Distinct()
-                .ToList();
-        }
-
-        // Phase-1 simple normalization
-        private static string NormalizeSkill(string skill)
-        {
-            return skill switch
+            foreach (var resume in resumes)
             {
-                "c sharp" => "c#",
-                "csharp" => "c#",
-                "ms sql" => "sql",
-                "mssql" => "sql",
-                _ => skill
-            };
+                // remove old skills
+                var oldSkills = _context.ResumeSkills.Where(s => s.ResumeId == resume.Id);
+                _context.ResumeSkills.RemoveRange(oldSkills);
+
+                // extract skills from FULL resume text
+                var tokens = await _skillMatcher.MatchSkillsAsync(resume.ExtractedText);
+
+                foreach (var token in tokens)
+                {
+                    _context.ResumeSkills.Add(new ResumeSkill
+                    {
+                        ResumeId = resume.Id,
+                        SkillName = token
+                    });
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Content("Backfill completed successfully.");
         }
 
     }
+
 }

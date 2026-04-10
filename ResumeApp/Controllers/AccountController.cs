@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using ResumeApp.Data;
 using ResumeApp.Models;
 using ResumeApp.ViewModels;
 
@@ -11,11 +12,15 @@ namespace ResumeApp.Controllers
     {
         private readonly SignInManager<Users> signInManager;
         private readonly UserManager<Users> userManager;
+        private readonly ApplicationDbContext _context;
 
-        public AccountController(SignInManager<Users> signInManager, UserManager<Users> userManager)
+
+        public AccountController(SignInManager<Users> signInManager, UserManager<Users> userManager, ApplicationDbContext context)
         {
             this.signInManager = signInManager;
             this.userManager = userManager;
+            _context = context;
+
         }
         [AllowAnonymous]
         public IActionResult AccessDenied(string? returnUrl = null)
@@ -58,6 +63,34 @@ namespace ResumeApp.Controllers
 
                 if (result.Succeeded)
                 {
+
+                    var userId = user.Id;
+                    var openSession = _context.UserSessionLogs
+                        .Where(x => x.UserId == userId && x.LogoutTime == null)
+                        .OrderByDescending(x => x.LoginTime)
+                        .FirstOrDefault();
+
+                    if (openSession != null)
+                    {
+                        openSession.LogoutTime = DateTime.UtcNow;
+                        openSession.SessionMinutes =
+                            (int)(openSession.LogoutTime.Value - openSession.LoginTime).TotalMinutes;
+                        openSession.IsAutoLogout = true;
+                    }
+
+                    // Create new login session
+                    var newSession = new UserSessionLog
+                    {
+                        UserId = userId,
+                        LoginTime = DateTime.UtcNow,
+                        IsAutoLogout = false
+                    };
+
+                    _context.UserSessionLogs.Add(newSession);
+                    await _context.SaveChangesAsync();
+
+                
+
                     if (roles.Contains("Admin"))
                         return RedirectToAction("AdminDashboard", "Home");
 
@@ -187,8 +220,30 @@ namespace ResumeApp.Controllers
         }
         public async Task<IActionResult> Logout()
         {
+            var userId = userManager.GetUserId(User);
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                // Find active session
+                var openSession = _context.UserSessionLogs
+                    .Where(x => x.UserId == userId && x.LogoutTime == null)
+                    .OrderByDescending(x => x.LoginTime)
+                    .FirstOrDefault();
+
+                if (openSession != null)
+                {
+                    openSession.LogoutTime = DateTime.UtcNow;
+                    openSession.SessionMinutes =
+                        (int)(openSession.LogoutTime.Value - openSession.LoginTime).TotalMinutes;
+                    openSession.IsAutoLogout = false;
+
+                    await _context.SaveChangesAsync();
+                }
+            }
+
             await signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
+
     }
 }

@@ -1,5 +1,8 @@
 ﻿@model ResumeApp.ViewModels.ClientOnboardingViewModel
 @{
+    bool isEdit = Model?.ClientId != null && Model.ClientId > 0;
+}
+@{
     ViewData["Title"] = "Client Onboarding";
 }
 <div class="container py-5">
@@ -16,13 +19,13 @@
     }
 
     <form id="clientOnboardingForm"
-          asp-action="ClientOnboarding"
+          asp-controller="UserManagement"
+          asp-action="@(Model.ClientId > 0 ? "UpdateClient" : "ClientOnboarding")"
           method="post"
-          enctype="multipart/form-data"
-          class="needs-validation"
-          novalidate>
-        @Html.AntiForgeryToken()
+          enctype="multipart/form-data">
 
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="ClientId" />
         <!-- Company Information -->
         <div class="card shadow-sm border-0 mb-4">
             <div class="card-header bg-primary text-white fw-semibold">
@@ -359,7 +362,8 @@
         <!-- Submit -->
         <div class="text-center">
             <button type="button" id="triggerConfirm" class="btn btn-lg btn-primary px-5 shadow-sm">
-                <i class="bi bi-send-fill me-2"></i> Submit
+                <i class="bi bi-send-fill me-2"></i>
+                @(isEdit ? "Update Client" : "Submit")
             </button>
         </div>
     </form>
@@ -788,11 +792,26 @@
           // Hydrate any server-rendered spokesperson rows (Edit scenario)
           // After master has been filled (it is by previous script), copy options + set current value
           document.addEventListener('DOMContentLoaded', function(){
-            container.querySelectorAll('.spk-item .spk-designation').forEach(sel => {
-              const current = sel.getAttribute('data-current') || '';
-              hydrateDesignationSelect(sel, current);
+
+          // hydrate designation dropdowns
+          container.querySelectorAll('.spk-item .spk-designation').forEach(sel => {
+            const current = sel.getAttribute('data-current') || '';
+            hydrateDesignationSelect(sel, current);
+          });
+
+          // attach remove handler to existing spokesperson cards
+          container.querySelectorAll('.removeSpokesperson').forEach(btn => {
+            btn.addEventListener('click', function () {
+              const item = btn.closest('.spk-item');
+              if (!item) return;
+
+              item.remove();
+              reindexAll();
+              refreshValidation();
             });
           });
+
+        });
 
         })();
     </script>
@@ -824,6 +843,19 @@
           fileEl?.addEventListener('change', checkEitherOr);
           textEl?.addEventListener('input', checkEitherOr);
         })();
+
+          function wireRemoveButtons() {
+          container.querySelectorAll('.removeSpokesperson').forEach(btn => {
+            btn.addEventListener('click', function () {
+              const item = btn.closest('.spk-item');
+              if (!item) return;
+
+              item.remove();
+              reindexAll();
+              refreshValidation();
+            });
+          });
+        }
     </script>
 
 }

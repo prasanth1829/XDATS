@@ -1,0 +1,142 @@
+﻿@model ResumeApp.Models.CandidateDetail
+
+@{
+    ViewData["Title"] = "Candidate Details";
+}
+
+<div class="container py-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold text-primary">
+            👤 Candidate Details
+        </h3>
+        <a asp-controller="ClientRequirements"
+           asp-action="Details"
+           asp-route-id="@Model.RequirementId"
+           class="btn btn-outline-secondary">
+            ⬅ Back to JD
+        </a>
+    </div>
+
+    <form asp-action="Edit"
+          asp-route-resumeId="@Model.ResumeId"
+          asp-route-requirementId="@Model.RequirementId"
+          method="post">
+        @Html.AntiForgeryToken()
+
+        <!-- Hidden keys -->
+        <input type="hidden" asp-for="ResumeId" />
+        <input type="hidden" asp-for="RequirementId" />
+
+        <!-- PERSONAL DETAILS -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light fw-semibold">
+                🧍 Personal Information
+            </div>
+            <div class="card-body row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Date of Birth</label>
+                    <input asp-for="DateOfBirth" type="date" class="form-control" />
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Qualification</label>
+                    <input asp-for="Qualification" class="form-control" />
+                </div>
+            </div>
+        </div>
+
+        <!-- EXPERIENCE -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light fw-semibold">
+                📊 Experience
+            </div>
+            <div class="card-body row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Total Experience (Years)</label>
+                    <input asp-for="TotalExperience" class="form-control" step="0.1" />
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Relevant Experience (Years)</label>
+                    <input asp-for="RelevantExperience" class="form-control" step="0.1" />
+                </div>
+            </div>
+        </div>
+
+        <!-- COMPENSATION -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light fw-semibold">
+                💰 Compensation
+            </div>
+            <div class="card-body row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Current CTC</label>
+                    <input asp-for="CurrentCTC" class="form-control" />
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Expected CTC</label>
+                    <input asp-for="ExpectedCTC" class="form-control" />
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Notice Period</label>
+                    <input asp-for="NoticePeriod" class="form-control" />
+                </div>
+            </div>
+        </div>
+
+        <!-- COMPANY & LOCATION -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light fw-semibold">
+                🏢 Company & Location
+            </div>
+            <div class="card-body row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Current Company</label>
+                    <input asp-for="CurrentCompany" class="form-control" />
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Current Location</label>
+                    <input asp-for="CurrentLocation" class="form-control" />
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Preferred Location</label>
+                    <input asp-for="PreferredLocation" class="form-control" />
+                </div>
+            </div>
+        </div>
+
+        <!-- REMARKS -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light fw-semibold">
+                📝 Recruiter Remarks
+            </div>
+            <div class="card-body">
+                <textarea asp-for="Remarks"
+                          rows="4"
+                          class="form-control"
+                          placeholder="Important discussion points, availability, concerns..."></textarea>
+            </div>
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="text-center">
+            <button type="submit" class="btn btn-success px-4 me-2">
+                💾 Save
+            </button>
+
+            <a asp-controller="ClientRequirements"
+               asp-action="Details"
+               asp-route-id="@Model.RequirementId"
+               class="btn btn-outline-secondary px-4">
+                Cancel
+            </a>
+        </div>
+
+    </form>
+</div>

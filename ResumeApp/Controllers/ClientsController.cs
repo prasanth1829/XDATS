@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ResumeApp.Data;
 using ResumeApp.Models;
+using ResumeApp.ViewModels;
 
 namespace ResumeApp.Controllers
 {
@@ -30,10 +31,10 @@ namespace ResumeApp.Controllers
                 .Include(c => c.HeadquarterCountry)
                 .Include(c => c.HeadquarterLocation)
                 .Include(c => c.OtherLocationsMap).ThenInclude(o => o.Location)
-                .Include(c => c.Documents) 
+                .Include(c => c.Documents)
                 .Include(c => c.Spokespersons)
-                .Include(c => c.ClientDocumentItems)         
-                 .ThenInclude(i => i.DocumentType)           
+                .Include(c => c.ClientDocumentItems)
+                 .ThenInclude(i => i.DocumentType)
                  .FirstOrDefaultAsync(c => c.Id == id);
 
             if (client == null) return NotFound();
@@ -51,43 +52,11 @@ namespace ResumeApp.Controllers
 
 
         // GET: Clients/Edit/
-        public async Task<IActionResult> Edit(int id)
+        public IActionResult Edit(int id)
         {
-            var client = await _ctx.Clients.FirstOrDefaultAsync(c => c.Id == id);
-            if (client == null) return NotFound();
-            return View(client);
+            return RedirectToAction("EditClient", "UserManagement", new { id = id });
         }
 
-        // POST: Clients/Edit
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([Bind("Id,CompanyName,WebsiteUrl,CompanyType,CompanySize,HeadquarterLocation,OtherOfficeLocations,ContactName,Designation,Phone,Email,PreferredCommunication,EngagementTypes,IsActive")] Client updated)
-        {
-            if (!ModelState.IsValid)
-                return View(updated);
-
-            var client = await _ctx.Clients.FirstOrDefaultAsync(c => c.Id == updated.Id);
-            if (client == null) return NotFound();
-
-            // Map safe fields
-            client.CompanyName = updated.CompanyName?.Trim();
-            client.WebsiteUrl = updated.WebsiteUrl?.Trim();
-            client.CompanyType = updated.CompanyType?.Trim();
-            client.CompanySize = updated.CompanySize?.Trim();
-
-            client.ContactName = updated.ContactName?.Trim();
-            client.Designation = updated.Designation?.Trim();
-            client.Phone = updated.Phone?.Trim();
-            client.Email = updated.Email?.Trim();
-            client.PreferredCommunication = updated.PreferredCommunication?.Trim();
-            client.EngagementTypes = updated.EngagementTypes?.Trim();
-            client.IsActive = updated.IsActive;
-
-            await _ctx.SaveChangesAsync();
-
-            TempData["Success"] = "Client updated successfully.";
-            return RedirectToAction(nameof(Index)); // ← go back to Clients list
-        }
 
         // POST Delete
         [HttpPost, ValidateAntiForgeryToken]

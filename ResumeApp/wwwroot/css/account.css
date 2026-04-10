@@ -27,9 +27,9 @@
     color: #fff !important;
 }
 
-    .btn:hover,
-    .btn:focus {
-        background-color: #0b5ed7 !important;
-        border-color: #0a58ca !important;
-        color: #fff !important;
-    }
+.btn:hover,
+.btn:focus {
+    background-color: #0b5ed7 !important;
+    border-color: #0a58ca !important;
+    color: #fff !important;
+}

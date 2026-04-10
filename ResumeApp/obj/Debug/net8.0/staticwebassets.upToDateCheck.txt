@@ -1,5 +1,6 @@
 wwwroot\css\account.css
 wwwroot\css\custom.css
+wwwroot\css\dashboard.css
 wwwroot\css\site.css
 wwwroot\favicon.ico
 wwwroot\images\account-bg.jpg
@@ -63,6 +64,9 @@ wwwroot\lib\jquery\dist\jquery.js
 wwwroot\lib\jquery\dist\jquery.min.js
 wwwroot\lib\jquery\dist\jquery.min.map
 wwwroot\lib\jquery\LICENSE.txt
+wwwroot\uploads\024c61e3-ed28-46e8-baa5-90be98fb6b8c_JOE ANNY_1.docx
+wwwroot\uploads\4151beee-c32f-4074-9444-b16294699d5b_Joe Broussard_1.docx
+wwwroot\uploads\5a553f7b-6499-4064-b974-b34ca82e8492_Joe Benjamin.docx
 wwwroot\uploads\A M Munikumar_10.0 years_Java Spring boot AWS Lead_Xeedo - Impetus.docx
 wwwroot\uploads\A Nagaraju_5.0 years_Data Engineer (Python, SQL & Pyspark)_Xeedo - L&T.pdf
 wwwroot\uploads\A Sivaiah_5.5 Years_JR-12808 Build and Release Engineer_Sony.pdf
@@ -259,6 +263,7 @@ wwwroot\uploads\clients\10\docs\GST\SuprayasAdhar.pdf
 wwwroot\uploads\clients\10\docs\NDA\colleagues-working-project-discussing-details.jpg
 wwwroot\uploads\clients\11\e-ticket-DEL-COK-IF45296310382938.pdf
 wwwroot\uploads\CV -Deepak S.pdf
+wwwroot\uploads\d426526b-c482-4383-9b8e-0398df0d5c0e_Joe Broussard.docx
 wwwroot\uploads\Darshan Sharma Satish_5.0 Years_JR-12808 Build and Release Engineer_Sony.pdf
 wwwroot\uploads\DARSHAND_3.0 years_System reliablity engineer_ACL digital.pdf
 wwwroot\uploads\Dasari_Rana_Prathap_5.4 years_MO31JP00001577 - Quality Engineer 3_INR_Xeedo - Micron.docx
@@ -267,6 +272,8 @@ wwwroot\uploads\Dinesh_Chigurupalli_4.6 years_Systems Groups_Sr SDET Python with
 wwwroot\uploads\Dinesh_Resume.pdf
 wwwroot\uploads\Divakara_GR_7.0 years_Embedded Software_LG.pdf
 wwwroot\uploads\Divya Shinde.pdf
+wwwroot\uploads\dlwresumeBSA_0210.docx
+wwwroot\uploads\fd281b1c-f7b9-4304-8715-8e87314774f7_JOE ANNY.docx
 wwwroot\uploads\GaneshShelke[9y_10m]_L4 Support Engineer.pdf
 wwwroot\uploads\Gaurav_A_Muley_3.2 years_Full Stack Developer_AFour Technologies.pdf
 wwwroot\uploads\Grishma.docx
@@ -276,6 +283,10 @@ wwwroot\uploads\Gundeboina_Naresh_kumar_7.0 years_MO31JP00001569  - Product Deve
 wwwroot\uploads\Gurram_Shiva_Krishna_4.1 years_Design Verification Engineer_Ignitarium Technology Solutions.docx
 wwwroot\uploads\Hari_Kumar_Reddy_4.4 years_Embedded Software_LG.pdf
 wwwroot\uploads\Himaniarya_9.7 years_Angular Lead.pdf
+wwwroot\uploads\JamesZhan_Resume_TIBCO.pdf
+wwwroot\uploads\janaki_ram_kavuri_new 1_1.pdf
+wwwroot\uploads\Jill+Wohlbedacht+Resume.docx
+wwwroot\uploads\Joe Obad.docx
 wwwroot\uploads\Juned_Bagwan_4.10 years_SDET C#_ACL Digital.pdf
 wwwroot\uploads\Kaif_Wagle.pdf
 wwwroot\uploads\Kakalra_Pavan_Reddy_6.7 years_MO31JP00001765 - Quality Engineer 4_Xeedo - Micron.docx
@@ -286,6 +297,7 @@ wwwroot\uploads\Keerthana_5.1 years_Jira Administrator_ACL Digital.pdf
 wwwroot\uploads\kHanumanthu[3y_2m].docx
 wwwroot\uploads\KiranReddyNakka_8.0 years_IN 139 Sr. Mobile Developer Lead  iOS.docx
 wwwroot\uploads\KiranVentrapragada_18.0 years_Data Architect - AWS Data Platform.docx
+wwwroot\uploads\LipikaBharati_Reactjs_Resume.pdf
 wwwroot\uploads\Mahesh K_5.3 Years_JR-13352 Python & Groovy Lead Engineer_Sony.pdf
 wwwroot\uploads\Mohan_Garlapati_7.9 years_Front End Developer_ACL - Lowe's.pdf
 wwwroot\uploads\Naresh_Banavath_4.1 years_Cobol Developer_AFour Technologies.pdf
@@ -526,7 +538,9 @@ wwwroot\uploads\requirements\8\faoyiahe33e.pdf
 wwwroot\uploads\requirements\9\srxme1kmhyr.jpeg
 wwwroot\uploads\REST API - Interview Preparation.pdf
 wwwroot\uploads\resume-sample.pdf
+wwwroot\uploads\RichBaker_BI_DW_Architect_Baltimore.docx
 wwwroot\uploads\Ritik_Singh.pdf
+wwwroot\uploads\Ritu_Chopra_Project Manager_2010.pdf
 wwwroot\uploads\R_Bharat__4.6 years_C++ Developer_ACL Digital - Motorola.pdf
 wwwroot\uploads\R_Dhanush_Resume.docx
 wwwroot\uploads\Samanth_MMM_2.10 years_LFC_JD_Sr_Engineer(Node-JS developer)_Xeedo - Deloitte.pdf

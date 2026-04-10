@@ -9,7 +9,8 @@
     bool isVendor = User.IsInRole("Vendor");
     bool isManager = User.IsInRole("Manager");
     bool isTeamLead = User.IsInRole("Team Lead");
-
+    var calledIds = ViewBag.CalledResumeIds as List<int> ?? new List<int>();
+    var detailFilledIds = ViewBag.DetailFilledResumeIds as List<int> ?? new List<int>();
     // Current user
     var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
@@ -287,8 +288,43 @@
                                 <td>@link.Resume.Email</td>
                                 <td>@link.Resume.YearsOfExperience</td>
                                 <td>@link.Resume.User?.FullName</td>
-                                <td>@link.LinkedByUser?.FullName</td>
                                 <td>@link.LinkedAt.ToString("dd-MMM-yyyy")</td>
+                                <td>
+                                    @if (detailFilledIds.Contains(link.ResumeId))
+                                    {
+                                        <!-- 🔵 DETAILS FILLED -->
+                                        <button class="btn btn-sm btn-primary"
+                                                onclick="openCallModal(@link.ResumeId, @Model.Id, '@link.Resume.Phone')">
+                                             Details Filled
+                                        </button>
+
+                                        <a asp-controller="CandidateDetails"
+                                           asp-action="Edit"
+                                           asp-route-resumeId="@link.ResumeId"
+                                           asp-route-requirementId="@Model.Id"
+                                           class="btn btn-sm btn-outline-primary ms-1">
+                                            View
+                                        </a>
+                                    }
+                                    else if (calledIds.Contains(link.ResumeId))
+                                    {
+                                        <!-- 🟡 CALLED -->
+                                        <button class="btn btn-sm btn-outline-secondary"
+                                                onclick="openCallModal(@link.ResumeId, @Model.Id, '@link.Resume.Phone')">
+                                            📞 Called
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <!-- 🟢 NOT CALLED -->
+                                        <button class="btn btn-sm btn-success"
+                                                onclick="openCallModal(@link.ResumeId, @Model.Id, '@link.Resume.Phone')">
+                                            📞 Call
+                                        </button>
+                                    }
+
+
+                                </td>
                                 <td>
                                     <a asp-controller="Resume" asp-action="Details" asp-route-id="@link.ResumeId"
                                        class="btn btn-sm btn-outline-primary">
@@ -361,3 +397,131 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="callModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+
+            <!-- Header -->
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    📞 Candidate Call
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body p-4">
+
+                <!-- Hidden fields -->
+                <input type="hidden" id="callResumeId">
+                <input type="hidden" id="callRequirementId">
+                <input type="hidden" id="callLogId">
+
+                <!-- Phone -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Contact Number</label>
+                    <input class="form-control form-control-lg" id="callPhone"
+                           placeholder="Enter or confirm phone number">
+                </div>
+
+                <!-- Start Call -->
+                <div class="d-grid mb-3">
+                    <button class="btn btn-success btn-lg"
+                            onclick="startCall()">
+                        ▶ Start Call
+                    </button>
+                </div>
+
+                <!-- After Call Starts -->
+                <div id="endCallSection" class="border-top pt-4 d-none">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Call Outcome</label>
+                        <select class="form-select" id="callOutcome">
+                            <option selected>Connected</option>
+                            <option>No Answer</option>
+                            <option>Busy</option>
+                            <option>Wrong Number</option>
+                            <option>Not Interested</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Call Notes</label>
+                        <textarea class="form-control"
+                                  id="callNotes"
+                                  rows="3"
+                                  placeholder="Key discussion points, availability, expectations..."></textarea>
+                    </div>
+
+                    <div class="d-grid mb-3">
+                        <button class="btn btn-danger btn-lg"
+                                onclick="endCall()">
+                            ⏹ End Call
+                        </button>
+                    </div>
+
+                    <!-- Next Step -->
+                    <div class="text-center">
+                        <a id="fillDetailsBtn"
+                           class="btn btn-outline-primary w-100 d-none"
+                           target="_blank">
+                            📝 Fill Candidate Details
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function openCallModal(resumeId, requirementId, phone) {
+        document.getElementById('callResumeId').value = resumeId;
+        document.getElementById('callRequirementId').value = requirementId;
+        document.getElementById('callPhone').value = phone || '';
+        document.getElementById('endCallSection').classList.add('d-none');
+
+        new bootstrap.Modal(document.getElementById('callModal')).show();
+    }
+
+    function startCall() {
+        fetch('/CandidateCall/StartCall', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body:
+                `resumeId=${callResumeId.value}` +
+                `&requirementId=${callRequirementId.value}` +
+                `&phone=${callPhone.value}`
+        })
+        .then(res => res.json())
+        .then(data => {
+            callLogId.value = data.callId;
+            document.getElementById('endCallSection').classList.remove('d-none');
+            });
+    }
+
+        function endCall() {
+        fetch('/CandidateCall/EndCall', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body:
+                `callId=${callLogId.value}` +
+                `&outcome=${callOutcome.value}` +
+                `&notes=${callNotes.value}`
+        })
+        .then(() => {
+            // Build Candidate Details URL
+            const resumeId = document.getElementById('callResumeId').value;
+            const requirementId = document.getElementById('callRequirementId').value;
+
+            const url = `/CandidateDetails/Edit/${resumeId}/${requirementId}`;
+
+            const btn = document.getElementById('fillDetailsBtn');
+            btn.href = url;
+            btn.classList.remove('d-none');
+        });
+    }
+</script>

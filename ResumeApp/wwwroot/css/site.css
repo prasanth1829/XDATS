@@ -25,3 +25,45 @@ html, body {
     margin: 0;
     padding: 0;
 }
+.search-card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 16px;
+    border: 1px solid #e5e7eb;
+}
+
+.search-input {
+    border-radius: 10px;
+    height: 45px;
+    resize: none;
+}
+
+.search-input:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+    }
+
+.search-icon {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    color: #6b7280;
+    font-size: 14px;
+}
+.tagify {
+    border-radius: 10px;
+    min-height: 45px;
+}
+
+.tagify__tag {
+    background: #2563eb;
+    color: white;
+    border-radius: 20px;
+    padding: 2px 8px;
+}
+
+.tagify__dropdown__item--active {
+    background: #2563eb !important;
+    color: white;
+}

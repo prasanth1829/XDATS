@@ -8,7 +8,6 @@ using ResumeApp.Services;
 using ResumeApp.ViewModels;
 using System.Security.Claims;
 
-
 namespace ResumeApp.Controllers
 {
     [Authorize]
@@ -27,51 +26,42 @@ namespace ResumeApp.Controllers
             _userManager = userManager;
             _dashboardService = dashboardService;
         }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Admin([FromServices] UserDailyWorkService dailyWorkService)
+        {
+            var vm = await _dashboardService.GetAdminDashboardAsync();
+            ViewBag.TodayWork = await dailyWorkService.GetTodayWorkAsync();
+
+            return View(vm); // Views/Dashboard/Admin.cshtml
+        }
+
         [Authorize(Roles = "Reviewer")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Reviewer([FromServices] UserDailyWorkService workService)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized();
 
             var vm = await _dashboardService.GetRecruiterDashboardAsync(userId);
 
-            return View("Reviewer", vm);
+            ViewBag.MyTodayWork = await workService.GetMyTodayWorkAsync(userId);
+
+            return View(vm); // Views/Dashboard/Reviewer.cshtml
         }
 
-
-        // Recruiter/Reviewer Dashboard -> My Assigned Requirements
-        public async Task<IActionResult> MyAssignments()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            var userId = user?.Id;
-
-            var assignments = await _context.RequirementAssignments
-                .Include(a => a.Requirement)
-                .ThenInclude(r => r.Client)
-                .Where(a => a.UserId == userId)
-                .Select(a => a.Requirement)
-                .ToListAsync();
-
-            return View(assignments);
-        }
-        [Authorize(Roles = "Admin")]
-        public IActionResult Admin()
-        {
-            return View();
-        }
 
         [Authorize(Roles = "Team Lead")]
         public IActionResult TeamLead()
         {
-            return View();
+            return View(); // placeholder for TL dashboard
         }
 
         [Authorize(Roles = "Manager")]
-        public IActionResult Manager()
+        public async Task<IActionResult> Manager(string? filter)
         {
-            return View();
+            var model = await _dashboardService.GetManagerDashboardAsync(filter);
+            return View(model);
         }
 
         [Authorize(Roles = "Vendor")]
@@ -86,39 +76,29 @@ namespace ResumeApp.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Reviewer")]
-        public async Task<IActionResult> Reviewer()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            var vm = await _dashboardService.GetRecruiterDashboardAsync(user.Id);
-            return View(vm);
-        }
         [HttpGet]
         [Authorize(Roles = "Reviewer,Admin,Team Lead,Manager")]
         public async Task<IActionResult> GetRecruitmentFunnel(
-        DateTime? fromDate,
-        DateTime? toDate,
-        int? clientId,
-        int? requirementId)
+            DateTime? fromDate,
+            DateTime? toDate,
+            int? clientId,
+            int? requirementId)
         {
-            var user = await _userManager.GetUserAsync(User);
-            var userId = user.Id;
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var query = _context.ResumeRequirementLinks
+                .AsNoTracking()
                 .Where(l => l.LinkedByUserId == userId);
 
-            // Date filter
             if (fromDate.HasValue)
                 query = query.Where(l => l.LinkedAt >= fromDate.Value);
 
             if (toDate.HasValue)
                 query = query.Where(l => l.LinkedAt <= toDate.Value);
 
-            // Requirement filter
             if (requirementId.HasValue)
                 query = query.Where(l => l.RequirementId == requirementId.Value);
 
-            // Client filter
             if (clientId.HasValue)
                 query = query.Where(l => l.Requirement.ClientId == clientId.Value);
 
@@ -128,11 +108,11 @@ namespace ResumeApp.Controllers
                     l.Status == CandidateStatus.New ||
                     l.Status == CandidateStatus.Shortlisted),
 
-                Selected = await query.CountAsync(l =>
-                    l.Status == CandidateStatus.Selected),
-
                 InterviewScheduled = await query.CountAsync(l =>
                     l.Status == CandidateStatus.InterviewScheduled),
+
+                Selected = await query.CountAsync(l =>
+                    l.Status == CandidateStatus.Selected),
 
                 OfferReleased = await query.CountAsync(l =>
                     l.Status == CandidateStatus.OfferReleased),
@@ -143,6 +123,81 @@ namespace ResumeApp.Controllers
 
             return Json(funnel);
         }
+
+        public async Task<IActionResult> TodayWork([FromServices] UserDailyWorkService service)
+        {
+            var data = await service.GetTodayWorkAsync();
+            return View(data);
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> WorkReport(DateTime? fromDate, DateTime? toDate, [FromServices] UserDailyWorkService service)
+        {
+            var from = (fromDate ?? DateTime.UtcNow).Date;
+            var to = (toDate ?? DateTime.UtcNow).Date;
+
+            var data = await service.GetWorkByDateRangeAsync(from, to);
+
+            ViewBag.FromDate = from.ToLocalTime().ToString("yyyy-MM-dd");
+            ViewBag.ToDate = to.ToLocalTime().ToString("yyyy-MM-dd");
+
+            return View(data);
+        }
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ExportWorkReport(DateTime? fromDate, DateTime? toDate, [FromServices] UserDailyWorkService service)
+        {
+            var from = (fromDate ?? DateTime.UtcNow).Date;
+            var to = (toDate ?? DateTime.UtcNow).Date;
+
+            var data = await service.GetWorkByDateRangeAsync(from, to);
+
+            using var package = new OfficeOpenXml.ExcelPackage();
+            var ws = package.Workbook.Worksheets.Add("Work Report");
+
+            string[] headers = { "User", "First Login", "Last Logout", "Worked Minutes", "Uploads", "Downloads" };
+
+            for (int i = 0; i < headers.Length; i++)
+                ws.Cells[1, i + 1].Value = headers[i];
+
+            int row = 2;
+            foreach (var u in data)
+            {
+                ws.Cells[row, 1].Value = u.UserName;
+                ws.Cells[row, 2].Value = u.FirstLoginTime?.ToLocalTime().ToString("g");
+                ws.Cells[row, 3].Value = u.LastActivityTime?.ToLocalTime().ToString("g");
+                ws.Cells[row, 4].Value = u.TotalWorkedMinutes;
+                ws.Cells[row, 5].Value = u.UploadCount;
+                ws.Cells[row, 6].Value = u.DownloadCount;
+                row++;
+            }
+
+            return File(
+                package.GetAsByteArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"UserWorkReport_{from:yyyyMMdd}_{to:yyyyMMdd}.xlsx");
+        }
+
+        
+        [Authorize(Roles = "Reviewer")]
+        [HttpGet]
+        public async Task<IActionResult> MyWorkLive([FromServices] UserDailyWorkService workService)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            var data = await workService.GetMyTodayWorkAsync(userId);
+            return Json(data);
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> AdminWorkLive([FromServices] UserDailyWorkService workService)
+        {
+            var data = await workService.GetTodayWorkLiveAsync();
+            return Json(data);
+        }
+
+
 
     }
 }

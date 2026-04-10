@@ -1,10 +1,12 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
+﻿using DocumentFormat.OpenXml.InkML;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ResumeApp.Data;
+using ResumeApp.Helpers;
 using ResumeApp.Models;
 using ResumeApp.Models.Master;
 using ResumeApp.Services;
@@ -548,6 +550,23 @@ namespace ResumeApp.Controllers
                 .Include(l => l.Resume)
                 .Include(l => l.LinkedByUser)
                 .ToListAsync();
+            //  Candidates that have been CALLED (at least once)
+            var calledResumeIds = await _context.CandidateCallLogs
+                .Where(c => c.RequirementId == id)
+                .Select(c => c.ResumeId)
+                .Distinct()
+                .ToListAsync();
+
+            ViewBag.CalledResumeIds = calledResumeIds;
+
+            // Candidates whose DETAILS are FILLED
+            var detailFilledResumeIds = await _context.CandidateDetails
+                .Where(d => d.RequirementId == id)
+                .Select(d => d.ResumeId)
+                .Distinct()
+                .ToListAsync();
+
+            ViewBag.DetailFilledResumeIds = detailFilledResumeIds;
 
             return View(requirement);
         }
@@ -620,7 +639,7 @@ namespace ResumeApp.Controllers
         }
 
         // GET AssignRecruiters
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> AssignRecruiters(int id)
         {
             var requirement = await _context.ClientRequirements
@@ -635,11 +654,11 @@ namespace ResumeApp.Controllers
             ViewBag.Requirement = requirement;
             ViewBag.Users = recruiters.Concat(vendors).ToList();
 
-            return View();
+            return PartialView("AssignRecruiters");
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> AssignRecruiters(int requirementId, List<string> userIds)
         {
             var requirement = await _context.ClientRequirements.FindAsync(requirementId);
@@ -1052,9 +1071,9 @@ namespace ResumeApp.Controllers
 
                     // Optional/nullable business fields (fill later if you add them)
                     DateOfBirth = null,                        // map if you start storing DoB
-                    Qualification = null,                        // map from resume if available
+                    Qualification = null,                        
                     TotalYearsExp = l.Resume.YearsOfExperience,
-                    RelevantYearsExp = null,                        // compute later if you add a relevancy extractor
+                    RelevantYearsExp = null,                        
                     CurrentCTC = null,
                     ExpectedCTC = null,
                     NoticePeriod = null,
@@ -1136,22 +1155,279 @@ namespace ResumeApp.Controllers
         [Authorize(Roles = "Reviewer,Admin,Team Lead,Manager")]
         public async Task<IActionResult> SharedProfilesByStatus(CandidateStatus status)
         {
-            var userId = _userManager.GetUserId(User);
+            var isAdmin =
+                User.IsInRole("Admin") ||
+                User.IsInRole("Manager") ||
+                User.IsInRole("Team Lead");
 
-            var rows = await _context.ResumeRequirementLinks
-                .Where(l =>
-                    l.LinkedByUserId == userId &&
-                    l.Status == status)
-                .Include(l => l.Resume)
-                .Include(l => l.Requirement)
-                    .ThenInclude(r => r.Client)
+            IQueryable<ResumeRequirementLink> query =
+                _context.ResumeRequirementLinks
+                    .AsNoTracking()
+                    .Where(l => l.Status == status)
+                    .Include(l => l.Resume)
+                    .Include(l => l.Requirement)
+                        .ThenInclude(r => r.Client);
+
+            // Recruiter only → restrict to own uploads
+            if (!isAdmin)
+            {
+                var userId = _userManager.GetUserId(User);
+                query = query.Where(l => l.LinkedByUserId == userId);
+            }
+
+            var rows = await query
                 .OrderByDescending(l => l.UpdatedAt)
                 .ToListAsync();
 
             ViewBag.StatusFilter = status;
             ViewBag.Mode = "Dashboard";
 
-            return View("SharedProfilesDashboard", rows);
+            return View("SharedProfiles", rows);
+        }
+
+
+        [Authorize(Roles = "Admin,Manager,Team Lead")]
+        public async Task<IActionResult> InProgressProfiles(List<string>? uploadedByUserIds,List<int>? clientIds,List<CandidateStatus>? statuses,DateTime? fromDate,DateTime? toDate)
+        {
+
+            IQueryable<ResumeRequirementLink> query =
+                _context.ResumeRequirementLinks
+                .AsNoTracking()
+                .Include(l => l.Requirement)
+                .ThenInclude(r => r.Client)
+                .Include(l => l.Resume)
+                .Include(l => l.LinkedByUser);
+
+
+            //Uploaded By (MULTI)
+            if (uploadedByUserIds != null && uploadedByUserIds.Any())
+            {
+                query = query.Where(l =>
+                    l.LinkedByUserId != null &&
+                    uploadedByUserIds.Contains(l.LinkedByUserId));
+            }
+
+            // Client (MULTI)
+            if (clientIds != null && clientIds.Any())
+            {
+                query = query.Where(l =>
+                    clientIds.Contains(l.Requirement.ClientId));
+            }
+
+            //Status (MULTI)
+            if (statuses != null && statuses.Any())
+            {
+                query = query.Where(l => statuses.Contains(l.Status));
+            }
+            else
+            {
+                // default dashboard behaviour
+                query = query.Where(l =>
+                    CandidateStatusGroups.InProgress.Contains(l.Status));
+            }
+
+            //Date From
+            if (fromDate.HasValue)
+            {
+                query = query.Where(l => l.UpdatedAt >= fromDate.Value);
+            }
+
+            //Date To (inclusive)
+            if (toDate.HasValue)
+            {
+                var to = toDate.Value.Date.AddDays(1);
+                query = query.Where(l => l.UpdatedAt < to);
+            }
+
+            var rows = await query
+                .GroupBy(l => new
+                {
+                    l.RequirementId,
+                    l.Requirement.JobTitle,
+                    ClientName = l.Requirement.Client.CompanyName
+                })
+                .Select(g => new AdminInProgressVm
+                {
+                    RequirementId = g.Key.RequirementId,
+                    JobTitle = g.Key.JobTitle,
+                    ClientName = g.Key.ClientName,
+                    TotalProfiles = g.Count(),
+
+                    Profiles = g
+                        .OrderByDescending(x => x.UpdatedAt)
+                        .Select(x => new AdminInProgressProfileRow
+                        {
+                            ResumeId = x.ResumeId,
+                            CandidateName = x.Resume.Name,
+                            Status = x.Status,
+                            UploadedBy = x.LinkedByUser.FullName ?? x.LinkedByUser.Email,
+                            UploadedByUserId = x.LinkedByUserId,
+                            UpdatedAt = x.UpdatedAt
+                        })
+                        .ToList()
+                })
+                .OrderByDescending(x => x.TotalProfiles)
+                .ToListAsync();
+
+
+            // Clients
+            ViewBag.ClientList = await _context.Clients
+                .AsNoTracking()
+                .OrderBy(c => c.CompanyName)
+                .Select(c => new
+                {
+                    ClientId = c.Id,
+                    ClientName = c.CompanyName
+                })
+                .ToListAsync();
+
+            // Uploaded By (Recruiters)
+            ViewBag.UploadedByList = await _context.ResumeRequirementLinks
+                .AsNoTracking()
+                .Where(l => CandidateStatusGroups.InProgress.Contains(l.Status))
+                .Where(l => l.LinkedByUserId != null)
+                .Include(l => l.LinkedByUser)
+                .GroupBy(l => new
+                {
+                    l.LinkedByUserId,
+                    Name = l.LinkedByUser.FullName ?? l.LinkedByUser.Email
+                })
+                .Select(g => new
+                {
+                    LinkedByUserId = g.Key.LinkedByUserId,
+                    Name = g.Key.Name
+                })
+                .OrderBy(x => x.Name)
+                .ToListAsync();
+
+            // Status list (enum)
+            ViewBag.StatusList = Enum.GetValues(typeof(CandidateStatus))
+                .Cast<CandidateStatus>()
+                .Where(s => CandidateStatusGroups.InProgress.Contains(s))
+                .Select(s => new
+                {
+                    Value = s,
+                    Text = s.ToString()
+                })
+                .ToList();
+
+            ViewBag.SelectedUploaders = uploadedByUserIds ?? new List<string>();
+            ViewBag.SelectedClients = clientIds ?? new List<int>();
+            ViewBag.SelectedStatuses = statuses ?? new List<CandidateStatus>();
+            ViewBag.FromDate = fromDate;
+            ViewBag.ToDate = toDate;
+
+            return View(rows);
+        }
+
+        [Authorize(Roles = "Admin,Manager,Team Lead")]
+        [HttpGet]
+        public async Task<IActionResult> InProgressProfilesExport(
+        List<string>? uploadedByUserIds,
+        List<int>? clientIds,
+        List<CandidateStatus>? statuses,
+        DateTime? fromDate,
+        DateTime? toDate)
+        {
+            var rows = await BuildInProgressExportQuery(
+                    uploadedByUserIds,
+                    clientIds,
+                    statuses,
+                    fromDate,
+                    toDate)
+                .OrderBy(r => r.ClientName)
+                .ThenBy(r => r.JobTitle)
+                .ThenByDescending(r => r.UpdatedAt)
+                .ToListAsync();
+
+            // Build CSV
+            var sb = new System.Text.StringBuilder();
+
+            // Header
+            sb.AppendLine("Client,Job Title,Candidate,Status,Uploaded By,Last Updated");
+
+            foreach (var r in rows)
+            {
+                sb.AppendLine(
+                    $"{Escape(r.ClientName)}," +
+                    $"{Escape(r.JobTitle)}," +
+                    $"{Escape(r.CandidateName)}," +
+                    $"{r.Status}," +
+                    $"{Escape(r.UploadedBy)}," +
+                    $"{r.UpdatedAt:yyyy-MM-dd HH:mm}"
+                );
+            }
+
+            var fileName = $"Profiles_In_Progress_{DateTime.UtcNow:yyyyMMdd_HHmm}.csv";
+
+            return File(
+                System.Text.Encoding.UTF8.GetBytes(sb.ToString()),
+                "text/csv",
+                fileName
+            );
+        }
+
+
+        private IQueryable<AdminInProgressExportRow> BuildInProgressExportQuery(List<string>? uploadedByUserIds,List<int>? clientIds,List<CandidateStatus>? statuses,DateTime? fromDate,DateTime? toDate)
+        {
+            var query = _context.ResumeRequirementLinks
+                .AsNoTracking()
+                .Where(l => CandidateStatusGroups.InProgress.Contains(l.Status))
+                .Include(l => l.Requirement)
+                    .ThenInclude(r => r.Client)
+                .Include(l => l.Resume)
+                .Include(l => l.LinkedByUser)
+                .AsQueryable();
+
+            // Uploaded By (multi)
+            if (uploadedByUserIds?.Any() == true)
+            {
+                query = query.Where(l => uploadedByUserIds.Contains(l.LinkedByUserId!));
+            }
+
+            // Client (multi)
+            if (clientIds?.Any() == true)
+            {
+                query = query.Where(l => clientIds.Contains(l.Requirement.ClientId));
+            }
+
+            // Status (multi)
+            if (statuses?.Any() == true)
+            {
+                query = query.Where(l => statuses.Contains(l.Status));
+            }
+
+            // Date range
+            if (fromDate.HasValue)
+            {
+                query = query.Where(l => l.UpdatedAt >= fromDate.Value);
+            }
+
+            if (toDate.HasValue)
+            {
+                query = query.Where(l => l.UpdatedAt <= toDate.Value.AddDays(1));
+            }
+
+            // Final projection
+            return query.Select(l => new AdminInProgressExportRow
+            {
+                ClientName = l.Requirement.Client.CompanyName,
+                JobTitle = l.Requirement.JobTitle,
+                CandidateName = l.Resume.Name,
+                Status = l.Status,
+                UploadedBy = l.LinkedByUser.FullName ?? l.LinkedByUser.Email!,
+                UpdatedAt = l.UpdatedAt
+            });
+        }
+        private static string Escape(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return "";
+
+            if (value.Contains(",") || value.Contains("\"") || value.Contains("\n"))
+                return $"\"{value.Replace("\"", "\"\"")}\"";
+
+            return value;
         }
 
     }

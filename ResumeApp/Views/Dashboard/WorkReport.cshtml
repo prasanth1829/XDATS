@@ -1,0 +1,52 @@
+﻿@model List<ResumeApp.ViewModels.UserDailyWorkDto>
+
+<h4 class="fw-bold mb-3"> User Work Report</h4>
+
+<form method="get" class="row g-3 mb-4">
+    <div class="col-md-3">
+        <label>From</label>
+        <input type="date" name="fromDate" value="@ViewBag.FromDate" class="form-control" />
+    </div>
+    <div class="col-md-3">
+        <label>To</label>
+        <input type="date" name="toDate" value="@ViewBag.ToDate" class="form-control" />
+    </div>
+    <div class="col-md-3 align-self-end">
+        <button class="btn btn-primary">Apply</button>
+        <a class="btn btn-success ms-2"
+           href="/Dashboard/ExportWorkReport?fromDate=@ViewBag.FromDate&toDate=@ViewBag.ToDate">
+            Export Excel
+        </a>
+
+        <a class="btn btn-outline-secondary ms-2"
+           href="?fromDate=@DateTime.UtcNow.AddDays(-1).ToString("yyyy-MM-dd")&toDate=@DateTime.UtcNow.AddDays(-1).ToString("yyyy-MM-dd")">
+            Yesterday
+        </a>
+    </div>
+</form>
+
+<table class="table table-bordered align-middle">
+    <thead class="table-light">
+        <tr>
+            <th>User</th>
+            <th>First Login</th>
+            <th>Last Logout</th>
+            <th>Worked</th>
+            <th>Uploads</th>
+            <th>Downloads</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var u in Model)
+        {
+            <tr>
+                <td>@u.UserName</td>
+                <td>@u.FirstLoginTime?.ToLocalTime()</td>
+                <td>@u.LastActivityTime?.ToLocalTime()</td>
+                <td>@(u.TotalWorkedMinutes / 60)h @(u.TotalWorkedMinutes % 60)m</td>
+                <td>@u.UploadCount</td>
+                <td>@u.DownloadCount</td>
+            </tr>
+        }
+    </tbody>
+</table>

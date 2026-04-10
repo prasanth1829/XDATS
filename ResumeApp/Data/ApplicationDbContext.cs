@@ -36,6 +36,10 @@ namespace ResumeApp.Data
         public DbSet<NoticePeriodOption> NoticePeriodOptions { get; set; } = default!;
         public DbSet<RequirementMom> RequirementMoms { get; set; } = default!;
         public DbSet<RequirementMomHistory> RequirementMomHistories { get; set; } = default!;
+        public DbSet<UserSessionLog> UserSessionLogs { get; set; }
+        public DbSet<CandidateCallLog> CandidateCallLogs { get; set; }
+        public DbSet<CandidateDetail> CandidateDetails { get; set; }
+        public DbSet<ResumeSkill> ResumeSkills { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -192,6 +196,20 @@ namespace ResumeApp.Data
 
             builder.Entity<RequirementMomHistory>()
                 .HasIndex(h => new { h.RequirementMomId, h.EditedAt });
+
+            builder.Entity<UserSessionLog>()
+                 .HasIndex(x => new { x.UserId, x.LoginTime });
+
+            builder.Entity<UserSessionLog>()
+                .HasIndex(x => x.LogoutTime);
+            builder.Entity<CandidateDetail>()
+                .HasIndex(x => new { x.ResumeId, x.RequirementId })
+                .IsUnique();
+            builder.Entity<ResumeSkill>()
+                .HasIndex(x => x.SkillName);
+
+            builder.Entity<ResumeSkill>()
+                .HasIndex(x => x.ResumeId);
 
         }
     }
